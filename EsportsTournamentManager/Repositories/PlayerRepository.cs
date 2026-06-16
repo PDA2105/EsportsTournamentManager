@@ -6,50 +6,50 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Repositories
 {
-    public class TeamRepository
+    public class PlayerRepository
     {
-        public List<Team> GetAll()
+        public List<Player> GetPlayersByTeam(int teamId)
         {
             using (var db = new AppDbContext())
             {
-                return db.Teams.ToList();
+                return db.Players.Where(p => p.TeamId == teamId).ToList();
             }
         }
 
-        public Team GetById(int teamId)
+        public Player GetById(int playerId)
         {
             using (var db = new AppDbContext())
             {
-                return db.Teams.Find(teamId);
+                return db.Players.Find(playerId);
             }
         }
 
-        public void Add(Team team)
+        public void Add(Player player)
         {
             using (var db = new AppDbContext())
             {
-                db.Teams.Add(team);
+                db.Players.Add(player);
                 db.SaveChanges();
             }
         }
 
-        public void Update(Team team)
+        public void Update(Player player)
         {
             using (var db = new AppDbContext())
             {
-                db.Entry(team).State = EntityState.Modified;
+                db.Entry(player).State = EntityState.Modified;
                 db.SaveChanges();
             }
         }
 
-        public void Delete(int teamId)
+        public void Delete(int playerId)
         {
             using (var db = new AppDbContext())
             {
-                var team = db.Teams.Find(teamId);
-                if (team != null)
+                var player = db.Players.Find(playerId);
+                if (player != null)
                 {
-                    db.Teams.Remove(team);
+                    db.Players.Remove(player);
                     db.SaveChanges();
                 }
             }

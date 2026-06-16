@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EsportsTournamentManager"
+        xmlns:localviews="clr-namespace:EsportsTournamentManager.Views"
         mc:Ignorable="d"
         Title="Esports Tournament Manager" 
         Height="650" Width="1100"
@@ -385,69 +386,9 @@
 
                     <!-- Central View switching area -->
                     <Grid Grid.Row="1" Margin="30">
-                        
-                        <!-- ============================================== -->
-                        <!-- 2.1 DASHBOARD SECTION VIEW                     -->
-                        <!-- ============================================== -->
-                        <Grid x:Name="DashboardSection" Visibility="Visible">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0" Text="Chào mừng quay trở lại hệ thống!" Foreground="{StaticResource TextLight}" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
-                            
-                            <!-- Dummy Cards Overview -->
-                            <UniformGrid Grid.Row="1" Columns="3" VerticalAlignment="Top" Rows="1">
-                                <!-- Card 1: Teams -->
-                                <Border Background="#1E293B" CornerRadius="12" Margin="0,0,15,0" Padding="20" Height="140">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="👥 Đội tuyển" Foreground="{StaticResource TextMuted}" FontSize="14" FontWeight="SemiBold"/>
-                                        <TextBlock x:Name="TxtStatsTeams" Text="--" Foreground="{StaticResource TextLight}" FontSize="36" FontWeight="Black" Margin="0,10,0,0"/>
-                                        <TextBlock Text="đã đăng ký trong hệ thống" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Card 2: Players -->
-                                <Border Background="#1E293B" CornerRadius="12" Margin="0,0,15,0" Padding="20" Height="140">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="🎮 Tuyển thủ" Foreground="{StaticResource TextMuted}" FontSize="14" FontWeight="SemiBold"/>
-                                        <TextBlock x:Name="TxtStatsPlayers" Text="--" Foreground="{StaticResource TextLight}" FontSize="36" FontWeight="Black" Margin="0,10,0,0"/>
-                                        <TextBlock Text="hồ sơ thi đấu chính thức" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Card 3: Tournaments -->
-                                <Border Background="#1E293B" CornerRadius="12" Padding="20" Height="140">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="🏆 Giải đấu" Foreground="{StaticResource TextMuted}" FontSize="14" FontWeight="SemiBold"/>
-                                        <TextBlock x:Name="TxtStatsTournaments" Text="--" Foreground="{StaticResource TextLight}" FontSize="36" FontWeight="Black" Margin="0,10,0,0"/>
-                                        <TextBlock Text="đang diễn ra hoặc đã kết thúc" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                            </UniformGrid>
-                        </Grid>
-
-                        <!-- ============================================== -->
-                        <!-- 2.2 TEAMS & PLAYERS SECTION VIEW (Placeholder) -->
-                        <!-- ============================================== -->
-                        <Grid x:Name="TeamsSection" Visibility="Collapsed">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="👥 Section Quản Lý Đội Tuyển &amp; Tuyển Thủ" Foreground="{StaticResource TextLight}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Sẽ phát triển trong giai đoạn sau (Phase 3)." Foreground="{StaticResource TextMuted}" FontSize="14" Margin="0,10,0,0" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- ============================================== -->
-                        <!-- 2.3 TOURNAMENTS SECTION VIEW (Placeholder)     -->
-                        <!-- ============================================== -->
-                        <Grid x:Name="TournamentsSection" Visibility="Collapsed">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="🏆 Section Quản Lý Giải Đấu &amp; Nhánh Đấu" Foreground="{StaticResource TextLight}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Sẽ phát triển trong giai đoạn sau (Phase 4)." Foreground="{StaticResource TextMuted}" FontSize="14" Margin="0,10,0,0" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-
+                        <localviews:DashboardView x:Name="DashboardSection" Visibility="Visible"/>
+                        <localviews:TeamsView x:Name="TeamsSection" Visibility="Collapsed"/>
+                        <localviews:TournamentsView x:Name="TournamentsSection" Visibility="Collapsed"/>
                     </Grid>
                 </Grid>
             </Grid>

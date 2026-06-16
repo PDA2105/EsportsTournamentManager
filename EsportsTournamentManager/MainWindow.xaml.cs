@@ -113,6 +113,7 @@ namespace EsportsTournamentManager
                     case "Teams":
                         SwitchSectionVisibility(TeamsSection);
                         TxtHeaderTitle.Text = "Đội tuyển & Tuyển thủ";
+                        TeamsSection.LoadTeams();
                         break;
                     case "Tournaments":
                         SwitchSectionVisibility(TournamentsSection);
@@ -134,7 +135,7 @@ namespace EsportsTournamentManager
             activeButton.Style = activeStyle;
         }
 
-        private void SwitchSectionVisibility(Grid activeSection)
+        private void SwitchSectionVisibility(UserControl activeSection)
         {
             DashboardSection.Visibility = Visibility.Collapsed;
             TeamsSection.Visibility = Visibility.Collapsed;
@@ -145,25 +146,7 @@ namespace EsportsTournamentManager
 
         private void LoadDashboardStatistics()
         {
-            try
-            {
-                using (var db = new AppDbContext())
-                {
-                    int teamsCount = db.Teams.Count();
-                    int playersCount = db.Players.Count();
-                    int tournamentsCount = db.Tournaments.Count();
-
-                    TxtStatsTeams.Text = teamsCount.ToString();
-                    TxtStatsPlayers.Text = playersCount.ToString();
-                    TxtStatsTournaments.Text = tournamentsCount.ToString();
-                }
-            }
-            catch
-            {
-                TxtStatsTeams.Text = "N/A";
-                TxtStatsPlayers.Text = "N/A";
-                TxtStatsTournaments.Text = "N/A";
-            }
+            DashboardSection.LoadStatistics();
         }
     }
 }
