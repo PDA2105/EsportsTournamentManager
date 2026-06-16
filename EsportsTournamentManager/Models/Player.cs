@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EsportsTournamentManager.Models
 {
@@ -10,12 +7,19 @@ namespace EsportsTournamentManager.Models
     {
         public int PlayerId { get; set; }
 
-        public string Nickname { get; set; }
-
-        public string FullName { get; set; }
-
         public int TeamId { get; set; }
 
+        public string RealName { get; set; }
+
+        public string InGameName { get; set; }
+
+        public string Position { get; set; }
+
+        public string AvatarPath { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
         public virtual Team Team { get; set; }
+        public virtual ICollection<PlayerStat> PlayerStats { get; set; } = new List<PlayerStat>();
     }
 }
