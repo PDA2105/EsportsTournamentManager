@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EsportsTournamentManager.Models
 {
@@ -10,10 +7,17 @@ namespace EsportsTournamentManager.Models
     {
         public int TeamId { get; set; }
 
-        public string Name { get; set; }
+        public string TeamName { get; set; }
 
-        public string Country { get; set; }
+        public string Acronym { get; set; }
+
+        public string LogoPath { get; set; }
 
         public string Coach { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public virtual ICollection<Player> Players { get; set; } = new List<Player>();
+        public virtual ICollection<TournamentTeam> TournamentTeams { get; set; } = new List<TournamentTeam>();
     }
 }

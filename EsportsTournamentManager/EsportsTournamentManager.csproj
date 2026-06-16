@@ -67,8 +67,32 @@
     </ApplicationDefinition>
     <None Include="Docs\ai_agent_instructions.md" />
     <Compile Include="Repositories\TeamRepository.cs" />
+    <Compile Include="Repositories\PlayerRepository.cs" />
     <Compile Include="Services\TeamService.cs" />
+    <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="Services\PasswordHasher.cs" />
+    <Compile Include="Services\AuthService.cs" />
     <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DashboardView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TeamsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TournamentsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TeamDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PlayerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -77,9 +101,25 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\AppDbContext.cs" />
+    <Compile Include="Converters\StatusConverters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\DashboardView.xaml.cs">
+      <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TeamsView.xaml.cs">
+      <DependentUpon>TeamsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TournamentsView.xaml.cs">
+      <DependentUpon>TournamentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TeamDialog.xaml.cs">
+      <DependentUpon>TeamDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlayerDialog.xaml.cs">
+      <DependentUpon>PlayerDialog.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -87,9 +127,22 @@
     <Compile Include="Migrations\202606080344549_InitialCreate.Designer.cs">
       <DependentUpon>202606080344549_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606161310168_AddFullSchema.cs" />
+    <Compile Include="Migrations\202606161310168_AddFullSchema.Designer.cs">
+      <DependentUpon>202606161310168_AddFullSchema.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Team.cs" />
+    <Compile Include="Models\AuditLog.cs" />
+    <Compile Include="Models\MapPool.cs" />
+    <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\MatchMap.cs" />
+    <Compile Include="Models\PlayerStat.cs" />
+    <Compile Include="Models\PrizePool.cs" />
+    <Compile Include="Models\Tournament.cs" />
+    <Compile Include="Models\TournamentTeam.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -105,6 +158,9 @@
     </Compile>
     <EmbeddedResource Include="Migrations\202606080344549_InitialCreate.resx">
       <DependentUpon>202606080344549_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606161310168_AddFullSchema.resx">
+      <DependentUpon>202606161310168_AddFullSchema.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -127,5 +127,6 @@ coverage/**
 
 # MonoDevelop
 *.userprefs
+nuget.exe
 
 # End of file

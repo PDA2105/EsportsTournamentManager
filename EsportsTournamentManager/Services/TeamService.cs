@@ -1,17 +1,41 @@
-﻿using EsportsTournamentManager.Models;
 using System.Collections.Generic;
+using EsportsTournamentManager.Models;
+using EsportsTournamentManager.Repositories;
 
-public class TeamService
+namespace EsportsTournamentManager.Services
 {
-    private readonly TeamRepository _repo;
-
-    public TeamService()
+    public class TeamService
     {
-        _repo = new TeamRepository();
-    }
+        private readonly TeamRepository _repo;
 
-    public List<Team> GetAllTeams()
-    {
-        return _repo.GetAll();
+        public TeamService()
+        {
+            _repo = new TeamRepository();
+        }
+
+        public List<Team> GetAllTeams()
+        {
+            return _repo.GetAll();
+        }
+
+        public Team GetTeamById(int teamId)
+        {
+            return _repo.GetById(teamId);
+        }
+
+        public void AddTeam(Team team)
+        {
+            _repo.Add(team);
+        }
+
+        public void UpdateTeam(Team team)
+        {
+            _repo.Update(team);
+        }
+
+        public void DeleteTeam(int teamId)
+        {
+            _repo.Delete(teamId);
+        }
     }
 }
