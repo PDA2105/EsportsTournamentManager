@@ -33,28 +33,7 @@ namespace EsportsTournamentManager.Services
             {
                 using (var db = new AppDbContext())
                 {
-                    if (!db.Users.Any())
-                    {
-                        var admin = new User
-                        {
-                            Username = "admin",
-                            PasswordHash = PasswordHasher.HashPassword("admin123"),
-                            FullName = "System Administrator",
-                            Role = "Admin"
-                        };
-
-                        var referee = new User
-                        {
-                            Username = "referee",
-                            PasswordHash = PasswordHasher.HashPassword("referee123"),
-                            FullName = "Default Referee",
-                            Role = "Referee"
-                        };
-
-                        db.Users.Add(admin);
-                        db.Users.Add(referee);
-                        db.SaveChanges();
-                    }
+                    DatabaseSeeder.Seed(db);
                 }
             }
             catch

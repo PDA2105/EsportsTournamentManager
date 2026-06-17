@@ -13,10 +13,10 @@ Hệ thống được cấu trúc thành 5 phân hệ (Module) lớn để đả
 
 ### Phân hệ 1: Hệ thống & Bảo mật (System & Security)
 * **Đăng nhập / Đăng ký (Authentication):** Xác thực người dùng, mã hóa mật khẩu bằng thuật toán băm (Hashing) trước khi lưu DB.
-* **Phân quyền tài khoản (Authorization):** Phân chia 3 vai trò rõ rệt:
+* **Phân quyền tài khoản (Authorization):** Phân chia 2 vai trò đăng nhập chính:
     * *Admin/Ban tổ chức (Organizer):* Toàn quyền quản trị hệ thống, tạo giải, cấu hình tham số.
-    * *Trọng tài (Referee):* Chỉ có quyền truy cập các trận đấu được phân công để ghi biên bản và cập nhật tỷ số.
-    * *Khán giả (Viewer/Guest):* Chỉ xem dữ liệu (Sơ đồ nhánh, bảng xếp hạng, MVP) mà không cần đăng nhập.
+    * *Người dùng (User):* Có quyền truy cập hệ thống để xem và thực hiện các tác vụ được phân quyền.
+    * *Khán giả (Viewer/Guest):* Xem dữ liệu công khai (Sơ đồ nhánh, bảng xếp hạng, MVP) không cần tài khoản.
 
 ### Phân hệ 2: Quản lý Danh mục (Master Data Management)
 * **Quản lý Đội tuyển (Team Management):** CRUD thông tin đội tuyển, logo, ngày thành lập, câu lạc bộ chủ quản.
@@ -28,7 +28,7 @@ Hệ thống được cấu trúc thành 5 phân hệ (Module) lớn để đả
 * **Thuật toán Sinh nhánh đấu (Smart Bracket Generator):**
     * Tự động sinh lịch thi đấu theo các thể thức: Loại trực tiếp (Single Elimination), Nhánh thắng nhánh thua (Double Elimination), Vòng tròn tính điểm (Round Robin).
     * Tích hợp cơ chế xếp hạt giống (Smart Seeding) để né các đội mạnh gặp nhau sớm và tính năng hạn chế trùng lặp câu lạc bộ ở vòng đầu (Anti-Clash).
-* **Module Trọng tài (Referee Execution Tool):** Giao diện cập nhật tỉ số theo từng Map (Ví dụ: BO3), ghi nhận chỉ số MVP trận đấu hoặc xử phạt vi phạm (Thẻ cảnh cáo, xử thua). Tính năng **Rollback** (Hủy kết quả sai để nhập lại) giúp đảm bảo tính nhất quán dữ liệu mà không làm hỏng cấu trúc nhánh đấu.
+* **Module Cập nhật Kết quả (Result Execution Tool):** Giao diện cập nhật tỉ số theo từng Map (Ví dụ: BO3), ghi nhận chỉ số MVP trận đấu hoặc xử phạt vi phạm (Thẻ cảnh cáo, xử thua). Tính năng **Rollback** (Hủy kết quả sai để nhập lại) giúp đảm bảo tính nhất quán dữ liệu mà không làm hỏng cấu trúc nhánh đấu.
 
 ### Phân hệ 4: Báo cáo & Thống kê (Analytics & Leaderboard)
 * **Bảng xếp hạng động (Live Leaderboard):** Tự động tính toán điểm số, hiệu số map thắng/thua, chỉ số phụ để cập nhật bảng xếp hạng theo thời gian thực (real-time).
@@ -67,7 +67,7 @@ Hệ thống được cấu trúc thành 5 phân hệ (Module) lớn để đả
 * **Chi tiết từng ngày:**
     * **Day 15-16 (Thuật toán):** Hiện thực hóa class `BracketGenerator`. Viết thuật toán bắt cặp ngẫu nhiên hoặc xếp hạt giống (Smart Seeding) cho thể thức Loại trực tiếp (Single Elimination) và Vòng tròn (Round Robin). Tự động tạo danh sách các `Match` và lưu vào DB.
     * **Day 17-19 (Giao diện sơ đồ):** Sử dụng các control nâng cao của WPF (`ItemsControl` kết hợp đồ họa `Canvas` hoặc cấu trúc hình cây `Grid`) để tự động vẽ sơ đồ nhánh đấu (Bracket Tree) dựa trên dữ liệu trận đấu thu được từ DB.
-    * **Day 20-21 (Cập nhật kết quả):** Thiết kế giao diện `MatchDetailWindow.xaml` dành cho trọng tài cập nhật tỉ số theo từng map đấu, chọn MVP trận. Xử lý logic tự động đẩy đội thắng lên vòng tiếp theo trong DB và phát tín hiệu (`Messenger` của MVVM) để làm mới (Refresh) giao diện sơ đồ nhánh đấu ngay lập tức.
+    * **Day 20-21 (Cập nhật kết quả):** Thiết kế giao diện `MatchDetailWindow.xaml` dành cho Admin/User cập nhật tỉ số theo từng map đấu, chọn MVP trận. Xử lý logic tự động đẩy đội thắng lên vòng tiếp theo trong DB và phát tín hiệu (`Messenger` của MVVM) để làm mới (Refresh) giao diện sơ đồ nhánh đấu ngay lập tức.
 
 ### TUẦN 4: DASHBOARD, LIVESTREAM VIEW, XUẤT BÁO CÁO & ĐÓNG GÓI
 * **Mục tiêu:** Hoàn thiện trải nghiệm người dùng nâng cao, tối ưu hiệu năng UI và đóng gói bộ cài đặt ứng dụng.
@@ -84,8 +84,8 @@ Hệ thống được cấu trúc thành 5 phân hệ (Module) lớn để đả
 ## 4. QUẢN LÝ RỦI RO VÀ CHIẾN LƯỢC PHÒNG NGỪA (RISK MANAGEMENT)
 
 1. **Rủi ro quá tải tiến độ do ôm đồm nhiều phân hệ:** Việc cài đặt trọn vẹn cả 5 phân hệ lớn trong vòng 4 tuần là thách thức cực kỳ lớn đối với lập trình viên solo hoặc nhóm nhỏ.
-   * *Chiến lược phòng ngừa:* Thiết kế Database đầy đủ tất cả bảng dữ liệu ngay từ tuần 1 để hệ thống không bị lỗi logic (Kín kẽ khi giảng viên kiểm tra DB). Tuy nhiên, về mặt code chức năng, ưu tiên hoàn thiện 100% luồng chạy chính (CRUD Đội -> Sinh nhánh Loại trực tiếp -> Trọng tài chấm điểm -> Vẽ sơ đồ). Các tính năng như phân quyền nâng cao, map pool hay quản lý thiết bị có thể làm ở mức cơ bản hoặc giả lập dữ liệu (Mock Data).
+   * *Chiến lược phòng ngừa:* Thiết kế Database đầy đủ tất cả bảng dữ liệu ngay từ tuần 1 để hệ thống không bị lỗi logic (Kín kẽ khi giảng viên kiểm tra DB). Tuy nhiên, về mặt code chức năng, ưu tiên hoàn thiện 100% luồng chạy chính (CRUD Đội -> Sinh nhánh Loại trực tiếp -> Cập nhật tỉ số -> Vẽ sơ đồ). Các tính năng như phân quyền nâng cao, map pool hay quản lý thiết bị có thể làm ở mức cơ bản hoặc giả lập dữ liệu (Mock Data).
 2. **Rủi ro vỡ layout Canvas khi sơ đồ giải đấu quá lớn (Ví dụ: Giải 32 hoặc 64 đội):** Sơ đồ nhánh đấu sẽ vượt quá kích thước màn hình thông thường, gây tràn hoặc mất hiển thị.
    * *Chiến lược phòng ngừa:* Bao bọc toàn bộ khối Canvas sơ đồ nhánh đấu trong một thẻ `<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">` để người dùng có thể tự do cuộn chuột theo cả hai chiều ngang dọc, hoặc tích hợp ma trận biến đổi (`MatrixTransform`) để hỗ trợ thao tác kéo thả chuột và phóng to/thu nhỏ (Zoom in/out).
-3. **Mất đồng bộ trạng thái giữa các màn hình (State Management Fault):** Khi trọng tài bấm lưu tỷ số ở cửa sổ pop-up, màn hình sơ đồ nhánh đấu hoặc màn hình Livestream bên ngoài không tự động đổi dữ liệu trừ khi tắt đi bật lại.
+3. **Mất đồng bộ trạng thái giữa các màn hình (State Management Fault):** Khi Admin/User bấm lưu tỷ số ở cửa sổ pop-up, màn hình sơ đồ nhánh đấu hoặc màn hình Livestream bên ngoài không tự động đổi dữ liệu trừ khi tắt đi bật lại.
    * *Chiến lược phòng ngừa:* Tuyệt đối không dùng biến toàn cục (Static variable) hoặc gọi trực tiếp view này từ view kia. Sử dụng tính năng `StronglyDrivenMessenger` hoặc `WeakReferenceMessenger` có sẵn trong thư viện `CommunityToolkit.Mvvm` để gửi thông điệp dạng Publish-Subscribe (Pub/Sub). Khi cửa sổ chấm điểm lưu thành công, nó bắn một thông điệp `MatchUpdatedMessage`, màn hình sơ đồ nhận được sẽ tự động kích hoạt hàm nạp lại dữ liệu bất đồng bộ.

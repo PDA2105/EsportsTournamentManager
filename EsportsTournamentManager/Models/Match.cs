@@ -33,8 +33,6 @@ namespace EsportsTournamentManager.Models
 
         public string VenueSlot { get; set; }
 
-        public int? RefereeId { get; set; }
-
         public string Status { get; set; } = "Scheduled"; // "Scheduled", "Live", "Completed", "Cancelled"
 
         public virtual Tournament Tournament { get; set; }
@@ -46,8 +44,6 @@ namespace EsportsTournamentManager.Models
         public virtual Team WinnerTeam { get; set; }
 
         public virtual Match NextMatch { get; set; }
-
-        public virtual User Referee { get; set; }
 
         public virtual ICollection<MatchMap> MatchMaps { get; set; } = new List<MatchMap>();
         public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();

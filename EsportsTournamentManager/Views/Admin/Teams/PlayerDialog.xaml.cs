@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using EsportsTournamentManager.Models;
 
-namespace EsportsTournamentManager.Views
+namespace EsportsTournamentManager.Views.Admin.Teams
 {
     public partial class PlayerDialog : Window
     {

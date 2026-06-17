@@ -1,5 +1,5 @@
 ### Các mối quan hệ cốt lõi (Core Relationships):
-1. **Users - Tournaments/Matches:** Một `User` (Admin) tạo nhiều giải đấu; một `User` (Referee) được phân công bắt chính nhiều trận đấu (`Matches`).
+1. **Users - Tournaments:** Một `User` (Admin) tạo nhiều giải đấu.
 2. **Tournaments - Teams (M-N qua TournamentTeams):** Một giải đấu có nhiều đội tham gia, một đội có thể đăng ký đá nhiều giải khác nhau.
 3. **Tournaments - PrizePools / MapPools (1-N):** Một giải đấu cấu hình một danh mục giải thưởng cụ thể và một danh sách các bản đồ được phép cấm/chọn (Map Pool).
 4. **Teams - Players (1-N):** Một đội tuyển (`Team`) sở hữu nhiều tuyển thủ (`Player`), nhưng tại một thời điểm một tuyển thủ chỉ thuộc một đội duy nhất.
@@ -19,7 +19,7 @@
 | **Username** | VARCHAR(50) | Unique, Not Null | Tên đăng nhập (Dùng để kiểm tra trùng) |
 | **PasswordHash** | VARCHAR(256) | Not Null | Mật khẩu đã được băm (SHA256/BCrypt) |
 | **FullName** | NVARCHAR(100) | Not Null | Họ và tên hiển thị |
-| **Role** | VARCHAR(20) | Not Null | Vai trò: `Admin`, `Referee` |
+| **Role** | VARCHAR(20) | Not Null | Vai trò: `Admin`, `User` |
 | **CreatedAt** | DATETIME | Default CURRENT_TIMESTAMP | Thời gian tạo tài khoản |
 
 ### 2.2 Bảng `Teams` (Danh mục Đội tuyển)
@@ -111,7 +111,6 @@
 | **WinnerTeamId** | INTEGER | FK (Teams.Id), Nullable | ID của đội chiến thắng trận đấu tổng |
 | **ScheduledTime** | DATETIME | Not Null | Thời gian dự kiến lên sàn thi đấu |
 | **VenueSlot** | NVARCHAR(50) | Nullable | Phòng thi đấu / Máy thi đấu phân công (Ví dụ: Stage A) |
-| **RefereeId** | INTEGER | FK (Users.Id), Nullable | Trọng tài được phân công bắt chính trận đấu |
 | **Status** | VARCHAR(20) | Default 'Scheduled' | Trạng thái trận: `Scheduled`, `Live`, `Completed`, `Cancelled` |
 
 ### 2.9 Bảng `MatchMaps` (Chi tiết từng Ván đấu đơn lẻ)
@@ -144,7 +143,7 @@
 | **IsMvpOfMap** | BOOLEAN | Default 0 | Đạt danh hiệu MVP ván đấu hay không (1: Có, 0: Không) |
 
 ### 2.11 Bảng `AuditLogs` (Nhật ký Hệ thống & Tính năng Rollback)
-* **Mục đích:** Ghi lại toàn bộ hành vi thay đổi dữ liệu nhạy cảm (nhập điểm, sửa lịch) của Trọng tài/Admin để làm cơ sở cho việc kiểm toán giải đấu và thực hiện tính năng **Rollback kết quả**.
+* **Mục đích:** Ghi lại toàn bộ hành vi thay đổi dữ liệu nhạy cảm (nhập điểm, sửa lịch) của Admin/User để làm cơ sở cho việc kiểm toán giải đấu và thực hiện tính năng **Rollback kết quả**.
 
 | Tên trường | Kiểu dữ liệu | Ràng buộc | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -165,7 +164,7 @@
 
 1. **Unique Index trên `Users.Username` & `Teams.TeamName`:** Tránh việc tạo tài khoản trùng tên hoặc các đội tuyển trùng tên gây lỗi hiển thị.
 2. **Composite Index trên `Matches(TournamentId, RoundNumber, MatchOrder)`:** Tối ưu hóa tốc độ truy vấn sơ đồ nhánh đấu. Giao diện WPF Canvas sẽ quét bảng `Matches` liên tục dựa trên `TournamentId` để vẽ hình cây. Có Index này tốc độ render dữ liệu sẽ tăng gấp 10 lần.
-3. **Ràng buộc Chống Trùng Lịch Thi Đấu (Validation Logic mức Code):** Khi Trọng tài hoặc Admin đổi `ScheduledTime` và `VenueSlot` của một trận đấu, một hàm Service phải quét kiểm tra:
+3. **Ràng buộc Chống Trùng Lịch Thi Đấu (Validation Logic mức Code):** Khi Admin hoặc User đổi `ScheduledTime` và `VenueSlot` của một trận đấu, một hàm Service phải quét kiểm tra:
    ```sql
    SELECT COUNT(*) FROM Matches 
    WHERE VenueSlot = @NewSlot 

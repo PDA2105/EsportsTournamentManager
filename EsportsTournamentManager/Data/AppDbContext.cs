@@ -115,12 +115,6 @@ namespace EsportsTournamentManager.Data
                 .HasForeignKey(m => m.NextMatchId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Match>()
-                .HasOptional(m => m.Referee)
-                .WithMany(u => u.Matches)
-                .HasForeignKey(m => m.RefereeId)
-                .WillCascadeOnDelete(false);
-
             // Composite Index on Matches (TournamentId, RoundNumber, MatchOrder)
             modelBuilder.Entity<Match>()
                 .Property(m => m.TournamentId)

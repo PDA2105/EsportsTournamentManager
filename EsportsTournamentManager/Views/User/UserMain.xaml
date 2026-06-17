@@ -1,0 +1,144 @@
+<UserControl x:Class="EsportsTournamentManager.Views.User.UserMain"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="1100">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <!-- Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Workspace -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Sidebar for User -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBg}" CornerRadius="15,0,0,15" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <!-- Logo Area -->
+                    <RowDefinition Height="*"/>
+                    <!-- Navigation Menu -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Active User Profile & Logout -->
+                </Grid.RowDefinitions>
+
+                <!-- Header Branding -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                    <Border Width="36" Height="36" Background="{StaticResource AccentColor}" CornerRadius="10">
+                        <Path Fill="#FFFFFF" Data="M8,6 L28,6 L25,18 C22,25 14,25 11,18 Z" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" Margin="6"/>
+                    </Border>
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="ESPORTS" Foreground="{StaticResource TextLight}" FontSize="16" FontWeight="Black"/>
+                        <TextBlock Text="MEMBER" Foreground="{StaticResource TextMuted}" FontSize="10" FontWeight="Bold"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Navigation Sidebar Menu (Only home/dashboard is active for placeholder) -->
+                <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                    <Button Style="{StaticResource ActiveSidebarButton}" Margin="10,4,10,4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⌂" FontSize="18" Margin="0,0,10,0" FontWeight="Bold"/>
+                            <TextBlock Text="Không gian thành viên" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Footer Active User profile & Logout -->
+                <Border Grid.Row="2" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,1,0,0" Padding="20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock x:Name="TxtUserHeaderUserName" Text="User Name" Foreground="{StaticResource TextLight}" FontSize="14" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="TxtUserHeaderUserRole" Text="Người dùng" Foreground="{StaticResource TextMuted}" FontSize="12"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="1" Content="➔" Background="Transparent" BorderBrush="Transparent" Foreground="#EF4444" FontSize="18" FontWeight="Bold" Cursor="Hand" Click="LogoutButton_Click" ToolTip="Đăng xuất">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="Transparent">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#F87171"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Right Content Workspace for User -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <!-- Top Header -->
+                <RowDefinition Height="*"/>
+                <!-- Central Content Frame -->
+            </Grid.RowDefinitions>
+
+            <!-- Top Header Bar -->
+            <Border Grid.Row="0" Background="{StaticResource HeaderBg}" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="30,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Section Title -->
+                    <TextBlock Text="Trang thành viên" Foreground="{StaticResource TextLight}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+
+                    <!-- Close Window button -->
+                    <Button Grid.Column="1" Content="✕" Background="Transparent" BorderBrush="Transparent" Foreground="{StaticResource TextMuted}" FontSize="18" Cursor="Hand" Click="CloseButton_Click" VerticalAlignment="Center">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="#EF4444"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Central Workspace Placeholder -->
+            <Grid Grid.Row="1" Margin="30">
+                <Border Background="#1E293B" CornerRadius="16" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Padding="40" MaxWidth="600" MaxHeight="400" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Border Width="70" Height="70" CornerRadius="35" Background="#1E1B4B" BorderBrush="{StaticResource AccentColor}" BorderThickness="2" Margin="0,0,0,25" HorizontalAlignment="Center">
+                            <TextBlock Text="⚙" Foreground="{StaticResource AccentColor}" FontSize="36" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        </Border>
+                        <TextBlock Text="Không Gian Thành Viên" Foreground="{StaticResource TextLight}" FontSize="22" FontWeight="Bold" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Chào mừng bạn đến với hệ thống quản lý Esports. Chức năng dành cho Thành viên (User) hiện đang được phát triển trong các giai đoạn sau." Foreground="{StaticResource TextMuted}" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" LineHeight="22" Margin="0,0,0,20"/>
+                        <TextBlock Text="Vui lòng liên hệ với Quản trị viên để được cấp quyền quản lý giải đấu." Foreground="{StaticResource TextMuted}" FontSize="12" FontStyle="Italic" HorizontalAlignment="Center" Opacity="0.8"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

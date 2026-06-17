@@ -76,23 +76,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\DashboardView.xaml">
+    <Page Include="Views\Admin\AdminMain.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TeamsView.xaml">
+    <Page Include="Views\Auth\LoginView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TournamentsView.xaml">
+    <Page Include="Views\Admin\Dashboard\DashboardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TeamDialog.xaml">
+    <Page Include="Views\Admin\Teams\TeamsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PlayerDialog.xaml">
+    <Page Include="Views\Admin\Teams\TeamDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Admin\Teams\PlayerDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Admin\Tournaments\TournamentsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\User\UserMain.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -101,25 +113,36 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\AppDbContext.cs" />
+    <Compile Include="Data\DatabaseSeeder.cs" />
+    <Compile Include="Data\Seeders\UserSeeder.cs" />
     <Compile Include="Converters\StatusConverters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\DashboardView.xaml.cs">
+    <Compile Include="Views\Admin\AdminMain.xaml.cs">
+      <DependentUpon>AdminMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Auth\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\Dashboard\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TeamsView.xaml.cs">
+    <Compile Include="Views\Admin\Teams\TeamsView.xaml.cs">
       <DependentUpon>TeamsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TournamentsView.xaml.cs">
-      <DependentUpon>TournamentsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TeamDialog.xaml.cs">
+    <Compile Include="Views\Admin\Teams\TeamDialog.xaml.cs">
       <DependentUpon>TeamDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayerDialog.xaml.cs">
+    <Compile Include="Views\Admin\Teams\PlayerDialog.xaml.cs">
       <DependentUpon>PlayerDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\Tournaments\TournamentsView.xaml.cs">
+      <DependentUpon>TournamentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\UserMain.xaml.cs">
+      <DependentUpon>UserMain.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +153,10 @@
     <Compile Include="Migrations\202606161310168_AddFullSchema.cs" />
     <Compile Include="Migrations\202606161310168_AddFullSchema.Designer.cs">
       <DependentUpon>202606161310168_AddFullSchema.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606170117127_RemoveReferee.cs" />
+    <Compile Include="Migrations\202606170117127_RemoveReferee.Designer.cs">
+      <DependentUpon>202606170117127_RemoveReferee.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Player.cs" />
@@ -161,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606161310168_AddFullSchema.resx">
       <DependentUpon>202606161310168_AddFullSchema.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606170117127_RemoveReferee.resx">
+      <DependentUpon>202606170117127_RemoveReferee.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

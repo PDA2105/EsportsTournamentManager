@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace EsportsTournamentManager.Views
+namespace EsportsTournamentManager.Views.Admin.Tournaments
 {
     public partial class TournamentsView : UserControl
     {
