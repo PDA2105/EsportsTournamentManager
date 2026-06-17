@@ -11,6 +11,7 @@ namespace EsportsTournamentManager.Data
         {
             Seeders.UserSeeder.Seed(context);
             Seeders.TeamSeeder.Seed(context);
+            Seeders.TournamentSeeder.Seed(context);
         }
     }
 }

@@ -72,6 +72,7 @@
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="Services\PasswordHasher.cs" />
     <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\TournamentService.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -104,6 +105,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Admin\Tournaments\TournamentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Admin\Tournaments\MatchDetailDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\User\UserMain.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -116,6 +125,7 @@
     <Compile Include="Data\DatabaseSeeder.cs" />
     <Compile Include="Data\Seeders\UserSeeder.cs" />
     <Compile Include="Data\Seeders\TeamSeeder.cs" />
+    <Compile Include="Data\Seeders\TournamentSeeder.cs" />
     <Compile Include="Converters\StatusConverters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -141,6 +151,12 @@
     </Compile>
     <Compile Include="Views\Admin\Tournaments\TournamentsView.xaml.cs">
       <DependentUpon>TournamentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\Tournaments\TournamentDialog.xaml.cs">
+      <DependentUpon>TournamentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\Tournaments\MatchDetailDialog.xaml.cs">
+      <DependentUpon>MatchDetailDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\User\UserMain.xaml.cs">
       <DependentUpon>UserMain.xaml</DependentUpon>

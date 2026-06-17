@@ -75,6 +75,28 @@ namespace EsportsTournamentManager.Data.Seeders
                 context.Teams.Add(hle);
             }
 
+            // Seed Team 4
+            if (!context.Teams.Any(t => t.Acronym == "DK"))
+            {
+                var dk = new Team
+                {
+                    TeamName = "Dplus KIA",
+                    Acronym = "DK",
+                    Coach = "Lee 'Zefa' Jae-min",
+                    CreatedDate = DateTime.Now,
+                    Players = new List<Player>
+                    {
+                        new Player { InGameName = "ShowMaker", RealName = "Heo Su", Position = "Mid", IsActive = true },
+                        new Player { InGameName = "Kingen", RealName = "Hwang Seong-hoon", Position = "Top", IsActive = true },
+                        new Player { InGameName = "Lucid", RealName = "Choi Yong-hyeok", Position = "Jungle", IsActive = true },
+                        new Player { InGameName = "Aiming", RealName = "Kim Ha-ram", Position = "Bot (ADC)", IsActive = true },
+                        new Player { InGameName = "Moham", RealName = "Lee Jeong-hun", Position = "Support", IsActive = true },
+                        new Player { InGameName = "Kellin", RealName = "Kim Hyeong-gyu", Position = "Sub (Dự bị)", IsActive = false }
+                    }
+                };
+                context.Teams.Add(dk);
+            }
+
             context.SaveChanges();
         }
     }
