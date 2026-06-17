@@ -193,6 +193,23 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 TxtInfoStatus.Text = statusText;
                 TxtInfoStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(statusColor));
 
+                // Load Tournament MVP
+                double avgMvpScore;
+                var mvpPlayer = _tournamentService.GetTournamentMvp(_selectedTournament.TournamentId, out avgMvpScore);
+                if (mvpPlayer != null)
+                {
+                    TxtMvpName.Text = mvpPlayer.InGameName;
+                    TxtMvpTeam.Text = mvpPlayer.Team != null ? mvpPlayer.Team.TeamName : "Tự do";
+                    TxtMvpScore.Text = $"Điểm TB: {avgMvpScore:0.0}";
+                    PanelTournamentMvp.Visibility = Visibility.Visible;
+                    TxtMvpNotDecided.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    PanelTournamentMvp.Visibility = Visibility.Collapsed;
+                    TxtMvpNotDecided.Visibility = Visibility.Visible;
+                }
+
                 // 2. Transition panels
                 if (PanelTournamentOverview.Visibility != Visibility.Visible && PanelTournamentBracket.Visibility != Visibility.Visible)
                 {
@@ -327,6 +344,12 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 ScrollRoundRobin.Visibility = Visibility.Collapsed;
                 RenderSingleEliminationTree();
             }
+            else if (_selectedTournament.Format == "DoubleElimination")
+            {
+                CanvasBracket.Visibility = Visibility.Visible;
+                ScrollRoundRobin.Visibility = Visibility.Collapsed;
+                RenderDoubleEliminationTree();
+            }
             else
             {
                 CanvasBracket.Visibility = Visibility.Collapsed;
@@ -350,7 +373,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             var matches = _selectedTournament.Matches.ToList();
             if (matches.Count == 0) return;
 
-            int N = _selectedTournament.MaxTeams;
+            int N = _selectedTournament.TournamentTeams.Count;
             int numRounds = (int)Math.Log(N, 2);
 
             double colWidth = 260;
@@ -591,6 +614,210 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 }
                 PanelRoundRobin.Children.Add(matchesPanel);
             }
+        }
+
+        private void RenderDoubleEliminationTree()
+        {
+            CanvasBracket.Children.Clear();
+
+            var matches = _selectedTournament.Matches.ToList();
+            if (matches.Count == 0) return;
+
+            int maxTeams = _selectedTournament.TournamentTeams.Count;
+
+            if (maxTeams == 4)
+            {
+                CanvasBracket.Width = 780;
+                CanvasBracket.Height = 520;
+
+                // 1. Draw Column Headers
+                DrawHeader("NHÁNH THẮNG - VÒNG 1", 20, 20);
+                DrawHeader("CHUNG KẾT NHÁNH THẮNG", 280, 20);
+                DrawHeader("NHÁNH THUA - VÒNG 1", 20, 310);
+                DrawHeader("CHUNG KẾT NHÁNH THUA", 280, 310);
+                DrawHeader("CHUNG KẾT TỔNG", 540, 120);
+
+                // 2. Fetch matches
+                var w1 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 1 && m.MatchOrder == 1);
+                var w2 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 1 && m.MatchOrder == 2);
+                var w3 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 2 && m.MatchOrder == 1);
+
+                var l1 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 1 && m.MatchOrder == 1);
+                var l2 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 2 && m.MatchOrder == 1);
+
+                var gf = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 3 && m.MatchOrder == 1);
+
+                // Place cards
+                if (w1 != null) PlaceMatchCard(w1, 20, 60);
+                if (w2 != null) PlaceMatchCard(w2, 20, 180);
+                if (w3 != null) PlaceMatchCard(w3, 280, 120);
+                if (l1 != null) PlaceMatchCard(l1, 20, 360);
+                if (l2 != null) PlaceMatchCard(l2, 280, 360);
+                if (gf != null) PlaceMatchCard(gf, 540, 240);
+
+                // 3. Draw Connectors
+                // W1 & W2 to W3
+                DrawLine(210, 102, 250, 102, w1?.Status == "Completed");
+                DrawLine(210, 222, 250, 222, w2?.Status == "Completed");
+                DrawLine(250, 102, 250, 222, w1?.Status == "Completed" || w2?.Status == "Completed");
+                DrawLine(250, 162, 280, 162, w1?.Status == "Completed" || w2?.Status == "Completed");
+
+                // L1 to L2
+                DrawLine(210, 402, 280, 402, l1?.Status == "Completed");
+
+                // W3 to GF
+                DrawLine(470, 162, 510, 162, w3?.Status == "Completed");
+                DrawLine(510, 162, 510, 282, w3?.Status == "Completed");
+
+                // L2 to GF
+                DrawLine(470, 402, 510, 402, l2?.Status == "Completed");
+                DrawLine(510, 402, 510, 282, l2?.Status == "Completed");
+
+                // Connector into GF card (drawn if either W3 or L2 is completed)
+                DrawLine(510, 282, 540, 282, w3?.Status == "Completed" || l2?.Status == "Completed");
+            }
+            else if (maxTeams == 8)
+            {
+                CanvasBracket.Width = 1300;
+                CanvasBracket.Height = 820;
+
+                // 1. Draw Column Headers
+                DrawHeader("NHÁNH THẮNG - VÒNG 1", 20, 20);
+                DrawHeader("NHÁNH THẮNG - BÁN KẾT", 280, 20);
+                DrawHeader("CHUNG KẾT NHÁNH THẮNG", 540, 20);
+                DrawHeader("NHÁNH THUA - VÒNG 1", 20, 450);
+                DrawHeader("NHÁNH THUA - VÒNG 2", 280, 450);
+                DrawHeader("NHÁNH THUA - BÁN KẾT", 540, 450);
+                DrawHeader("CHUNG KẾT NHÁNH THUA", 800, 450);
+                DrawHeader("CHUNG KẾT TỔNG", 1060, 220);
+
+                // 2. Fetch matches
+                var w1 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 1 && m.MatchOrder == 1);
+                var w2 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 1 && m.MatchOrder == 2);
+                var w3 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 1 && m.MatchOrder == 3);
+                var w4 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 1 && m.MatchOrder == 4);
+
+                var w5 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 2 && m.MatchOrder == 1);
+                var w6 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 2 && m.MatchOrder == 2);
+
+                var w7 = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 3 && m.MatchOrder == 1);
+
+                var l1 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 1 && m.MatchOrder == 1);
+                var l2 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 1 && m.MatchOrder == 2);
+
+                var l3 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 2 && m.MatchOrder == 1);
+                var l4 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 2 && m.MatchOrder == 2);
+
+                var l5 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 3 && m.MatchOrder == 1);
+                var l6 = matches.FirstOrDefault(m => m.BracketBranch == "Loser" && m.RoundNumber == 4 && m.MatchOrder == 1);
+
+                var gf = matches.FirstOrDefault(m => m.BracketBranch == "Winner" && m.RoundNumber == 4 && m.MatchOrder == 1);
+
+                // Place cards
+                if (w1 != null) PlaceMatchCard(w1, 20, 60);
+                if (w2 != null) PlaceMatchCard(w2, 20, 160);
+                if (w3 != null) PlaceMatchCard(w3, 20, 260);
+                if (w4 != null) PlaceMatchCard(w4, 20, 360);
+
+                if (w5 != null) PlaceMatchCard(w5, 280, 110);
+                if (w6 != null) PlaceMatchCard(w6, 280, 310);
+
+                if (w7 != null) PlaceMatchCard(w7, 540, 210);
+
+                if (l1 != null) PlaceMatchCard(l1, 20, 500);
+                if (l2 != null) PlaceMatchCard(l2, 20, 620);
+
+                if (l3 != null) PlaceMatchCard(l3, 280, 500);
+                if (l4 != null) PlaceMatchCard(l4, 280, 620);
+
+                if (l5 != null) PlaceMatchCard(l5, 540, 560);
+                if (l6 != null) PlaceMatchCard(l6, 800, 560);
+
+                if (gf != null) PlaceMatchCard(gf, 1060, 385);
+
+                // 3. Draw Connectors (Winner Branch)
+                // W1 & W2 to W5
+                DrawLine(210, 102, 250, 102, w1?.Status == "Completed");
+                DrawLine(210, 202, 250, 202, w2?.Status == "Completed");
+                DrawLine(250, 102, 250, 202, w1?.Status == "Completed" || w2?.Status == "Completed");
+                DrawLine(250, 152, 280, 152, w1?.Status == "Completed" || w2?.Status == "Completed");
+
+                // W3 & W4 to W6
+                DrawLine(210, 302, 250, 302, w3?.Status == "Completed");
+                DrawLine(210, 402, 250, 402, w4?.Status == "Completed");
+                DrawLine(250, 302, 250, 402, w3?.Status == "Completed" || w4?.Status == "Completed");
+                DrawLine(250, 352, 280, 352, w3?.Status == "Completed" || w4?.Status == "Completed");
+
+                // W5 & W6 to W7
+                DrawLine(470, 152, 510, 152, w5?.Status == "Completed");
+                DrawLine(470, 352, 510, 352, w6?.Status == "Completed");
+                DrawLine(510, 152, 510, 352, w5?.Status == "Completed" || w6?.Status == "Completed");
+                DrawLine(510, 252, 540, 252, w5?.Status == "Completed" || w6?.Status == "Completed");
+
+                // Connectors (Loser Branch)
+                // L1 to L3, L2 to L4
+                DrawLine(210, 542, 280, 542, l1?.Status == "Completed");
+                DrawLine(210, 662, 280, 662, l2?.Status == "Completed");
+
+                // L3 & L4 to L5
+                DrawLine(470, 542, 510, 542, l3?.Status == "Completed");
+                DrawLine(470, 662, 510, 662, l4?.Status == "Completed");
+                DrawLine(510, 542, 510, 662, l3?.Status == "Completed" || l4?.Status == "Completed");
+                DrawLine(510, 602, 540, 602, l3?.Status == "Completed" || l4?.Status == "Completed");
+
+                // L5 to L6
+                DrawLine(730, 602, 800, 602, l5?.Status == "Completed");
+
+                // W7 to GF
+                DrawLine(730, 252, 1020, 252, w7?.Status == "Completed");
+                DrawLine(1020, 252, 1020, 427, w7?.Status == "Completed");
+
+                // L6 to GF
+                DrawLine(990, 602, 1020, 602, l6?.Status == "Completed");
+                DrawLine(1020, 602, 1020, 427, l6?.Status == "Completed");
+
+                // Connector into GF card (drawn if either W7 or L6 is completed)
+                DrawLine(1020, 427, 1060, 427, w7?.Status == "Completed" || l6?.Status == "Completed");
+            }
+        }
+
+        private void DrawHeader(string text, double x, double y)
+        {
+            var headerText = new TextBlock
+            {
+                Text = text,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")),
+                FontSize = 11,
+                FontWeight = FontWeights.Bold,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 190,
+                TextAlignment = TextAlignment.Center
+            };
+            Canvas.SetLeft(headerText, x);
+            Canvas.SetTop(headerText, y);
+            CanvasBracket.Children.Add(headerText);
+        }
+
+        private void PlaceMatchCard(Match match, double x, double y)
+        {
+            var card = CreateMatchCard(match);
+            Canvas.SetLeft(card, x);
+            Canvas.SetTop(card, y);
+            CanvasBracket.Children.Add(card);
+        }
+
+        private void DrawLine(double x1, double y1, double x2, double y2, bool active)
+        {
+            var line = new Line
+            {
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2,
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(active ? "#6366F1" : "#334155")),
+                StrokeThickness = active ? 2 : 1.5
+            };
+            CanvasBracket.Children.Add(line);
         }
 
         private void OpenMatchDetailDialog(int matchId)
