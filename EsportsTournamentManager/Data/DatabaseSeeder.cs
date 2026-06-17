@@ -10,6 +10,7 @@ namespace EsportsTournamentManager.Data
         public static void Seed(AppDbContext context)
         {
             Seeders.UserSeeder.Seed(context);
+            Seeders.TeamSeeder.Seed(context);
         }
     }
 }
