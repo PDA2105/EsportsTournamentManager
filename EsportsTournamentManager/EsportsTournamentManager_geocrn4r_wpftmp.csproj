@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -38,33 +38,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.5.2\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.5.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <None Include="Docs\ai_agent_instructions.md" />
     <Compile Include="Repositories\TeamRepository.cs" />
     <Compile Include="Repositories\PlayerRepository.cs" />
@@ -72,51 +47,6 @@
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="Services\PasswordHasher.cs" />
     <Compile Include="Services\AuthService.cs" />
-    <Compile Include="Services\TournamentService.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\AdminMain.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Auth\LoginView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Dashboard\DashboardView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Teams\TeamsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Teams\TeamDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Teams\PlayerDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Tournaments\TournamentsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Tournaments\TournamentDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Admin\Tournaments\MatchDetailDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\User\UserMain.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -125,7 +55,6 @@
     <Compile Include="Data\DatabaseSeeder.cs" />
     <Compile Include="Data\Seeders\UserSeeder.cs" />
     <Compile Include="Data\Seeders\TeamSeeder.cs" />
-    <Compile Include="Data\Seeders\TournamentSeeder.cs" />
     <Compile Include="Converters\StatusConverters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -151,12 +80,6 @@
     </Compile>
     <Compile Include="Views\Admin\Tournaments\TournamentsView.xaml.cs">
       <DependentUpon>TournamentsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Admin\Tournaments\TournamentDialog.xaml.cs">
-      <DependentUpon>TournamentDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Admin\Tournaments\MatchDetailDialog.xaml.cs">
-      <DependentUpon>MatchDetailDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\User\UserMain.xaml.cs">
       <DependentUpon>UserMain.xaml</DependentUpon>
@@ -242,4 +165,36 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.2\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.2\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.5.2\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.2\build\EntityFramework.targets')" />
+  <ItemGroup>
+    <ReferencePath Include="E:\EsportsTournamentManager\packages\EntityFramework.6.5.2\lib\net45\EntityFramework.dll" />
+    <ReferencePath Include="E:\EsportsTournamentManager\packages\EntityFramework.6.5.2\lib\net45\EntityFramework.SqlServer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.DataAnnotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\MainWindow.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Admin\AdminMain.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Auth\LoginView.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Admin\Dashboard\DashboardView.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Admin\Teams\TeamsView.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Admin\Teams\TeamDialog.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Admin\Teams\PlayerDialog.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\Admin\Tournaments\TournamentsView.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\Views\User\UserMain.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\App.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\EsportsTournamentManager_Content.g.cs" />
+    <Compile Include="E:\EsportsTournamentManager\EsportsTournamentManager\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
 </Project>

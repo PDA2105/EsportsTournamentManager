@@ -1,0 +1,159 @@
+<Window x:Class="EsportsTournamentManager.Views.Admin.Tournaments.MatchDetailDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EsportsTournamentManager.Views.Admin.Tournaments"
+        mc:Ignorable="d"
+        Title="Cập Nhật Kết Quả Trận Đấu" Height="450" Width="500"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <!-- Custom Input Box Style -->
+        <Style x:Key="DialogTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F9FAFB"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#6366F1"/>
+                                <Setter TargetName="border" Property="Background" Value="#0F172A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="12" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1">
+        <Grid Margin="25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Header -->
+                <RowDefinition Height="Auto"/> <!-- Versus Scoreboard -->
+                <RowDefinition Height="*"/>    <!-- Additional Fields -->
+                <RowDefinition Height="Auto"/> <!-- Action Buttons -->
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Text="CẬP NHẬT TRẬN ĐẤU" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+            <!-- Versus Scoreboard -->
+            <Border Grid.Row="1" Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>    <!-- Team 1 -->
+                        <ColumnDefinition Width="Auto"/> <!-- VS -->
+                        <ColumnDefinition Width="*"/>    <!-- Team 2 -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Team 1 Panel -->
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                        <Ellipse Width="36" Height="36" Fill="#6366F1" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtTeam1Name" Text="Team 1" Foreground="#F9FAFB" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" MaxWidth="160" TextTrimming="CharacterEllipsis"/>
+                        <TextBox x:Name="TxtTeam1Score" Style="{StaticResource DialogTextBox}" Text="0" Margin="0,12,0,0"/>
+                    </StackPanel>
+
+                    <!-- VS Panel -->
+                    <TextBlock Grid.Column="1" Text="VS" Foreground="#9CA3AF" FontSize="20" FontWeight="Black" VerticalAlignment="Center" Margin="25,0"/>
+
+                    <!-- Team 2 Panel -->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                        <Ellipse Width="36" Height="36" Fill="#EF4444" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="TxtTeam2Name" Text="Team 2" Foreground="#F9FAFB" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" MaxWidth="160" TextTrimming="CharacterEllipsis"/>
+                        <TextBox x:Name="TxtTeam2Score" Style="{StaticResource DialogTextBox}" Text="0" Margin="0,12,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Additional Fields -->
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Trạng Thái Trận Đấu" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,6"/>
+                <ComboBox x:Name="CboStatus" Style="{StaticResource PremiumComboBox}" Height="36" FontSize="13" Margin="0,0,0,15" SelectionChanged="CboStatus_SelectionChanged">
+                    <ComboBoxItem Content="Scheduled"/>
+                    <ComboBoxItem Content="Live"/>
+                    <ComboBoxItem Content="Completed"/>
+                </ComboBox>
+
+                <TextBlock Text="Tuyển Thủ Xuất Sắc Nhất (MVP)" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,6"/>
+                <ComboBox x:Name="CboMvp" Style="{StaticResource PremiumComboBox}" Height="36" FontSize="13" Margin="0,0,0,10"/>
+            </StackPanel>
+
+            <!-- Action Buttons -->
+            <Grid Grid.Row="3" Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/> <!-- Rollback -->
+                    <ColumnDefinition Width="*"/>    <!-- Spacer -->
+                    <ColumnDefinition Width="Auto"/> <!-- Cancel / Save -->
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="BtnRollback" Grid.Column="0" Content="Hủy Kết Quả (Rollback)" Style="{StaticResource ActionButton}" Background="#B91C1C" Foreground="#FFFFFF" Click="BtnRollback_Click" Padding="15,0" Height="35" FontWeight="Bold" Visibility="Collapsed"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="Hủy" Width="70" Height="35" Background="Transparent" Foreground="#9CA3AF" BorderBrush="#334155" Cursor="Hand" Click="CancelButton_Click" Margin="0,0,10,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#1E293B"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="Lưu" Width="70" Height="35" Background="#6366F1" Foreground="#FFFFFF" BorderBrush="Transparent" Cursor="Hand" Click="SaveButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#4F46E5"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

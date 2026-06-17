@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Controls;
 using EsportsTournamentManager.Data;
 
-namespace EsportsTournamentManager.Views
+namespace EsportsTournamentManager.Views.Admin.Dashboard
 {
     public partial class DashboardView : UserControl
     {
