@@ -24,6 +24,22 @@ namespace EsportsTournamentManager.Views.User
             Application.Current.Shutdown();
         }
 
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var window = Window.GetWindow(this);
+            if (window != null)
+            {
+                if (window.WindowState == WindowState.Maximized)
+                {
+                    window.WindowState = WindowState.Normal;
+                }
+                else
+                {
+                    window.WindowState = WindowState.Maximized;
+                }
+            }
+        }
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             LogoutRequested?.Invoke(this, EventArgs.Empty);

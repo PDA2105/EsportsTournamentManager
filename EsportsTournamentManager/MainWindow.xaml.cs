@@ -38,6 +38,7 @@ namespace EsportsTournamentManager
                     UserMainSection.SetUser(user.FullName);
                     UserMainSection.Visibility = Visibility.Visible;
                 }
+                this.WindowState = WindowState.Maximized;
             }
         }
 
@@ -57,11 +58,12 @@ namespace EsportsTournamentManager
             AdminMainSection.Visibility = Visibility.Collapsed;
             UserMainSection.Visibility = Visibility.Collapsed;
             LoginSection.Visibility = Visibility.Visible;
+            this.WindowState = WindowState.Normal;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && this.WindowState == WindowState.Normal)
             {
                 this.DragMove();
             }

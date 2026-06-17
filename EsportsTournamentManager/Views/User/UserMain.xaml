@@ -104,25 +104,48 @@
                     <!-- Section Title -->
                     <TextBlock Text="Trang thành viên" Foreground="{StaticResource TextLight}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
 
-                    <!-- Close Window button -->
-                    <Button Grid.Column="1" Content="✕" Background="Transparent" BorderBrush="Transparent" Foreground="{StaticResource TextMuted}" FontSize="18" Cursor="Hand" Click="CloseButton_Click" VerticalAlignment="Center">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Foreground" Value="#EF4444"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    <!-- Window Controls -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Maximize Window button -->
+                        <Button Content="🗖" Background="Transparent" BorderBrush="Transparent" Foreground="{StaticResource TextMuted}" FontSize="15" Cursor="Hand" Click="MaximizeButton_Click" Margin="0,0,15,0">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#6366F1"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Close Window button -->
+                        <Button Content="✕" Background="Transparent" BorderBrush="Transparent" Foreground="{StaticResource TextMuted}" FontSize="18" Cursor="Hand" Click="CloseButton_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#EF4444"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Border>
 
