@@ -117,7 +117,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -151,7 +151,7 @@
 
                         <TextBox x:Name="TxtSearchTeam" Grid.Column="0" Style="{StaticResource SearchTextBox}" Tag="Tìm kiếm đội tuyển..." TextChanged="TxtSearchTeam_TextChanged" VerticalAlignment="Center"/>
                         
-                        <Button Grid.Column="2" Content="+ Thêm Đội Tuyển" Style="{StaticResource ActionButton}" Background="#6366F1" Foreground="#FFFFFF" Click="BtnAddTeam_Click" Padding="20,0" Height="34" FontWeight="SemiBold"/>
+                        <Button Grid.Column="2" Content="+ Thêm Đội Tuyển" Style="{StaticResource ActionButton}" Background="#6366F1" Foreground="#FFFFFF" Click="BtnAddTeam_Click" Padding="10" Height="34" FontWeight="SemiBold"/>
                     </Grid>
 
                     <!-- Teams DataGrid -->
@@ -286,7 +286,7 @@
                         <TextBlock Grid.Column="0" Text="Đội tuyển đang xem:" Foreground="#9CA3AF" FontSize="13" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <ComboBox x:Name="ComboTeamsFilter" Grid.Column="1" Style="{StaticResource PremiumComboBox}" DisplayMemberPath="TeamName" SelectedValuePath="TeamId" SelectionChanged="ComboTeamsFilter_SelectionChanged" VerticalAlignment="Center"/>
 
-                        <Button Grid.Column="3" Content="+ Thêm Tuyển Thủ" Style="{StaticResource ActionButton}" Background="#06B6D4" Foreground="#FFFFFF" Click="BtnAddPlayer_Click" Padding="20,0" Height="34" FontWeight="SemiBold"/>
+                        <Button Grid.Column="3" Content="+ Thêm Tuyển Thủ" Style="{StaticResource ActionButton}" Background="#06B6D4" Foreground="#FFFFFF" Click="BtnAddPlayer_Click" Padding="10" Height="34" FontWeight="SemiBold"/>
                     </Grid>
 
                     <!-- Players DataGrid -->
