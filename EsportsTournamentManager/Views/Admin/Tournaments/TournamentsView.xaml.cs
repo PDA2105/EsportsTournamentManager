@@ -145,9 +145,22 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
 
         private void BtnBackToTournaments_Click(object sender, RoutedEventArgs e)
         {
-            PanelTournamentDetail.Visibility = Visibility.Collapsed;
+            PanelTournamentOverview.Visibility = Visibility.Collapsed;
+            PanelTournamentBracket.Visibility = Visibility.Collapsed;
             PanelTournaments.Visibility = Visibility.Visible;
             LoadTournaments();
+        }
+
+        private void BtnViewBracket_Click(object sender, RoutedEventArgs e)
+        {
+            PanelTournamentOverview.Visibility = Visibility.Collapsed;
+            PanelTournamentBracket.Visibility = Visibility.Visible;
+        }
+
+        private void BtnBackToOverview_Click(object sender, RoutedEventArgs e)
+        {
+            PanelTournamentBracket.Visibility = Visibility.Collapsed;
+            PanelTournamentOverview.Visibility = Visibility.Visible;
         }
 
         private void ShowTournamentDetails(int tournamentId)
@@ -158,7 +171,8 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 if (_selectedTournament == null) return;
 
                 // 1. Populate UI properties
-                TxtTournamentDetailHeader.Text = $"CHI TIẾT GIẢI ĐẤU - {_selectedTournament.Name.ToUpper()}";
+                TxtTournamentDetailHeader.Text = $"TỔNG QUAN GIẢI ĐẤU - {_selectedTournament.Name.ToUpper()}";
+                TxtTournamentBracketHeader.Text = $"NHÁNH ĐẤU & KẾT QUẢ - {_selectedTournament.Name.ToUpper()}";
                 TxtInfoGameType.Text = _selectedTournament.GameType;
                 TxtInfoFormat.Text = _selectedTournament.Format == "SingleElimination" ? "Loại trực tiếp" : "Vòng tròn tính điểm";
                 TxtInfoMaxTeams.Text = $"{_selectedTournament.MaxTeams} Đội tối đa";
@@ -180,8 +194,12 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 TxtInfoStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(statusColor));
 
                 // 2. Transition panels
-                PanelTournaments.Visibility = Visibility.Collapsed;
-                PanelTournamentDetail.Visibility = Visibility.Visible;
+                if (PanelTournamentOverview.Visibility != Visibility.Visible && PanelTournamentBracket.Visibility != Visibility.Visible)
+                {
+                    PanelTournaments.Visibility = Visibility.Collapsed;
+                    PanelTournamentBracket.Visibility = Visibility.Collapsed;
+                    PanelTournamentOverview.Visibility = Visibility.Visible;
+                }
 
                 // 3. Render left list (Checkbox selection for Pending, simple list for Active/Completed)
                 if (_selectedTournament.Status == "Pending")

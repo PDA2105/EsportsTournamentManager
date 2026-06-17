@@ -254,14 +254,14 @@
         </Grid>
 
         <!-- ============================================== -->
-        <!-- PANEL B: TOURNAMENT DETAIL & BRACKET VIEW      -->
+        <!-- PANEL B: TOURNAMENT OVERVIEW                   -->
         <!-- ============================================== -->
-        <Grid x:Name="PanelTournamentDetail" Visibility="Collapsed">
+        <Grid x:Name="PanelTournamentOverview" Visibility="Collapsed">
             <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header (Back + Title) -->
-                        <RowDefinition Height="*"/>    <!-- Content Area (Split Left Info & Right Visual) -->
+                        <RowDefinition Height="*"/>    <!-- Content Area (Split Left Info & Right Teams List) -->
                     </Grid.RowDefinitions>
 
                     <!-- Header Title and Back Button -->
@@ -290,98 +290,148 @@
                             </Button.Style>
                         </Button>
 
-                        <TextBlock x:Name="TxtTournamentDetailHeader" Grid.Column="1" Text="CHI TIẾT GIẢI ĐẤU - [TÊN]" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtTournamentDetailHeader" Grid.Column="1" Text="TỔNG QUAN GIẢI ĐẤU - [TÊN]" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
                     </Grid>
 
                     <!-- Split Detail Grid -->
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="280"/>
+                            <ColumnDefinition Width="320"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- Left Info and Config Sidebar -->
-                        <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,20,0">
+                        <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,20,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/> <!-- Properties list -->
-                                    <RowDefinition Height="*"/>    <!-- Dynamic List: Checkbox Teams / Team Members -->
-                                    <RowDefinition Height="Auto"/> <!-- Start Action Button -->
+                                    <RowDefinition Height="*"/>    <!-- Actions area -->
                                 </Grid.RowDefinitions>
 
                                 <!-- Properties List -->
-                                <StackPanel Grid.Row="0" Margin="0,0,0,15">
-                                    <TextBlock Text="THÔNG TIN CHI TIẾT" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <StackPanel Grid.Row="0">
+                                    <TextBlock Text="THÔNG TIN CHI TIẾT" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
                                     
                                     <TextBlock Text="Bộ môn:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoGameType" Text="LoL" Foreground="#F9FAFB" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                    <TextBlock x:Name="TxtInfoGameType" Text="LoL" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                                     <TextBlock Text="Thể thức:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoFormat" Text="Single Elimination" Foreground="#F9FAFB" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                    <TextBlock x:Name="TxtInfoFormat" Text="Single Elimination" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                                     <TextBlock Text="Số đội tuyển:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoMaxTeams" Text="8 Đội tối đa" Foreground="#F9FAFB" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                    <TextBlock x:Name="TxtInfoMaxTeams" Text="8 Đội tối đa" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                                     <TextBlock Text="Trạng thái:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoStatus" Text="Chờ bắt đầu" Foreground="#38BDF8" FontSize="14" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <TextBlock x:Name="TxtInfoStatus" Text="Chờ bắt đầu" Foreground="#38BDF8" FontSize="15" FontWeight="Bold" Margin="0,0,0,15"/>
 
-                                    <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,0,0,10"/>
+                                    <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,0,0,15"/>
                                 </StackPanel>
 
-                                <!-- Dynamic Area -->
-                                <Grid Grid.Row="1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock x:Name="TxtDynamicListHeader" Grid.Row="0" Text="ĐỘI TUYỂN THAM GIA" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <!-- Actions Area -->
+                                <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                                    <!-- Start Button (Only for Pending) -->
+                                    <Button x:Name="BtnStartTournament" Content="Bắt đầu Giải đấu" Style="{StaticResource ActionButton}" Background="#10B981" Foreground="#FFFFFF" Click="BtnStartTournament_Click" Height="40" FontSize="13" FontWeight="Bold" Margin="0,0,0,10"/>
                                     
-                                    <!-- Pending: Checked list of all Teams -->
-                                    <ListView x:Name="ListSelectTeams" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="#F9FAFB" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <CheckBox Content="{Binding TeamName}" Tag="{Binding TeamId}" IsChecked="{Binding IsAssigned}" Foreground="#F9FAFB" Margin="0,4" Checked="TeamCheckBox_Changed" Unchecked="TeamCheckBox_Changed" VerticalContentAlignment="Center"/>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-
-                                    <!-- Active/Completed: Simple List of assigned Teams -->
-                                    <ListView x:Name="ListShowTeams" Grid.Row="1" Visibility="Collapsed" Background="Transparent" BorderThickness="0" Foreground="#F9FAFB" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" Margin="0,6">
-                                                    <Ellipse Width="8" Height="8" Fill="#6366F1" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="{Binding TeamName}" Foreground="#F9FAFB" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </Grid>
-
-                                <!-- Start Button (Only for Pending) -->
-                                <Button x:Name="BtnStartTournament" Grid.Row="2" Content="Bắt đầu Giải đấu" Style="{StaticResource ActionButton}" Background="#10B981" Foreground="#FFFFFF" Click="BtnStartTournament_Click" Height="36" FontWeight="Bold" Margin="0,15,0,0"/>
+                                    <!-- View Bracket & Results Button -->
+                                    <Button x:Name="BtnViewBracket" Content="Xem Nhánh &amp; Kết Quả" Style="{StaticResource ActionButton}" Background="#6366F1" Foreground="#FFFFFF" Click="BtnViewBracket_Click" Height="40" FontSize="13" FontWeight="Bold"/>
+                                </StackPanel>
                             </Grid>
                         </Border>
 
-                        <!-- Right Bracket View Area -->
-                        <Border Grid.Column="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="10">
+                        <!-- Right Teams List / Selection -->
+                        <Border Grid.Column="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="20">
                             <Grid>
-                                <!-- Bracket Container -->
-                                <ScrollViewer x:Name="ScrollBracket" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                    <Grid>
-                                        <!-- Single Elimination: Dynamic Canvas -->
-                                        <Canvas x:Name="CanvasBracket" Width="1200" Height="600" Background="Transparent" Visibility="Visible"/>
-                                        
-                                        <!-- Round Robin: List of matches grouped by rounds -->
-                                        <ScrollViewer x:Name="ScrollRoundRobin" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
-                                            <StackPanel x:Name="PanelRoundRobin" Margin="10"/>
-                                        </ScrollViewer>
-                                    </Grid>
-                                </ScrollViewer>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="TxtDynamicListHeader" Grid.Row="0" Text="ĐỘI TUYỂN THAM GIA" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
+                                
+                                <!-- Pending: Checked list of all Teams -->
+                                <ListView x:Name="ListSelectTeams" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="#F9FAFB" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding TeamName}" Tag="{Binding TeamId}" IsChecked="{Binding IsAssigned}" Foreground="#F9FAFB" Margin="0,5" Checked="TeamCheckBox_Changed" Unchecked="TeamCheckBox_Changed" VerticalContentAlignment="Center" FontSize="13"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+
+                                <!-- Active/Completed: Simple List of assigned Teams -->
+                                <ListView x:Name="ListShowTeams" Grid.Row="1" Visibility="Collapsed" Background="Transparent" BorderThickness="0" Foreground="#F9FAFB" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,8">
+                                                <Ellipse Width="8" Height="8" Fill="#6366F1" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding TeamName}" Foreground="#F9FAFB" FontSize="13.5" FontWeight="Medium" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </Grid>
                         </Border>
                     </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ============================================== -->
+        <!-- PANEL C: TOURNAMENT BRACKET & MATCHES          -->
+        <!-- ============================================== -->
+        <Grid x:Name="PanelTournamentBracket" Visibility="Collapsed">
+            <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header (Back + Title) -->
+                        <RowDefinition Height="*"/>    <!-- Content Area (Full Bracket Visual) -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header Title and Back Button -->
+                    <Grid Grid.Row="0" Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="← Quay lại Tổng quan" Background="Transparent" Foreground="#9CA3AF" Cursor="Hand" Click="BtnBackToOverview_Click" Margin="0,0,20,0" VerticalAlignment="Center">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" FontSize="14" FontWeight="SemiBold"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#F9FAFB"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <TextBlock x:Name="TxtTournamentBracketHeader" Grid.Column="1" Text="NHÁNH ĐẤU &amp; KẾT QUẢ - [TÊN]" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Bracket View Area -->
+                    <Border Grid.Row="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="15">
+                        <Grid>
+                            <!-- Bracket Container -->
+                            <ScrollViewer x:Name="ScrollBracket" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <Grid>
+                                    <!-- Single Elimination: Dynamic Canvas -->
+                                    <Canvas x:Name="CanvasBracket" Width="1200" Height="600" Background="Transparent" Visibility="Visible"/>
+                                    
+                                    <!-- Round Robin: List of matches grouped by rounds -->
+                                    <ScrollViewer x:Name="ScrollRoundRobin" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                                        <StackPanel x:Name="PanelRoundRobin" Margin="10"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
                 </Grid>
             </Border>
         </Grid>
