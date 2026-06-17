@@ -23,9 +23,9 @@ namespace EsportsTournamentManager.Data.Seeders
                         new Player { InGameName = "Faker", RealName = "Lee Sang-hyeok", Position = "Mid", IsActive = true },
                         new Player { InGameName = "Zeus", RealName = "Choi Woo-je", Position = "Top", IsActive = true },
                         new Player { InGameName = "Oner", RealName = "Mun Hyeon-jun", Position = "Jungle", IsActive = true },
-                        new Player { InGameName = "Gumayusi", RealName = "Lee Min-hyeong", Position = "ADC", IsActive = true },
+                        new Player { InGameName = "Gumayusi", RealName = "Lee Min-hyeong", Position = "Bot (ADC)", IsActive = true },
                         new Player { InGameName = "Keria", RealName = "Ryu Min-seok", Position = "Support", IsActive = true },
-                        new Player { InGameName = "Rekkles", RealName = "Carl Martin Erik Larsson", Position = "Sub Support", IsActive = true }
+                        new Player { InGameName = "Rekkles", RealName = "Carl Martin Erik Larsson", Position = "Sub (Dự bị)", IsActive = true }
                     }
                 };
                 context.Teams.Add(t1);
@@ -45,9 +45,9 @@ namespace EsportsTournamentManager.Data.Seeders
                         new Player { InGameName = "Chovy", RealName = "Jeong Ji-hoon", Position = "Mid", IsActive = true },
                         new Player { InGameName = "Kiin", RealName = "Kim Gi-in", Position = "Top", IsActive = true },
                         new Player { InGameName = "Canyon", RealName = "Kim Geon-bu", Position = "Jungle", IsActive = true },
-                        new Player { InGameName = "Peyz", RealName = "Kim Su-hwan", Position = "ADC", IsActive = true },
+                        new Player { InGameName = "Peyz", RealName = "Kim Su-hwan", Position = "Bot (ADC)", IsActive = true },
                         new Player { InGameName = "Lehends", RealName = "Son Si-woo", Position = "Support", IsActive = true },
-                        new Player { InGameName = "Slayer", RealName = "Kim Jin-young", Position = "Sub ADC", IsActive = false }
+                        new Player { InGameName = "Slayer", RealName = "Kim Jin-young", Position = "Sub (Dự bị)", IsActive = false }
                     }
                 };
                 context.Teams.Add(gen);
@@ -67,9 +67,9 @@ namespace EsportsTournamentManager.Data.Seeders
                         new Player { InGameName = "Zeka", RealName = "Kim Geon-woo", Position = "Mid", IsActive = true },
                         new Player { InGameName = "Doran", RealName = "Choi Hyeon-joon", Position = "Top", IsActive = true },
                         new Player { InGameName = "Peanut", RealName = "Han Wang-ho", Position = "Jungle", IsActive = true },
-                        new Player { InGameName = "Viper", RealName = "Park Do-hyeon", Position = "ADC", IsActive = true },
+                        new Player { InGameName = "Viper", RealName = "Park Do-hyeon", Position = "Bot (ADC)", IsActive = true },
                         new Player { InGameName = "Delight", RealName = "Yoo Hwan-joong", Position = "Support", IsActive = true },
-                        new Player { InGameName = "Grizzly", RealName = "Cho Seung-hoon", Position = "Sub Jungle", IsActive = false }
+                        new Player { InGameName = "Grizzly", RealName = "Cho Seung-hoon", Position = "Sub (Dự bị)", IsActive = false }
                     }
                 };
                 context.Teams.Add(hle);

@@ -62,13 +62,7 @@
                 <TextBox x:Name="TxtRealName" Style="{StaticResource DialogTextBox}" Margin="0,0,0,15"/>
 
                 <TextBlock Text="Vị Trí Thi Đấu" Foreground="#F9FAFB" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-                <ComboBox x:Name="CboPosition" Height="38" Background="#1E293B" Foreground="#F9FAFB" BorderBrush="#334155" FontSize="14" Margin="0,0,0,15">
-                    <ComboBox.Resources>
-                        <Style TargetType="ComboBoxItem">
-                            <Setter Property="Background" Value="#1E293B"/>
-                            <Setter Property="Foreground" Value="#F9FAFB"/>
-                        </Style>
-                    </ComboBox.Resources>
+                 <ComboBox x:Name="CboPosition" Style="{StaticResource PremiumComboBox}" Height="38" FontSize="14" Margin="0,0,0,15">
                     <ComboBoxItem Content="Top"/>
                     <ComboBoxItem Content="Jungle"/>
                     <ComboBoxItem Content="Mid"/>
