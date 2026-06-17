@@ -743,7 +743,35 @@ namespace EsportsTournamentManager.Services
                 if (tournament == null)
                     return null;
 
-                int maxPossibleMatches = GetMaxPossibleMatches(tournament);
+                // Load all matches for this tournament
+                var tournamentMatches = db.Matches
+                    .Where(m => m.TournamentId == tournamentId)
+                    .ToList();
+
+                // Load all team IDs
+                var teamIds = db.TournamentTeams
+                    .Where(tt => tt.TournamentId == tournamentId)
+                    .Select(tt => tt.TeamId)
+                    .ToList();
+
+                // Count how many matches each team has actually played
+                var teamMatchesCount = teamIds.ToDictionary(tid => tid, tid => 0);
+                foreach (var match in tournamentMatches)
+                {
+                    if (match.Team1Id.HasValue && teamMatchesCount.ContainsKey(match.Team1Id.Value))
+                        teamMatchesCount[match.Team1Id.Value]++;
+                    if (match.Team2Id.HasValue && teamMatchesCount.ContainsKey(match.Team2Id.Value))
+                        teamMatchesCount[match.Team2Id.Value]++;
+                }
+
+                // Determine the maximum matches played by any team in the tournament
+                int maxMatchesInTournament = teamMatchesCount.Values.Count > 0 ? teamMatchesCount.Values.Max() : 1;
+                if (maxMatchesInTournament < 1) maxMatchesInTournament = 1;
+
+                // Find the Grand Final match
+                var grandFinal = tournamentMatches.FirstOrDefault(m => 
+                    !m.NextMatchId.HasValue && 
+                    (tournament.Format == "SingleElimination" || tournament.Format == "DoubleElimination"));
 
                 var stats = db.PlayerStats
                     .Include(ps => ps.Player.Team)
@@ -761,7 +789,24 @@ namespace EsportsTournamentManager.Services
                                              .ToList();
 
                         double totalMatchPoints = matchAverages.Sum();
-                        double score = totalMatchPoints / maxPossibleMatches;
+                        
+                        // Determine divisor for this player's team
+                        int divisor = maxMatchesInTournament;
+                        int playerTeamId = player.TeamId;
+
+                        if (tournament.Format == "SingleElimination" || tournament.Format == "DoubleElimination")
+                        {
+                            // If they reached the Grand Final, divide by their actual matches played
+                            bool isFinalist = grandFinal != null && (playerTeamId == grandFinal.Team1Id || playerTeamId == grandFinal.Team2Id);
+                            if (isFinalist && teamMatchesCount.TryGetValue(playerTeamId, out int actualMatches))
+                            {
+                                divisor = actualMatches;
+                            }
+                        }
+
+                        if (divisor < 1) divisor = 1;
+
+                        double score = totalMatchPoints / divisor;
 
                         return new {
                             Player = player,

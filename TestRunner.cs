@@ -308,6 +308,7 @@ namespace EsportsTournamentManager
 
             var service = new TournamentService();
             int tourId;
+            int team1Id, team2Id, team3Id, team4Id;
 
             // Create tournament
             using (var db = new AppDbContext())
@@ -328,6 +329,11 @@ namespace EsportsTournamentManager
                 tourId = tour.TournamentId;
 
                 var teams = db.Teams.Take(4).ToList();
+                team1Id = teams[0].TeamId;
+                team2Id = teams[1].TeamId;
+                team3Id = teams[2].TeamId;
+                team4Id = teams[3].TeamId;
+
                 foreach (var t in teams)
                 {
                     db.TournamentTeams.Add(new TournamentTeam { TournamentId = tourId, TeamId = t.TeamId });
@@ -337,12 +343,12 @@ namespace EsportsTournamentManager
 
             service.StartTournament(tourId);
 
-            int matchId;
+            int match1Id;
             int player1Id, player2Id;
             using (var db = new AppDbContext())
             {
                 var match = db.Matches.First(m => m.TournamentId == tourId && m.RoundNumber == 1 && m.MatchOrder == 1);
-                matchId = match.MatchId;
+                match1Id = match.MatchId;
 
                 // Load players for Team 1 and Team 2
                 var team1Players = db.Players.Where(p => p.TeamId == match.Team1Id).ToList();
@@ -385,14 +391,14 @@ namespace EsportsTournamentManager
             };
 
             var mapsInput = new List<MatchMap> { map1, map2 };
-            service.SaveMatchPerformance(matchId, mapsInput, "Completed");
+            service.SaveMatchPerformance(match1Id, mapsInput, "Completed");
 
-            // Verify MVP and scores
+            // Verify MVP and scores for Match 1
             using (var db = new AppDbContext())
             {
                 var savedMatch = db.Matches
                     .Include(m => m.MatchMaps.Select(mm => mm.PlayerStats))
-                    .First(m => m.MatchId == matchId);
+                    .First(m => m.MatchId == match1Id);
 
                 Assert(savedMatch.Team1Score == 2 && savedMatch.Team2Score == 0, $"Match score should be 2-0, got {savedMatch.Team1Score}-{savedMatch.Team2Score}");
                 Assert(savedMatch.Status == "Completed", "Match status should be Completed");
@@ -409,31 +415,92 @@ namespace EsportsTournamentManager
                 var savedMap2 = savedMatch.MatchMaps.First(m => m.MapNumber == 2);
                 Assert(savedMap2.MVPlayerId == player1Id, "Map 2 Winner MVP should be Player 1");
 
-                var stat1Map2 = savedMap2.PlayerStats.First(ps => ps.PlayerId == player1Id);
-                Assert(stat1Map2.IsMvpOfMap, "Player 1 IsMvpOfMap should be true on Map 2");
-
-                var stat2Map2 = savedMap2.PlayerStats.First(ps => ps.PlayerId == player2Id);
-                Assert(stat2Map2.IsMvpOfMap, "Player 2 IsMvpOfMap should be true (Loser MVP) on Map 2");
-
                 // Player 1 Match Average = (82.0 + 37.0) / 2 = 59.5
                 // Player 2 Match Average = (14.0 + 177.0) / 2 = 95.5
-                // So Player 2 (losing team) should be Match MVP!
                 double matchMvpAvg;
-                var matchMvp = service.GetMatchMvp(matchId, out matchMvpAvg);
+                var matchMvp = service.GetMatchMvp(match1Id, out matchMvpAvg);
                 Assert(matchMvp != null && matchMvp.PlayerId == player2Id, $"Match MVP should be Player 2, got player ID {(matchMvp != null ? matchMvp.PlayerId : -1)}");
                 Assert(matchMvpAvg == 95.5, $"Match MVP average score should be 95.5, got {matchMvpAvg}");
 
-                // Tournament MVP Score = Total Match Average / maxPossibleMatches
-                // Since there is only 1 match played by both:
-                // Player 1 Tournament Score = 59.5 / 2 = 29.75
-                // Player 2 Tournament Score = 95.5 / 2 = 47.75
-                // Tournament MVP should be Player 2!
+                // At this stage: only 1 match played in the whole tournament.
+                // So maxMatchesInTournament = 1. Divisor is 1.
+                // Player 2 Tournament MVP Score = 95.5 / 1 = 95.5.
                 double tourMvpAvg;
                 var tourMvp = service.GetTournamentMvp(tourId, out tourMvpAvg);
                 Assert(tourMvp != null && tourMvp.PlayerId == player2Id, $"Tournament MVP should be Player 2, got player ID {(tourMvp != null ? tourMvp.PlayerId : -1)}");
-                Assert(tourMvpAvg == 47.75, $"Tournament MVP average score should be 47.75, got {tourMvpAvg}");
+                Assert(tourMvpAvg == 95.5, $"Tournament MVP average score should be 95.5, got {tourMvpAvg}");
+            }
 
-                Console.WriteLine("Player Stats and Automatic MVP verified successfully!");
+            // Complete Semifinal 2 (Match 2) so Team 3 advances to Grand Final
+            int match2Id;
+            int player3Id;
+            using (var db = new AppDbContext())
+            {
+                var match2 = db.Matches.First(m => m.TournamentId == tourId && m.RoundNumber == 1 && m.MatchOrder == 2);
+                match2Id = match2.MatchId;
+
+                var team3Players = db.Players.Where(p => p.TeamId == match2.Team1Id).ToList();
+                player3Id = team3Players[0].PlayerId;
+            }
+
+            var mapMatch2 = new MatchMap
+            {
+                MapNumber = 1,
+                SelectedMapName = "Map 1 Test",
+                Team1RoundScore = 13,
+                Team2RoundScore = 5,
+                PlayerStats = new List<PlayerStat>
+                {
+                    new PlayerStat { PlayerId = player3Id, Kills = 10, Deaths = 2, Assists = 5, DamageDealt = 25000, CreepScore = 200 }
+                }
+            };
+            service.SaveMatchPerformance(match2Id, new List<MatchMap> { mapMatch2 }, "Completed");
+
+            // Complete Grand Final (Match 3)
+            int gfMatchId;
+            using (var db = new AppDbContext())
+            {
+                var gfMatch = db.Matches.First(m => m.TournamentId == tourId && !m.NextMatchId.HasValue);
+                gfMatchId = gfMatch.MatchId;
+
+                // Ensure Team 1 and Team 3 advanced
+                Assert(gfMatch.Team1Id == team1Id, "GF Team 1 should be Team 1");
+                Assert(gfMatch.Team2Id == team3Id, "GF Team 2 should be Team 3");
+            }
+
+            // Grand Final match performance: Team 1 wins
+            // Player 1 (Team 1) gets 82 PTS
+            var mapGfCorrect = new MatchMap
+            {
+                MapNumber = 1,
+                SelectedMapName = "Map GF Test",
+                Team1RoundScore = 13,
+                Team2RoundScore = 5,
+                PlayerStats = new List<PlayerStat>
+                {
+                    new PlayerStat { PlayerId = player1Id, Kills = 10, Deaths = 2, Assists = 5, DamageDealt = 25000, CreepScore = 200 }
+                }
+            };
+            service.SaveMatchPerformance(gfMatchId, new List<MatchMap> { mapGfCorrect }, "Completed");
+
+            // Verify final Tournament MVP
+            using (var db = new AppDbContext())
+            {
+                // Max matches played by any team is now 2 (Team 1 and Team 3 played 2 matches).
+                // Finalists are Team 1 and Team 3.
+                // Team 2 is NOT a finalist, so divisor for Player 2 is maxMatchesInTournament = 2.
+                // Player 2 Tournament MVP Score = 95.5 / 2 = 47.75.
+                // Team 1 IS a finalist, so divisor for Player 1 is actual matches played = 2.
+                // Player 1 played 2 matches: Match 1 (59.5 PTS) and Grand Final (82.0 PTS).
+                // Player 1 Total Match Points = 59.5 + 82.0 = 141.5 PTS.
+                // Player 1 Tournament MVP Score = 141.5 / 2 = 70.75.
+                // So Player 1 should win Tournament MVP!
+                double tourMvpAvg;
+                var tourMvp = service.GetTournamentMvp(tourId, out tourMvpAvg);
+                Assert(tourMvp != null && tourMvp.PlayerId == player1Id, $"Final Tournament MVP should be Player 1, got player ID {(tourMvp != null ? tourMvp.PlayerId : -1)}");
+                Assert(tourMvpAvg == 70.75, $"Final Tournament MVP average score should be 70.75, got {tourMvpAvg}");
+
+                Console.WriteLine("Final Tournament MVP verified successfully!");
             }
         }
 

@@ -213,15 +213,17 @@
                 </Grid>
             </Border>
 
-            <!-- Main Map Stats Panel -->
-            <TabControl x:Name="TabMaps" Grid.Row="2" Background="Transparent" BorderThickness="0" Margin="0,0,0,15">
+            <TabControl x:Name="TabMaps" Grid.Row="2" Background="Transparent" BorderThickness="0" Margin="0,0,0,15" SelectionChanged="TabMaps_SelectionChanged">
                 <!-- Custom Tab Header Styling -->
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
+                        <Setter Property="Foreground" Value="#9CA3AF"/>
                         <Setter Property="HeaderTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <ContentPresenter Content="{TemplateBinding Content}" Margin="12,6"/>
+                                    <TextBlock Text="{Binding}" 
+                                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Foreground}" 
+                                               Margin="12,6" FontSize="12" FontWeight="SemiBold"/>
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
@@ -233,10 +235,12 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Foreground" Value="#FFFFFF"/>
                                             <Setter TargetName="Border" Property="Background" Value="#1E293B"/>
                                             <Setter TargetName="Border" Property="BorderBrush" Value="#4F46E5"/>
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="False">
+                                            <Setter Property="Foreground" Value="#9CA3AF"/>
                                             <Setter TargetName="Border" Property="Opacity" Value="0.6"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>

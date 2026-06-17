@@ -526,5 +526,10 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 }
             }
         }
+
+        private void TabMaps_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
