@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EsportsTournamentManager.Views.Admin.Tournaments"
         mc:Ignorable="d"
-        Title="Cập Nhật Kết Quả Trận Đấu" Height="450" Width="500"
+        Title="Chi Tiết Trận Đấu &amp; Chỉ Số Tuyển Thủ" Height="680" Width="1050"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -20,19 +20,19 @@
             <Setter Property="BorderBrush" Value="#334155"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="5"/>
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Width" Value="50"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border x:Name="border" Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}" 
                                 BorderThickness="{TemplateBinding BorderThickness}" 
-                                CornerRadius="6">
+                                CornerRadius="4">
                             <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -45,73 +45,231 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Stats Grid Style -->
+        <Style x:Key="StatDataGrid" TargetType="DataGrid">
+            <Setter Property="Background" Value="#111827"/>
+            <Setter Property="RowBackground" Value="#111827"/>
+            <Setter Property="AlternatingRowBackground" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F9FAFB"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="RowHeight" Value="32"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#1E293B"/>
+                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="6,4"/>
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#334155"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="6,0"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter SnapsToDevicePixels="True"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Premium ComboBox Style -->
+        <Style x:Key="PremiumComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F9FAFB"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="30"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                                <Path Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#9CA3AF" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="10,3,30,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Name="DropDownBorder" Background="#0F172A" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Margin="0,4,0,4"/>
+                                    <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Border CornerRadius="12" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1">
-        <Grid Margin="25">
+        <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/> <!-- Header -->
-                <RowDefinition Height="Auto"/> <!-- Versus Scoreboard -->
-                <RowDefinition Height="*"/>    <!-- Additional Fields -->
+                <RowDefinition Height="Auto"/> <!-- Top Summary Panel (Scores & Status) -->
+                <RowDefinition Height="*"/>    <!-- Main Map Stats Panel -->
                 <RowDefinition Height="Auto"/> <!-- Action Buttons -->
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <TextBlock Grid.Row="0" Text="CẬP NHẬT TRẬN ĐẤU" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <Grid Grid.Row="0" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="THỐNG KÊ CHI TIẾT TRẬN ĐẤU" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="✕" Background="Transparent" Foreground="#9CA3AF" FontSize="18" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="CancelButton_Click"/>
+            </Grid>
 
-            <!-- Versus Scoreboard -->
-            <Border Grid.Row="1" Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+            <!-- Top Summary Panel (Scores & Status) -->
+            <Border Grid.Row="1" Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,15">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>    <!-- Team 1 -->
-                        <ColumnDefinition Width="Auto"/> <!-- VS -->
-                        <ColumnDefinition Width="*"/>    <!-- Team 2 -->
+                        <ColumnDefinition Width="2.5*"/> <!-- Team 1 -->
+                        <ColumnDefinition Width="1.5*"/> <!-- Scoreboard & Format -->
+                        <ColumnDefinition Width="2.5*"/> <!-- Team 2 -->
+                        <ColumnDefinition Width="2.5*"/> <!-- Status & Match MVP Info -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Team 1 Panel -->
-                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                        <Ellipse Width="36" Height="36" Fill="#6366F1" Margin="0,0,0,10" HorizontalAlignment="Center"/>
-                        <TextBlock x:Name="TxtTeam1Name" Text="Team 1" Foreground="#F9FAFB" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" MaxWidth="160" TextTrimming="CharacterEllipsis"/>
-                        <TextBox x:Name="TxtTeam1Score" Style="{StaticResource DialogTextBox}" Text="0" Margin="0,12,0,0"/>
+                    <!-- Team 1 -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Ellipse Width="24" Height="24" Fill="#6366F1" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="TxtTeam1Name" Text="Team 1" Foreground="#F9FAFB" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
 
-                    <!-- VS Panel -->
-                    <TextBlock Grid.Column="1" Text="VS" Foreground="#9CA3AF" FontSize="20" FontWeight="Black" VerticalAlignment="Center" Margin="25,0"/>
-
-                    <!-- Team 2 Panel -->
-                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                        <Ellipse Width="36" Height="36" Fill="#EF4444" Margin="0,0,0,10" HorizontalAlignment="Center"/>
-                        <TextBlock x:Name="TxtTeam2Name" Text="Team 2" Foreground="#F9FAFB" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" MaxWidth="160" TextTrimming="CharacterEllipsis"/>
-                        <TextBox x:Name="TxtTeam2Score" Style="{StaticResource DialogTextBox}" Text="0" Margin="0,12,0,0"/>
+                    <!-- Scoreboard & Format -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock x:Name="TxtTeam1Score" Text="0" Foreground="#F9FAFB" FontSize="24" FontWeight="Black"/>
+                            <TextBlock Text=" - " Foreground="#9CA3AF" FontSize="20" FontWeight="Black" Margin="5,0"/>
+                            <TextBlock x:Name="TxtTeam2Score" Text="0" Foreground="#F9FAFB" FontSize="24" FontWeight="Black"/>
+                        </StackPanel>
+                        <TextBlock x:Name="TxtMatchFormat" Text="BO3" Foreground="#6B7280" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                     </StackPanel>
+
+                    <!-- Team 2 -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtTeam2Name" Text="Team 2" Foreground="#F9FAFB" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <Ellipse Width="24" Height="24" Fill="#EF4444"/>
+                    </StackPanel>
+
+                    <!-- Status & Match MVP Info -->
+                    <Border Grid.Column="3" BorderBrush="#1E293B" BorderThickness="1,0,0,0" Padding="15,0,0,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <!-- Status -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Trạng thái: " Foreground="#9CA3AF" FontSize="11"/>
+                                <ComboBox x:Name="CboStatus" Style="{StaticResource PremiumComboBox}" Height="26" Width="100" FontSize="11" SelectionChanged="CboStatus_SelectionChanged">
+                                    <ComboBoxItem Content="Scheduled"/>
+                                    <ComboBoxItem Content="Live"/>
+                                    <ComboBoxItem Content="Completed"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <!-- Match MVP Badge -->
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="MVP Trận: " Foreground="#9CA3AF" FontSize="11" VerticalAlignment="Center"/>
+                                <Border Background="#1E1B4B" BorderBrush="#4F46E5" BorderThickness="1" CornerRadius="4" Padding="6,2" Margin="5,0,0,0">
+                                    <TextBlock x:Name="TxtMatchMvp" Text="Chưa xác định" Foreground="#818CF8" FontSize="11" FontWeight="Bold"/>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Border>
 
-            <!-- Additional Fields -->
-            <StackPanel Grid.Row="2">
-                <TextBlock Text="Trạng Thái Trận Đấu" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,6"/>
-                <ComboBox x:Name="CboStatus" Style="{StaticResource PremiumComboBox}" Height="36" FontSize="13" Margin="0,0,0,15" SelectionChanged="CboStatus_SelectionChanged">
-                    <ComboBoxItem Content="Scheduled"/>
-                    <ComboBoxItem Content="Live"/>
-                    <ComboBoxItem Content="Completed"/>
-                </ComboBox>
-
-                <TextBlock Text="Tuyển Thủ Xuất Sắc Nhất (MVP)" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,6"/>
-                <ComboBox x:Name="CboMvp" Style="{StaticResource PremiumComboBox}" Height="36" FontSize="13" Margin="0,0,0,10"/>
-            </StackPanel>
+            <!-- Main Map Stats Panel -->
+            <TabControl x:Name="TabMaps" Grid.Row="2" Background="Transparent" BorderThickness="0" Margin="0,0,0,15">
+                <!-- Custom Tab Header Styling -->
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{TemplateBinding Content}" Margin="12,6"/>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border x:Name="Border" BorderBrush="#1E293B" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0" Margin="0,0,4,0" Background="#111827">
+                                        <ContentPresenter x:Name="ContentSite" ContentSource="Header"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#1E293B"/>
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="#4F46E5"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter TargetName="Border" Property="Opacity" Value="0.6"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+                
+                <!-- Dynamic tabs will be added programmatically here. Example design of TabItem content: -->
+                <!-- 
+                <TabItem Header="Ván 1">
+                    <Grid Margin="0,10,0,0">
+                        ...
+                    </Grid>
+                </TabItem>
+                -->
+            </TabControl>
 
             <!-- Action Buttons -->
-            <Grid Grid.Row="3" Margin="0,15,0,0">
+            <Grid Grid.Row="3" Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/> <!-- Rollback -->
-                    <ColumnDefinition Width="*"/>    <!-- Spacer -->
+                    <ColumnDefinition Width="*"/>    <!-- Notification -->
                     <ColumnDefinition Width="Auto"/> <!-- Cancel / Save -->
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="BtnRollback" Grid.Column="0" Content="Hủy Kết Quả (Rollback)" Style="{StaticResource ActionButton}" Background="#B91C1C" Foreground="#FFFFFF" Click="BtnRollback_Click" Padding="15,0" Height="35" FontWeight="Bold" Visibility="Collapsed"/>
 
+                <TextBlock Grid.Column="1" Text="* Điểm hiệu năng (PTS) được tính toán tự động dựa trên K/D/A, sát thương gây ra và chỉ số lính." Foreground="#6B7280" FontSize="11" FontStyle="Italic" VerticalAlignment="Center" Margin="20,0"/>
+
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
-                    <Button Content="Hủy" Width="70" Height="35" Background="Transparent" Foreground="#9CA3AF" BorderBrush="#334155" Cursor="Hand" Click="CancelButton_Click" Margin="0,0,10,0">
+                    <Button Content="Hủy" Width="80" Height="35" Background="Transparent" Foreground="#9CA3AF" BorderBrush="#334155" Cursor="Hand" Click="CancelButton_Click" Margin="0,0,10,0">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -132,7 +290,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Content="Lưu" Width="70" Height="35" Background="#6366F1" Foreground="#FFFFFF" BorderBrush="Transparent" Cursor="Hand" Click="SaveButton_Click">
+                    <Button Content="Lưu Kết Quả" Width="110" Height="35" Background="#6366F1" Foreground="#FFFFFF" BorderBrush="Transparent" Cursor="Hand" Click="SaveButton_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
