@@ -72,7 +72,33 @@
                 </ComboBox>
 
                 <TextBlock Text="Đường Dẫn Ảnh Đại Diện (Avatar)" Foreground="#F9FAFB" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-                <TextBox x:Name="TxtAvatarPath" Style="{StaticResource DialogTextBox}" Margin="0,0,0,15"/>
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="TxtAvatarPath" Style="{StaticResource DialogTextBox}" Grid.Column="0" Margin="0,0,10,0"/>
+                    <Button Content="Chọn ảnh..." Grid.Column="1" Width="90" Height="38" Background="#1E293B" Foreground="#F9FAFB" BorderBrush="#334155" Cursor="Hand" Click="BrowseButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#334155"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
 
                 <CheckBox x:Name="ChkIsActive" Content="Tuyển thủ đang hoạt động" Foreground="#F9FAFB" FontSize="14" IsChecked="True" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
             </StackPanel>

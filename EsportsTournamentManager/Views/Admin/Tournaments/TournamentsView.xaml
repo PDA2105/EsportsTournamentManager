@@ -296,48 +296,75 @@
                     <!-- Split Detail Grid -->
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="320"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="3*"/>
                         </Grid.ColumnDefinitions>
-
+ 
                         <!-- Left Info and Config Sidebar -->
                         <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,20,0">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/> <!-- Properties list -->
-                                    <RowDefinition Height="*"/>    <!-- Actions area -->
+                                    <RowDefinition Height="*"/>    <!-- Scrollable content area -->
+                                    <RowDefinition Height="Auto"/> <!-- Sticky Actions area -->
                                 </Grid.RowDefinitions>
-
+ 
                                 <!-- Properties List -->
-                                <StackPanel Grid.Row="0">
-                                    <TextBlock Text="THÔNG TIN CHI TIẾT" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
-                                    
-                                    <TextBlock Text="Bộ môn:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoGameType" Text="LoL" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock Text="THÔNG TIN CHI TIẾT" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
+                                        
+                                        <UniformGrid Columns="2">
+                                            <!-- Row 1 -->
+                                            <StackPanel Margin="0,0,10,12">
+                                                <TextBlock Text="Bộ môn:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
+                                                <TextBlock x:Name="TxtInfoGameType" Text="LoL" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,0,12">
+                                                <TextBlock Text="Thể thức:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
+                                                <TextBlock x:Name="TxtInfoFormat" Text="Single Elimination" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <!-- Row 2 -->
+                                            <StackPanel Margin="0,0,10,12">
+                                                <TextBlock Text="Số đội tuyển:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
+                                                <TextBlock x:Name="TxtInfoMaxTeams" Text="8 Đội tối đa" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,0,12">
+                                                <TextBlock Text="Trạng thái:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
+                                                <TextBlock x:Name="TxtInfoStatus" Text="Chờ bắt đầu" Foreground="#38BDF8" FontSize="15" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </UniformGrid>
+ 
+                                        <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,5,0,15"/>
+ 
+                                        <!-- Champion Section -->
+                                        <TextBlock Text="ĐỘI VÔ ĐỊCH" Foreground="#9CA3AF" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
+                                        <Border x:Name="PanelTournamentChampion" Background="#1E1B4B" BorderBrush="#F59E0B" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,15" Visibility="Collapsed">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="🏆" FontSize="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock x:Name="TxtChampionName" Text="T1 Esports" Foreground="#F59E0B" FontSize="16" FontWeight="Black"/>
+                                                    <TextBlock Text="Quán quân giải đấu" Foreground="#9CA3AF" FontSize="11" FontWeight="Medium" Margin="0,2,0,0"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <TextBlock x:Name="TxtChampionNotDecided" Text="Chưa xác định" Foreground="#6B7280" FontSize="13" FontStyle="Italic" Margin="0,0,0,15"/>
 
-                                    <TextBlock Text="Thể thức:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoFormat" Text="Single Elimination" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
-
-                                    <TextBlock Text="Số đội tuyển:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoMaxTeams" Text="8 Đội tối đa" Foreground="#F9FAFB" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
-
-                                    <TextBlock Text="Trạng thái:" Foreground="#6B7280" FontSize="11" Margin="0,0,0,2"/>
-                                    <TextBlock x:Name="TxtInfoStatus" Text="Chờ bắt đầu" Foreground="#38BDF8" FontSize="15" FontWeight="Bold" Margin="0,0,0,15"/>
-
-                                    <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,0,0,15"/>
-
-                                    <!-- MVP Section -->
-                                    <TextBlock Text="MVP GIẢI ĐẤU" Foreground="#9CA3AF" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
-                                    <Border x:Name="PanelTournamentMvp" Background="#1E1B4B" BorderBrush="#4F46E5" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,15" Visibility="Collapsed">
-                                        <StackPanel>
-                                            <TextBlock x:Name="TxtMvpName" Text="Faker" Foreground="#F9FAFB" FontSize="15" FontWeight="Black"/>
-                                            <TextBlock x:Name="TxtMvpTeam" Text="T1 Esports" Foreground="#818CF8" FontSize="12" FontWeight="SemiBold" Margin="0,2,0,4"/>
-                                            <TextBlock x:Name="TxtMvpScore" Text="Điểm TB: 24.5" Foreground="#10B981" FontSize="12" FontWeight="Bold"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <TextBlock x:Name="TxtMvpNotDecided" Text="Chưa có thống kê" Foreground="#6B7280" FontSize="13" FontStyle="Italic" Margin="0,0,0,15"/>
-                                </StackPanel>
-
+                                        <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,5,0,15"/>
+ 
+                                        <!-- MVP Section -->
+                                        <TextBlock Text="MVP GIẢI ĐẤU" Foreground="#9CA3AF" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
+                                        <Border x:Name="PanelTournamentMvp" Background="#1E1B4B" BorderBrush="#4F46E5" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,15" Visibility="Collapsed">
+                                            <StackPanel>
+                                                <TextBlock x:Name="TxtMvpName" Text="Faker" Foreground="#F9FAFB" FontSize="15" FontWeight="Black"/>
+                                                <TextBlock x:Name="TxtMvpTeam" Text="T1 Esports" Foreground="#818CF8" FontSize="12" FontWeight="SemiBold" Margin="0,2,0,4"/>
+                                                <TextBlock x:Name="TxtMvpScore" Text="Điểm TB: 24.5" Foreground="#10B981" FontSize="12" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <TextBlock x:Name="TxtMvpNotDecided" Text="Chưa có thống kê" Foreground="#6B7280" FontSize="13" FontStyle="Italic" Margin="0,0,0,15"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+ 
                                 <!-- Actions Area -->
                                 <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
                                     <!-- Start Button (Only for Pending) -->

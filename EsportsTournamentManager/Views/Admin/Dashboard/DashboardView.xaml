@@ -19,7 +19,7 @@
             <!-- Card 1: Teams -->
             <Border Background="#1E293B" CornerRadius="12" Margin="0,0,15,0" Padding="20" Height="140">
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="👥 Đội tuyển" Foreground="#9CA3AF" FontSize="14" FontWeight="SemiBold"/>
+                    <TextBlock Text="Đội tuyển" Foreground="#9CA3AF" FontSize="14" FontWeight="SemiBold"/>
                     <TextBlock x:Name="TxtStatsTeams" Text="--" Foreground="#F9FAFB" FontSize="36" FontWeight="Black" Margin="0,10,0,0"/>
                     <TextBlock Text="đã đăng ký trong hệ thống" Foreground="#9CA3AF" FontSize="12" Margin="0,4,0,0"/>
                 </StackPanel>
@@ -28,7 +28,7 @@
             <!-- Card 2: Players -->
             <Border Background="#1E293B" CornerRadius="12" Margin="0,0,15,0" Padding="20" Height="140">
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="🎮 Tuyển thủ" Foreground="#9CA3AF" FontSize="14" FontWeight="SemiBold"/>
+                    <TextBlock Text="Tuyển thủ" Foreground="#9CA3AF" FontSize="14" FontWeight="SemiBold"/>
                     <TextBlock x:Name="TxtStatsPlayers" Text="--" Foreground="#F9FAFB" FontSize="36" FontWeight="Black" Margin="0,10,0,0"/>
                     <TextBlock Text="hồ sơ thi đấu chính thức" Foreground="#9CA3AF" FontSize="12" Margin="0,4,0,0"/>
                 </StackPanel>
@@ -37,7 +37,7 @@
             <!-- Card 3: Tournaments -->
             <Border Background="#1E293B" CornerRadius="12" Padding="20" Height="140">
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="🏆 Giải đấu" Foreground="#9CA3AF" FontSize="14" FontWeight="SemiBold"/>
+                    <TextBlock Text="Giải đấu" Foreground="#9CA3AF" FontSize="14" FontWeight="SemiBold"/>
                     <TextBlock x:Name="TxtStatsTournaments" Text="--" Foreground="#F9FAFB" FontSize="36" FontWeight="Black" Margin="0,10,0,0"/>
                     <TextBlock Text="đang diễn ra hoặc đã kết thúc" Foreground="#9CA3AF" FontSize="12" Margin="0,4,0,0"/>
                 </StackPanel>

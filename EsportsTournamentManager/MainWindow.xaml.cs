@@ -38,7 +38,6 @@ namespace EsportsTournamentManager
                     UserMainSection.SetUser(user.FullName);
                     UserMainSection.Visibility = Visibility.Visible;
                 }
-                this.WindowState = WindowState.Maximized;
             }
         }
 
