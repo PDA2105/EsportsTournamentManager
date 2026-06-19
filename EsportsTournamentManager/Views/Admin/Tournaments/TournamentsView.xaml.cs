@@ -174,7 +174,21 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 TxtTournamentDetailHeader.Text = $"TỔNG QUAN GIẢI ĐẤU - {_selectedTournament.Name.ToUpper()}";
                 TxtTournamentBracketHeader.Text = $"NHÁNH ĐẤU & KẾT QUẢ - {_selectedTournament.Name.ToUpper()}";
                 TxtInfoGameType.Text = _selectedTournament.GameType;
-                TxtInfoFormat.Text = _selectedTournament.Format == "SingleElimination" ? "Loại trực tiếp" : "Vòng tròn tính điểm";
+                switch (_selectedTournament.Format)
+                {
+                    case "SingleElimination":
+                        TxtInfoFormat.Text = "Loại trực tiếp";
+                        break;
+                    case "DoubleElimination":
+                        TxtInfoFormat.Text = "Nhánh thắng nhánh thua";
+                        break;
+                    case "RoundRobin":
+                        TxtInfoFormat.Text = "Vòng tròn tính điểm";
+                        break;
+                    default:
+                        TxtInfoFormat.Text = _selectedTournament.Format;
+                        break;
+                }
                 TxtInfoMaxTeams.Text = $"{_selectedTournament.MaxTeams} Đội tối đa";
 
                 // Format status string
@@ -193,6 +207,20 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 TxtInfoStatus.Text = statusText;
                 TxtInfoStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(statusColor));
 
+                // Load Tournament Champion
+                var championTeam = GetTournamentChampion(_selectedTournament);
+                if (championTeam != null)
+                {
+                    TxtChampionName.Text = championTeam.TeamName;
+                    PanelTournamentChampion.Visibility = Visibility.Visible;
+                    TxtChampionNotDecided.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    PanelTournamentChampion.Visibility = Visibility.Collapsed;
+                    TxtChampionNotDecided.Visibility = Visibility.Visible;
+                }
+ 
                 // Load Tournament MVP
                 double avgMvpScore;
                 var mvpPlayer = _tournamentService.GetTournamentMvp(_selectedTournament.TournamentId, out avgMvpScore);
@@ -261,8 +289,28 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
 
         private void TeamCheckBox_Changed(object sender, RoutedEventArgs e)
         {
-            // Sync selected teams list in DB
             if (_selectedTournament == null || _selectedTournament.Status != "Pending") return;
+
+            var checkbox = sender as CheckBox;
+            if (checkbox == null) return;
+
+            if (checkbox.IsChecked == true)
+            {
+                int currentCheckedCount = _teamSelectionList.Count(t => t.IsAssigned);
+                if (currentCheckedCount > _selectedTournament.MaxTeams)
+                {
+                    checkbox.IsChecked = false;
+                    
+                    var teamSelectionItem = checkbox.DataContext as TeamSelectionItem;
+                    if (teamSelectionItem != null)
+                    {
+                        teamSelectionItem.IsAssigned = false;
+                    }
+
+                    MessageBox.Show($"Số lượng đội tuyển tham gia đã đạt giới hạn tối đa ({_selectedTournament.MaxTeams} đội) của giải đấu này.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
 
             var checkedTeamIds = _teamSelectionList
                 .Where(t => t.IsAssigned)
@@ -272,7 +320,6 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             try
             {
                 _tournamentService.SaveTournamentTeams(_selectedTournament.TournamentId, checkedTeamIds);
-                // Refresh local tournament object
                 _selectedTournament = _tournamentService.GetTournamentById(_selectedTournament.TournamentId);
             }
             catch (Exception ex)
@@ -831,6 +878,42 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 // Refresh visual tree
                 ShowTournamentDetails(_selectedTournament.TournamentId);
             }
+        }
+
+        private Team GetTournamentChampion(Tournament tournament)
+        {
+            if (tournament == null || tournament.Status != "Completed") return null;
+ 
+            if (tournament.Format == "SingleElimination" || tournament.Format == "DoubleElimination")
+            {
+                var grandFinal = tournament.Matches.FirstOrDefault(m => !m.NextMatchId.HasValue);
+                if (grandFinal != null && grandFinal.Status == "Completed")
+                {
+                    return grandFinal.WinnerTeam;
+                }
+            }
+            else if (tournament.Format == "RoundRobin")
+            {
+                var teamWins = new Dictionary<int, int>();
+                foreach (var match in tournament.Matches)
+                {
+                    if (match.Status == "Completed" && match.WinnerTeamId.HasValue)
+                    {
+                        int winnerId = match.WinnerTeamId.Value;
+                        if (!teamWins.ContainsKey(winnerId))
+                            teamWins[winnerId] = 0;
+                        teamWins[winnerId]++;
+                    }
+                }
+                if (teamWins.Count > 0)
+                {
+                    var championTeamId = teamWins.OrderByDescending(kv => kv.Value).First().Key;
+                    return tournament.TournamentTeams
+                        .Select(tt => tt.Team)
+                        .FirstOrDefault(t => t != null && t.TeamId == championTeamId);
+                }
+            }
+            return null;
         }
     }
 

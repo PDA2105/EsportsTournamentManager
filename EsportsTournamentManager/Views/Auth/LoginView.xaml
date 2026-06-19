@@ -12,13 +12,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Left Branding Panel -->
-        <Border CornerRadius="15,0,0,15">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#4F46E5" Offset="0.0"/>
-                    <GradientStop Color="#06B6D4" Offset="1.0"/>
-                </LinearGradientBrush>
-            </Border.Background>
+        <Border CornerRadius="15,0,0,15" Background="#4F46E5">
             <Grid>
                 <!-- Graphics background details -->
                 <Canvas Opacity="0.12">
@@ -90,7 +84,7 @@
                     <TextBlock x:Name="LblLoginError" Foreground="#EF4444" FontSize="13" TextWrapping="Wrap" Margin="0,5,0,15" Visibility="Collapsed"/>
 
                     <!-- Login Action Button -->
-                    <Button Content="Đăng Nhập" Height="45" FontSize="15" FontWeight="Bold" Foreground="#FFFFFF" Cursor="Hand" Click="LoginButton_Click" Margin="0,10,0,0">
+                    <Button Content="Đăng Nhập" IsDefault="True" Height="45" FontSize="15" FontWeight="Bold" Foreground="#FFFFFF" Cursor="Hand" Click="LoginButton_Click" Margin="0,10,0,0">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="#6366F1"/>
