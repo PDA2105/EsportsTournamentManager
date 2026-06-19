@@ -289,8 +289,28 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
 
         private void TeamCheckBox_Changed(object sender, RoutedEventArgs e)
         {
-            // Sync selected teams list in DB
             if (_selectedTournament == null || _selectedTournament.Status != "Pending") return;
+
+            var checkbox = sender as CheckBox;
+            if (checkbox == null) return;
+
+            if (checkbox.IsChecked == true)
+            {
+                int currentCheckedCount = _teamSelectionList.Count(t => t.IsAssigned);
+                if (currentCheckedCount > _selectedTournament.MaxTeams)
+                {
+                    checkbox.IsChecked = false;
+                    
+                    var teamSelectionItem = checkbox.DataContext as TeamSelectionItem;
+                    if (teamSelectionItem != null)
+                    {
+                        teamSelectionItem.IsAssigned = false;
+                    }
+
+                    MessageBox.Show($"Số lượng đội tuyển tham gia đã đạt giới hạn tối đa ({_selectedTournament.MaxTeams} đội) của giải đấu này.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
 
             var checkedTeamIds = _teamSelectionList
                 .Where(t => t.IsAssigned)
@@ -300,7 +320,6 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             try
             {
                 _tournamentService.SaveTournamentTeams(_selectedTournament.TournamentId, checkedTeamIds);
-                // Refresh local tournament object
                 _selectedTournament = _tournamentService.GetTournamentById(_selectedTournament.TournamentId);
             }
             catch (Exception ex)
