@@ -4,60 +4,44 @@ using System.Text;
 
 namespace EsportsTournamentManager.Services
 {
+    /// <summary>
+    /// Lớp tiện ích mã hóa mật khẩu sử dụng thuật toán SHA256 chuyển sang định dạng chuỗi Hex.
+    /// </summary>
     public static class PasswordHasher
     {
+        /// <summary>
+        /// Băm mật khẩu văn bản thường thành chuỗi mã hóa SHA256 Hexadecimal.
+        /// </summary>
+        /// <param name="password">Mật khẩu chưa mã hóa</param>
+        /// <returns>Chuỗi băm SHA256 dạng Hex</returns>
         public static string HashPassword(string password)
         {
-            byte[] salt = new byte[16];
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(salt);
-            }
-
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-            byte[] combinedBytes = new byte[salt.Length + passwordBytes.Length];
-            Buffer.BlockCopy(salt, 0, combinedBytes, 0, salt.Length);
-            Buffer.BlockCopy(passwordBytes, 0, combinedBytes, salt.Length, passwordBytes.Length);
+            if (string.IsNullOrEmpty(password)) return string.Empty;
 
             using (var sha256 = SHA256.Create())
             {
-                byte[] hash = sha256.ComputeHash(combinedBytes);
-                return Convert.ToBase64String(salt) + ":" + Convert.ToBase64String(hash);
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var sb = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
             }
         }
 
-        public static bool VerifyPassword(string password, string hashedPasswordAndSalt)
+        /// <summary>
+        /// Xác thực mật khẩu người dùng nhập vào so với mật khẩu đã băm lưu trong cơ sở dữ liệu.
+        /// </summary>
+        /// <param name="password">Mật khẩu nhập vào cần kiểm tra</param>
+        /// <param name="hashedPassword">Mật khẩu đã được băm từ trước</param>
+        /// <returns>True nếu trùng khớp, ngược lại False</returns>
+        public static bool VerifyPassword(string password, string hashedPassword)
         {
-            if (string.IsNullOrEmpty(hashedPasswordAndSalt)) return false;
-
-            var parts = hashedPasswordAndSalt.Split(':');
-            if (parts.Length != 2) return false;
-
-            try
-            {
-                byte[] salt = Convert.FromBase64String(parts[0]);
-                byte[] expectedHash = Convert.FromBase64String(parts[1]);
-
-                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-                byte[] combinedBytes = new byte[salt.Length + passwordBytes.Length];
-                Buffer.BlockCopy(salt, 0, combinedBytes, 0, salt.Length);
-                Buffer.BlockCopy(passwordBytes, 0, combinedBytes, salt.Length, passwordBytes.Length);
-
-                using (var sha256 = SHA256.Create())
-                {
-                    byte[] actualHash = sha256.ComputeHash(combinedBytes);
-                    if (actualHash.Length != expectedHash.Length) return false;
-                    for (int i = 0; i < actualHash.Length; i++)
-                    {
-                        if (actualHash[i] != expectedHash[i]) return false;
-                    }
-                    return true;
-                }
-            }
-            catch
-            {
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(hashedPassword)) 
                 return false;
-            }
+
+            return string.Equals(HashPassword(password), hashedPassword, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

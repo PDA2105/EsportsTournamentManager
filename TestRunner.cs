@@ -20,10 +20,10 @@ namespace EsportsTournamentManager
             try
             {
                 // Ensure database is initialized and seeded
+                Database.SetInitializer(new MigrateDatabaseToLatestVersion<AppDbContext, Migrations.Configuration>());
                 using (var db = new AppDbContext())
                 {
                     db.Database.Initialize(force: true);
-                    DatabaseSeeder.Seed(db);
                     Console.WriteLine("Database initialized and seeded.");
                 }
 
@@ -345,10 +345,12 @@ namespace EsportsTournamentManager
 
             int match1Id;
             int player1Id, player2Id;
+            int m1Team1Id;
             using (var db = new AppDbContext())
             {
                 var match = db.Matches.First(m => m.TournamentId == tourId && m.RoundNumber == 1 && m.MatchOrder == 1);
                 match1Id = match.MatchId;
+                m1Team1Id = match.Team1Id.Value;
 
                 // Load players for Team 1 and Team 2
                 var team1Players = db.Players.Where(p => p.TeamId == match.Team1Id).ToList();
@@ -434,10 +436,12 @@ namespace EsportsTournamentManager
             // Complete Semifinal 2 (Match 2) so Team 3 advances to Grand Final
             int match2Id;
             int player3Id;
+            int m2Team1Id;
             using (var db = new AppDbContext())
             {
                 var match2 = db.Matches.First(m => m.TournamentId == tourId && m.RoundNumber == 1 && m.MatchOrder == 2);
                 match2Id = match2.MatchId;
+                m2Team1Id = match2.Team1Id.Value;
 
                 var team3Players = db.Players.Where(p => p.TeamId == match2.Team1Id).ToList();
                 player3Id = team3Players[0].PlayerId;
@@ -464,8 +468,8 @@ namespace EsportsTournamentManager
                 gfMatchId = gfMatch.MatchId;
 
                 // Ensure Team 1 and Team 3 advanced
-                Assert(gfMatch.Team1Id == team1Id, "GF Team 1 should be Team 1");
-                Assert(gfMatch.Team2Id == team3Id, "GF Team 2 should be Team 3");
+                Assert(gfMatch.Team1Id == m1Team1Id, "GF Team 1 should be Team 1");
+                Assert(gfMatch.Team2Id == m2Team1Id, "GF Team 2 should be Team 3");
             }
 
             // Grand Final match performance: Team 1 wins

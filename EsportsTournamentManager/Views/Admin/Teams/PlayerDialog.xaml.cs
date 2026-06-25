@@ -21,7 +21,6 @@ namespace EsportsTournamentManager.Views.Admin.Teams
                 TxtTitle.Text = "Sửa Tuyển Thủ";
                 TxtInGameName.Text = player.InGameName;
                 TxtRealName.Text = player.RealName;
-                TxtAvatarPath.Text = player.AvatarPath;
                 ChkIsActive.IsChecked = player.IsActive;
 
                 // Select position in ComboBox
@@ -78,46 +77,10 @@ namespace EsportsTournamentManager.Views.Admin.Teams
                 Player.Position = null;
             }
 
-            Player.AvatarPath = string.IsNullOrWhiteSpace(TxtAvatarPath.Text) ? null : TxtAvatarPath.Text.Trim();
             Player.IsActive = ChkIsActive.IsChecked ?? true;
 
             DialogResult = true;
             Close();
-        }
- 
-        private void BrowseButton_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "Image files (*.png;*.jpeg;*.jpg;*.gif)|*.png;*.jpeg;*.jpg;*.gif|All files (*.*)|*.*",
-                Title = "Chọn ảnh đại diện tuyển thủ"
-            };
- 
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string selectedFilePath = openFileDialog.FileName;
-                
-                try
-                {
-                    string targetDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "Avatars");
-                    if (!System.IO.Directory.Exists(targetDirectory))
-                    {
-                        System.IO.Directory.CreateDirectory(targetDirectory);
-                    }
- 
-                    string fileName = System.IO.Path.GetFileName(selectedFilePath);
-                    string uniqueFileName = Guid.NewGuid().ToString("N") + System.IO.Path.GetExtension(fileName);
-                    string targetFilePath = System.IO.Path.Combine(targetDirectory, uniqueFileName);
- 
-                    System.IO.File.Copy(selectedFilePath, targetFilePath, true);
- 
-                    TxtAvatarPath.Text = System.IO.Path.Combine("Images", "Avatars", uniqueFileName);
-                }
-                catch (Exception)
-                {
-                    TxtAvatarPath.Text = selectedFilePath;
-                }
-            }
         }
     }
 }

@@ -7,8 +7,15 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Services
 {
+    /// <summary>
+    /// Lớp dịch vụ quản lý các nghiệp vụ liên quan đến giải đấu (Tournament), trận đấu (Match) và tính toán điểm phong độ (MVP).
+    /// </summary>
     public class TournamentService
     {
+        /// <summary>
+        /// Lấy danh sách tất cả các giải đấu trong hệ thống kèm theo thông tin người tạo và danh sách đội tuyển tham gia.
+        /// </summary>
+        /// <returns>Danh sách các giải đấu</returns>
         public List<Tournament> GetAllTournaments()
         {
             using (var db = new AppDbContext())
@@ -20,6 +27,11 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Lấy chi tiết thông tin một giải đấu theo ID bao gồm người tạo, các đội tuyển và danh sách trận đấu.
+        /// </summary>
+        /// <param name="tournamentId">ID của giải đấu</param>
+        /// <returns>Đối tượng giải đấu tương ứng hoặc null nếu không tìm thấy</returns>
         public Tournament GetTournamentById(int tournamentId)
         {
             using (var db = new AppDbContext())
@@ -34,6 +46,10 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Thêm mới một giải đấu vào cơ sở dữ liệu.
+        /// </summary>
+        /// <param name="tournament">Đối tượng giải đấu cần thêm</param>
         public void AddTournament(Tournament tournament)
         {
             using (var db = new AppDbContext())
@@ -43,6 +59,10 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Cập nhật thông tin chi tiết của một giải đấu đã tồn tại.
+        /// </summary>
+        /// <param name="tournament">Đối tượng giải đấu đã sửa đổi</param>
         public void UpdateTournament(Tournament tournament)
         {
             using (var db = new AppDbContext())
@@ -52,6 +72,10 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Xóa giải đấu ra khỏi hệ thống theo ID giải đấu.
+        /// </summary>
+        /// <param name="tournamentId">ID giải đấu cần xóa</param>
         public void DeleteTournament(int tournamentId)
         {
             using (var db = new AppDbContext())
@@ -65,15 +89,21 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Lưu danh sách các đội tuyển được phân bổ vào giải đấu.
+        /// Xóa toàn bộ liên kết đội tuyển cũ và tạo liên kết mới trong cơ sở dữ liệu.
+        /// </summary>
+        /// <param name="tournamentId">ID giải đấu</param>
+        /// <param name="teamIds">Danh sách ID các đội tuyển tham gia</param>
         public void SaveTournamentTeams(int tournamentId, List<int> teamIds)
         {
             using (var db = new AppDbContext())
             {
-                // Remove existing mappings
+                // Xóa các ánh xạ giải đấu - đội tuyển hiện tại
                 var existing = db.TournamentTeams.Where(tt => tt.TournamentId == tournamentId).ToList();
                 db.TournamentTeams.RemoveRange(existing);
 
-                // Add new mappings
+                // Thêm các ánh xạ giải đấu - đội tuyển mới
                 foreach (var teamId in teamIds)
                 {
                     db.TournamentTeams.Add(new TournamentTeam
@@ -86,6 +116,12 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        private readonly BracketService _bracketService = new BracketService();
+
+        /// <summary>
+        /// Bắt đầu giải đấu, xác minh số lượng đội tuyển và kích hoạt sinh nhánh đấu tự động theo thể thức.
+        /// </summary>
+        /// <param name="tournamentId">ID giải đấu cần bắt đầu</param>
         public void StartTournament(int tournamentId)
         {
             using (var db = new AppDbContext())
@@ -107,7 +143,7 @@ namespace EsportsTournamentManager.Services
                     {
                         throw new Exception("Thể thức Loại trực tiếp yêu cầu số đội tham gia phải là 4, 8 hoặc 16 đội.");
                     }
-                    GenerateSingleEliminationBracket(db, tournament);
+                    _bracketService.GenerateSingleEliminationBracket(db, tournament);
                 }
                 else if (tournament.Format == "DoubleElimination")
                 {
@@ -115,7 +151,7 @@ namespace EsportsTournamentManager.Services
                     {
                         throw new Exception("Thể thức Nhánh thắng nhánh thua yêu cầu số đội tham gia phải là 4 hoặc 8 đội.");
                     }
-                    GenerateDoubleEliminationBracket(db, tournament);
+                    _bracketService.GenerateDoubleEliminationBracket(db, tournament);
                 }
                 else if (tournament.Format == "RoundRobin")
                 {
@@ -123,7 +159,7 @@ namespace EsportsTournamentManager.Services
                     {
                         throw new Exception("Thể thức Vòng tròn tính điểm yêu cầu tối thiểu 2 đội tham gia.");
                     }
-                    GenerateRoundRobinBracket(db, tournament);
+                    _bracketService.GenerateRoundRobinBracket(db, tournament);
                 }
                 else
                 {
@@ -137,117 +173,16 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        private void GenerateSingleEliminationBracket(AppDbContext db, Tournament tournament)
-        {
-            var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
-            int N = teams.Count;
-            int numRounds = (int)Math.Log(N, 2);
-
-            // Structure to hold matches in memory by round (1-indexed)
-            List<Match>[] matchesByRound = new List<Match>[numRounds + 1];
-            for (int r = 1; r <= numRounds; r++)
-            {
-                matchesByRound[r] = new List<Match>();
-            }
-
-            // Create matches from final round (R) down to 1
-            for (int r = numRounds; r >= 1; r--)
-            {
-                int numMatchesInRound = (int)Math.Pow(2, numRounds - r);
-                for (int i = 0; i < numMatchesInRound; i++)
-                {
-                    var match = new Match
-                    {
-                        TournamentId = tournament.TournamentId,
-                        RoundNumber = r,
-                        MatchOrder = i + 1,
-                        Status = "Scheduled",
-                        ScheduledTime = tournament.StartDate.AddDays(r - 1),
-                        MatchFormat = "BO3"
-                    };
-
-                    if (r < numRounds)
-                    {
-                        int nextMatchIndex = i / 2;
-                        match.NextMatch = matchesByRound[r + 1][nextMatchIndex];
-                    }
-
-                    matchesByRound[r].Add(match);
-                }
-            }
-
-            // Shuffle and pair teams for Round 1
-            var rng = new Random();
-            var shuffledTeams = teams.OrderBy(t => rng.Next()).ToList();
-            for (int i = 0; i < matchesByRound[1].Count; i++)
-            {
-                var match = matchesByRound[1][i];
-                match.Team1Id = shuffledTeams[2 * i].TeamId;
-                match.Team2Id = shuffledTeams[2 * i + 1].TeamId;
-            }
-
-            // Save all matches to DB
-            for (int r = numRounds; r >= 1; r--)
-            {
-                foreach (var match in matchesByRound[r])
-                {
-                    db.Matches.Add(match);
-                }
-            }
-        }
-
-        private void GenerateRoundRobinBracket(AppDbContext db, Tournament tournament)
-        {
-            var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
-            var teamList = teams.ToList();
-
-            // If odd, add a dummy team for "bye"
-            bool hasBye = teamList.Count % 2 != 0;
-            if (hasBye)
-            {
-                teamList.Add(null);
-            }
-
-            int numTeams = teamList.Count;
-            int numRounds = numTeams - 1;
-            int matchesPerRound = numTeams / 2;
-            var rng = new Random();
-            teamList = teamList.OrderBy(t => t == null ? int.MaxValue : rng.Next()).ToList();
-
-            for (int round = 0; round < numRounds; round++)
-            {
-                for (int matchIdx = 0; matchIdx < matchesPerRound; matchIdx++)
-                {
-                    int home = (round + matchIdx) % (numTeams - 1);
-                    int away = (numTeams - 1 - matchIdx + round) % (numTeams - 1);
-
-                    if (matchIdx == 0)
-                    {
-                        away = numTeams - 1;
-                    }
-
-                    var t1 = teamList[home];
-                    var t2 = teamList[away];
-
-                    if (t1 != null && t2 != null)
-                    {
-                        var match = new Match
-                        {
-                            TournamentId = tournament.TournamentId,
-                            RoundNumber = round + 1,
-                            MatchOrder = matchIdx + 1,
-                            Team1Id = t1.TeamId,
-                            Team2Id = t2.TeamId,
-                            Status = "Scheduled",
-                            ScheduledTime = tournament.StartDate.AddDays(round),
-                            MatchFormat = "BO3"
-                        };
-                        db.Matches.Add(match);
-                    }
-                }
-            }
-        }
-
+        /// <summary>
+        /// Cập nhật kết quả tỉ số của một trận đấu, xử lý tiến nhánh cho đội thắng cuộc
+        /// hoặc chuyển đội thua cuộc xuống nhánh thua nếu ở thể thức nhánh thắng thua (Double Elimination).
+        /// Đồng thời kiểm tra xem giải đấu đã hoàn thành toàn bộ hay chưa để cập nhật trạng thái giải đấu.
+        /// </summary>
+        /// <param name="matchId">ID trận đấu</param>
+        /// <param name="team1Score">Điểm số đội 1</param>
+        /// <param name="team2Score">Điểm số đội 2</param>
+        /// <param name="status">Trạng thái trận đấu (Scheduled/Live/Completed/Cancelled)</param>
+        /// <param name="mvpPlayerId">ID tuyển thủ MVP trận đấu (nếu có)</param>
         public void UpdateMatchResult(int matchId, int team1Score, int team2Score, string status, int? mvpPlayerId = null)
         {
             using (var db = new AppDbContext())
@@ -274,7 +209,7 @@ namespace EsportsTournamentManager.Services
                     int winnerId = team1Score > team2Score ? match.Team1Id.Value : match.Team2Id.Value;
                     match.WinnerTeamId = winnerId;
 
-                    // If it is Single Elimination, advance the winner
+                    // Nếu là thể thức Loại trực tiếp (Single Elimination), đưa đội thắng lên vòng tiếp theo
                     if (match.Tournament.Format == "SingleElimination" && match.NextMatchId.HasValue)
                     {
                         var nextMatch = db.Matches.Find(match.NextMatchId.Value);
@@ -291,12 +226,13 @@ namespace EsportsTournamentManager.Services
                             db.Entry(nextMatch).State = EntityState.Modified;
                         }
                     }
+                    // Nếu là thể thức Nhánh thắng thua (Double Elimination), đưa đội thắng tiến lên và chuyển đội thua xuống
                     else if (match.Tournament.Format == "DoubleElimination" && match.NextMatchId.HasValue)
                     {
                         var nextMatch = db.Matches.Find(match.NextMatchId.Value);
                         if (nextMatch != null)
                         {
-                            // If next match is the Grand Final
+                            // Nếu trận đấu kế tiếp là trận Chung kết tổng (Grand Final)
                             if (nextMatch.RoundNumber == (match.Tournament.MaxTeams == 4 ? 3 : 4))
                             {
                                 if (match.BracketBranch == "Winner")
@@ -314,22 +250,20 @@ namespace EsportsTournamentManager.Services
                             db.Entry(nextMatch).State = EntityState.Modified;
                         }
 
-                        // Advance the loser to the loser's bracket
+                        // Chuyển đội thua từ nhánh thắng xuống nhánh thua tương ứng
                         if (match.BracketBranch == "Winner")
                         {
-                            var loserMatch = FindLoserDestinationMatch(db, match);
+                            var loserMatch = _bracketService.FindLoserDestinationMatch(db, match);
                             if (loserMatch != null)
                             {
                                 int loserId = winnerId == match.Team1Id ? match.Team2Id.Value : match.Team1Id.Value;
-                                SetLoserInMatch(loserMatch, match, loserId);
+                                _bracketService.SetLoserInMatch(loserMatch, match, loserId);
                                 db.Entry(loserMatch).State = EntityState.Modified;
                             }
                         }
                     }
 
-
-
-                    // Check if tournament is completed (Single / Double Elimination: final round match complete)
+                    // Kiểm tra xem giải đấu đã hoàn tất chưa (dành cho thể thức Loại trực tiếp hoặc Thắng thua: ván chung kết tổng kết thúc)
                     if ((match.Tournament.Format == "SingleElimination" || match.Tournament.Format == "DoubleElimination") && !match.NextMatchId.HasValue)
                     {
                         var tour = db.Tournaments.Find(match.TournamentId);
@@ -340,7 +274,7 @@ namespace EsportsTournamentManager.Services
                             db.Entry(tour).State = EntityState.Modified;
                         }
                     }
-                    // For Round Robin: check if all matches are completed
+                    // Dành cho thể thức Vòng tròn (Round Robin): kiểm tra xem toàn bộ các trận đã hoàn tất chưa
                     else if (match.Tournament.Format == "RoundRobin")
                     {
                         bool allCompleted = !db.Matches.Any(m => m.TournamentId == match.TournamentId && m.MatchId != matchId && m.Status != "Completed");
@@ -358,7 +292,7 @@ namespace EsportsTournamentManager.Services
                 }
                 else
                 {
-                    // If moving back to Live/Scheduled, clear winner
+                    // Nếu đưa trận đấu về Scheduled hoặc Live, xóa thông tin đội thắng cuộc
                     match.WinnerTeamId = null;
                 }
 
@@ -367,6 +301,11 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Thu hồi (Rollback) kết quả trận đấu đã hoàn thành về trạng thái Scheduled.
+        /// Đồng thời xóa dữ liệu thi đấu chi tiết (maps/stats) của trận đó và đệ quy thu hồi kết quả các trận đấu sau bị ảnh hưởng.
+        /// </summary>
+        /// <param name="matchId">ID trận đấu cần thu hồi</param>
         public void RollbackMatchResult(int matchId)
         {
             using (var db = new AppDbContext())
@@ -379,22 +318,22 @@ namespace EsportsTournamentManager.Services
                     throw new Exception("Không tìm thấy trận đấu.");
 
                 if (match.Status != "Completed")
-                    return; // Already not completed, no rollback needed
+                    return; // Trận đấu chưa hoàn thành nên không cần thu hồi kết quả
 
                 int? prevWinnerId = match.WinnerTeamId;
 
-                // Reset this match
+                // Reset thông số của trận đấu hiện tại
                 match.Team1Score = 0;
                 match.Team2Score = 0;
                 match.WinnerTeamId = null;
                 match.Status = "Scheduled";
                 db.Entry(match).State = EntityState.Modified;
 
-                // Remove MVP from maps
+                // Xóa chi tiết ván đấu và điểm số người chơi
                 var maps = db.MatchMaps.Where(mm => mm.MatchId == matchId).ToList();
                 db.MatchMaps.RemoveRange(maps);
 
-                // Revert tournament status back to Active if it was completed
+                // Nếu giải đấu đã hoàn thành trước đó, trả trạng thái giải đấu về Active
                 if (match.Tournament.Status == "Completed")
                 {
                     match.Tournament.Status = "Active";
@@ -402,24 +341,24 @@ namespace EsportsTournamentManager.Services
                     db.Entry(match.Tournament).State = EntityState.Modified;
                 }
 
-                // Recursively clear winner in subsequent rounds
+                // Thực hiện đệ quy làm sạch các vòng đấu phía sau
                 if (prevWinnerId.HasValue && match.Tournament.Format == "SingleElimination")
                 {
-                    RollbackNextMatches(db, match, prevWinnerId.Value);
+                    _bracketService.RollbackNextMatches(db, match, prevWinnerId.Value);
                 }
                 else if (prevWinnerId.HasValue && match.Tournament.Format == "DoubleElimination")
                 {
-                    // Revert Winner advance
-                    RollbackNextMatches(db, match, prevWinnerId.Value);
+                    // Thu hồi việc thăng tiến của đội thắng ở nhánh thắng
+                    _bracketService.RollbackNextMatches(db, match, prevWinnerId.Value);
 
-                    // Revert Loser advance (if Winner's bracket match)
+                    // Thu hồi việc chuyển đội thua xuống nhánh thua (chỉ thực hiện nếu trận đấu nguồn ở nhánh Thắng)
                     if (match.BracketBranch == "Winner")
                     {
-                        var loserMatch = FindLoserDestinationMatch(db, match);
+                        var loserMatch = _bracketService.FindLoserDestinationMatch(db, match);
                         if (loserMatch != null)
                         {
                             int loserId = (match.Team1Id == prevWinnerId) ? match.Team2Id.Value : match.Team1Id.Value;
-                            RollbackLoserMatch(db, loserMatch, loserId);
+                            _bracketService.RollbackLoserMatch(db, loserMatch, loserId);
                         }
                     }
                 }
@@ -428,312 +367,12 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        private void RollbackNextMatches(AppDbContext db, Match currentMatch, int winnerIdToRemove)
-        {
-            if (currentMatch.NextMatchId.HasValue)
-            {
-                var nextMatch = db.Matches.Find(currentMatch.NextMatchId.Value);
-                if (nextMatch != null)
-                {
-                    bool affected = false;
-                    if (nextMatch.Team1Id == winnerIdToRemove)
-                    {
-                        nextMatch.Team1Id = null;
-                        affected = true;
-                    }
-                    else if (nextMatch.Team2Id == winnerIdToRemove)
-                    {
-                        nextMatch.Team2Id = null;
-                        affected = true;
-                    }
-
-                    if (affected)
-                    {
-                        int? nextWinnerId = nextMatch.WinnerTeamId;
-
-                        // Reset scores and status
-                        nextMatch.Team1Score = 0;
-                        nextMatch.Team2Score = 0;
-                        nextMatch.WinnerTeamId = null;
-                        nextMatch.Status = "Scheduled";
-                        db.Entry(nextMatch).State = EntityState.Modified;
-
-                        // Remove maps
-                        var maps = db.MatchMaps.Where(mm => mm.MatchId == nextMatch.MatchId).ToList();
-                        db.MatchMaps.RemoveRange(maps);
-
-                        // Recursively rollback subsequent matches
-                        if (nextWinnerId.HasValue)
-                        {
-                            RollbackNextMatches(db, nextMatch, nextWinnerId.Value);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void GenerateDoubleEliminationBracket(AppDbContext db, Tournament tournament)
-        {
-            var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
-            int maxTeams = teams.Count;
-
-            var rng = new Random();
-            var shuffledTeams = teams.OrderBy(t => rng.Next()).ToList();
-
-            if (maxTeams == 4)
-            {
-                // Winner Round 1
-                var w1 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 1, BracketBranch = "Winner", Team1Id = shuffledTeams[0].TeamId, Team2Id = shuffledTeams[1].TeamId, ScheduledTime = tournament.StartDate, MatchFormat = "BO3" };
-                var w2 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 2, BracketBranch = "Winner", Team1Id = shuffledTeams[2].TeamId, Team2Id = shuffledTeams[3].TeamId, ScheduledTime = tournament.StartDate, MatchFormat = "BO3" };
-                db.Matches.Add(w1);
-                db.Matches.Add(w2);
-                db.SaveChanges(); // Get IDs
-
-                // Winner Round 2 (Winner Final)
-                var w3 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 2, MatchOrder = 1, BracketBranch = "Winner", ScheduledTime = tournament.StartDate.AddDays(1), MatchFormat = "BO3" };
-                db.Matches.Add(w3);
-                db.SaveChanges();
-
-                w1.NextMatchId = w3.MatchId;
-                w2.NextMatchId = w3.MatchId;
-
-                // Loser Round 1
-                var l1 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 1, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(1), MatchFormat = "BO3" };
-                db.Matches.Add(l1);
-                db.SaveChanges();
-
-                // Loser Round 2 (Loser Final)
-                var l2 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 2, MatchOrder = 1, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(2), MatchFormat = "BO3" };
-                db.Matches.Add(l2);
-                db.SaveChanges();
-
-                l1.NextMatchId = l2.MatchId;
-
-                // Grand Final
-                var gf = new Match { TournamentId = tournament.TournamentId, RoundNumber = 3, MatchOrder = 1, BracketBranch = "Winner", ScheduledTime = tournament.StartDate.AddDays(3), MatchFormat = "BO5" };
-                db.Matches.Add(gf);
-                db.SaveChanges();
-
-                w3.NextMatchId = gf.MatchId;
-                l2.NextMatchId = gf.MatchId;
-
-                db.SaveChanges();
-            }
-            else if (maxTeams == 8)
-            {
-                // Winner Round 1
-                var w1 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 1, BracketBranch = "Winner", Team1Id = shuffledTeams[0].TeamId, Team2Id = shuffledTeams[1].TeamId, ScheduledTime = tournament.StartDate, MatchFormat = "BO3" };
-                var w2 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 2, BracketBranch = "Winner", Team1Id = shuffledTeams[2].TeamId, Team2Id = shuffledTeams[3].TeamId, ScheduledTime = tournament.StartDate, MatchFormat = "BO3" };
-                var w3 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 3, BracketBranch = "Winner", Team1Id = shuffledTeams[4].TeamId, Team2Id = shuffledTeams[5].TeamId, ScheduledTime = tournament.StartDate, MatchFormat = "BO3" };
-                var w4 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 4, BracketBranch = "Winner", Team1Id = shuffledTeams[6].TeamId, Team2Id = shuffledTeams[7].TeamId, ScheduledTime = tournament.StartDate, MatchFormat = "BO3" };
-                db.Matches.Add(w1); db.Matches.Add(w2); db.Matches.Add(w3); db.Matches.Add(w4);
-                db.SaveChanges();
-
-                // Winner Round 2
-                var w5 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 2, MatchOrder = 1, BracketBranch = "Winner", ScheduledTime = tournament.StartDate.AddDays(1), MatchFormat = "BO3" };
-                var w6 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 2, MatchOrder = 2, BracketBranch = "Winner", ScheduledTime = tournament.StartDate.AddDays(1), MatchFormat = "BO3" };
-                db.Matches.Add(w5); db.Matches.Add(w6);
-                db.SaveChanges();
-
-                w1.NextMatchId = w5.MatchId; w2.NextMatchId = w5.MatchId;
-                w3.NextMatchId = w6.MatchId; w4.NextMatchId = w6.MatchId;
-
-                // Winner Round 3 (Winner Final)
-                var w7 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 3, MatchOrder = 1, BracketBranch = "Winner", ScheduledTime = tournament.StartDate.AddDays(2), MatchFormat = "BO3" };
-                db.Matches.Add(w7);
-                db.SaveChanges();
-
-                w5.NextMatchId = w7.MatchId; w6.NextMatchId = w7.MatchId;
-
-                // Loser Round 1
-                var l1 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 1, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(1), MatchFormat = "BO3" };
-                var l2 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 1, MatchOrder = 2, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(1), MatchFormat = "BO3" };
-                db.Matches.Add(l1); db.Matches.Add(l2);
-                db.SaveChanges();
-
-                // Loser Round 2
-                var l3 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 2, MatchOrder = 1, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(2), MatchFormat = "BO3" };
-                var l4 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 2, MatchOrder = 2, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(2), MatchFormat = "BO3" };
-                db.Matches.Add(l3); db.Matches.Add(l4);
-                db.SaveChanges();
-
-                l1.NextMatchId = l3.MatchId;
-                l2.NextMatchId = l4.MatchId;
-
-                // Loser Round 3
-                var l5 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 3, MatchOrder = 1, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(3), MatchFormat = "BO3" };
-                db.Matches.Add(l5);
-                db.SaveChanges();
-
-                l3.NextMatchId = l5.MatchId; l4.NextMatchId = l5.MatchId;
-
-                // Loser Round 4 (Loser Final)
-                var l6 = new Match { TournamentId = tournament.TournamentId, RoundNumber = 4, MatchOrder = 1, BracketBranch = "Loser", ScheduledTime = tournament.StartDate.AddDays(4), MatchFormat = "BO3" };
-                db.Matches.Add(l6);
-                db.SaveChanges();
-
-                l5.NextMatchId = l6.MatchId;
-
-                // Grand Final
-                var gf = new Match { TournamentId = tournament.TournamentId, RoundNumber = 4, MatchOrder = 1, BracketBranch = "Winner", ScheduledTime = tournament.StartDate.AddDays(5), MatchFormat = "BO5" };
-                db.Matches.Add(gf);
-                db.SaveChanges();
-
-                w7.NextMatchId = gf.MatchId;
-                l6.NextMatchId = gf.MatchId;
-
-                db.SaveChanges();
-            }
-        }
-
-        private Match FindLoserDestinationMatch(AppDbContext db, Match currentMatch)
-        {
-            int maxTeams = currentMatch.Tournament.MaxTeams;
-            if (maxTeams == 4)
-            {
-                if (currentMatch.RoundNumber == 1)
-                {
-                    return db.Matches.FirstOrDefault(m => 
-                        m.TournamentId == currentMatch.TournamentId && 
-                        m.BracketBranch == "Loser" && 
-                        m.RoundNumber == 1 && 
-                        m.MatchOrder == 1);
-                }
-                else if (currentMatch.RoundNumber == 2)
-                {
-                    return db.Matches.FirstOrDefault(m => 
-                        m.TournamentId == currentMatch.TournamentId && 
-                        m.BracketBranch == "Loser" && 
-                        m.RoundNumber == 2 && 
-                        m.MatchOrder == 1);
-                }
-            }
-            else if (maxTeams == 8)
-            {
-                if (currentMatch.RoundNumber == 1)
-                {
-                    int targetOrder = (currentMatch.MatchOrder - 1) / 2 + 1;
-                    return db.Matches.FirstOrDefault(m => 
-                        m.TournamentId == currentMatch.TournamentId && 
-                        m.BracketBranch == "Loser" && 
-                        m.RoundNumber == 1 && 
-                        m.MatchOrder == targetOrder);
-                }
-                else if (currentMatch.RoundNumber == 2)
-                {
-                    int targetOrder = currentMatch.MatchOrder;
-                    return db.Matches.FirstOrDefault(m => 
-                        m.TournamentId == currentMatch.TournamentId && 
-                        m.BracketBranch == "Loser" && 
-                        m.RoundNumber == 2 && 
-                        m.MatchOrder == targetOrder);
-                }
-                else if (currentMatch.RoundNumber == 3)
-                {
-                    return db.Matches.FirstOrDefault(m => 
-                        m.TournamentId == currentMatch.TournamentId && 
-                        m.BracketBranch == "Loser" && 
-                        m.RoundNumber == 4 && 
-                        m.MatchOrder == 1);
-                }
-            }
-            return null;
-        }
-
-        private void SetLoserInMatch(Match targetMatch, Match sourceMatch, int loserId)
-        {
-            int maxTeams = sourceMatch.Tournament.MaxTeams;
-            if (maxTeams == 4)
-            {
-                if (sourceMatch.RoundNumber == 1)
-                {
-                    if (sourceMatch.MatchOrder == 1)
-                        targetMatch.Team1Id = loserId;
-                    else
-                        targetMatch.Team2Id = loserId;
-                }
-                else if (sourceMatch.RoundNumber == 2)
-                {
-                    targetMatch.Team2Id = loserId;
-                }
-            }
-            else if (maxTeams == 8)
-            {
-                if (sourceMatch.RoundNumber == 1)
-                {
-                    if (sourceMatch.MatchOrder == 1 || sourceMatch.MatchOrder == 3)
-                        targetMatch.Team1Id = loserId;
-                    else
-                        targetMatch.Team2Id = loserId;
-                }
-                else if (sourceMatch.RoundNumber == 2)
-                {
-                    targetMatch.Team2Id = loserId;
-                }
-                else if (sourceMatch.RoundNumber == 3)
-                {
-                    targetMatch.Team2Id = loserId;
-                }
-            }
-        }
-
-        private void RollbackLoserMatch(AppDbContext db, Match loserMatch, int loserIdToRemove)
-        {
-            bool affected = false;
-            if (loserMatch.Team1Id == loserIdToRemove)
-            {
-                loserMatch.Team1Id = null;
-                affected = true;
-            }
-            else if (loserMatch.Team2Id == loserIdToRemove)
-            {
-                loserMatch.Team2Id = null;
-                affected = true;
-            }
-
-            if (affected)
-            {
-                int? nextWinnerId = loserMatch.WinnerTeamId;
-
-                loserMatch.Team1Score = 0;
-                loserMatch.Team2Score = 0;
-                loserMatch.WinnerTeamId = null;
-                loserMatch.Status = "Scheduled";
-                db.Entry(loserMatch).State = EntityState.Modified;
-
-                var maps = db.MatchMaps.Where(mm => mm.MatchId == loserMatch.MatchId).ToList();
-                db.MatchMaps.RemoveRange(maps);
-
-                if (nextWinnerId.HasValue)
-                {
-                    RollbackNextMatches(db, loserMatch, nextWinnerId.Value);
-                }
-            }
-        }
-
-        private int GetMaxPossibleMatches(Tournament tournament)
-        {
-            if (tournament == null) return 1;
-            int maxTeams = tournament.MaxTeams;
-            if (maxTeams <= 1) return 1;
-
-            if (tournament.Format == "SingleElimination")
-            {
-                return (int)Math.Round(Math.Log(maxTeams, 2));
-            }
-            else if (tournament.Format == "DoubleElimination")
-            {
-                if (maxTeams == 4) return 4;
-                if (maxTeams == 8) return 6;
-                return 6; // default fallback
-            }
-            else if (tournament.Format == "RoundRobin")
-            {
-                return maxTeams - 1;
-            }
-            return 1;
-        }
-
+        /// <summary>
+        /// Tính toán và tìm ra tuyển thủ xuất sắc nhất giải đấu (MVP Tournament) dựa trên điểm số phong độ trung bình.
+        /// </summary>
+        /// <param name="tournamentId">ID giải đấu</param>
+        /// <param name="avgScore">Điểm phong độ trung bình trả ra</param>
+        /// <returns>Đối tượng tuyển thủ đạt danh hiệu MVP giải đấu</returns>
         public Player GetTournamentMvp(int tournamentId, out double avgScore)
         {
             avgScore = 0;
@@ -743,32 +382,35 @@ namespace EsportsTournamentManager.Services
                 if (tournament == null)
                     return null;
 
-                // Load all matches for this tournament
+                // Tải tất cả trận đấu thuộc giải đấu này
                 var tournamentMatches = db.Matches
                     .Where(m => m.TournamentId == tournamentId)
                     .ToList();
 
-                // Load all team IDs
+                // Tải danh sách ID các đội tham gia giải đấu
                 var teamIds = db.TournamentTeams
                     .Where(tt => tt.TournamentId == tournamentId)
                     .Select(tt => tt.TeamId)
                     .ToList();
 
-                // Count how many matches each team has actually played
+                // Đếm số trận đấu thực tế mà từng đội đã thi đấu (chỉ tính trận có trạng thái Completed)
                 var teamMatchesCount = teamIds.ToDictionary(tid => tid, tid => 0);
                 foreach (var match in tournamentMatches)
                 {
-                    if (match.Team1Id.HasValue && teamMatchesCount.ContainsKey(match.Team1Id.Value))
-                        teamMatchesCount[match.Team1Id.Value]++;
-                    if (match.Team2Id.HasValue && teamMatchesCount.ContainsKey(match.Team2Id.Value))
-                        teamMatchesCount[match.Team2Id.Value]++;
+                    if (match.Status == "Completed")
+                    {
+                        if (match.Team1Id.HasValue && teamMatchesCount.ContainsKey(match.Team1Id.Value))
+                            teamMatchesCount[match.Team1Id.Value]++;
+                        if (match.Team2Id.HasValue && teamMatchesCount.ContainsKey(match.Team2Id.Value))
+                            teamMatchesCount[match.Team2Id.Value]++;
+                    }
                 }
 
-                // Determine the maximum matches played by any team in the tournament
+                // Xác định số lượng trận đấu nhiều nhất của một đội tuyển trong giải đấu
                 int maxMatchesInTournament = teamMatchesCount.Values.Count > 0 ? teamMatchesCount.Values.Max() : 1;
                 if (maxMatchesInTournament < 1) maxMatchesInTournament = 1;
 
-                // Find the Grand Final match
+                // Tìm trận Chung kết tổng (Grand Final)
                 var grandFinal = tournamentMatches.FirstOrDefault(m => 
                     !m.NextMatchId.HasValue && 
                     (tournament.Format == "SingleElimination" || tournament.Format == "DoubleElimination"));
@@ -790,13 +432,13 @@ namespace EsportsTournamentManager.Services
 
                         double totalMatchPoints = matchAverages.Sum();
                         
-                        // Determine divisor for this player's team
+                        // Tính ước số (divisor) cho đội của người chơi này
                         int divisor = maxMatchesInTournament;
                         int playerTeamId = player.TeamId;
 
                         if (tournament.Format == "SingleElimination" || tournament.Format == "DoubleElimination")
                         {
-                            // If they reached the Grand Final, divide by their actual matches played
+                            // Nếu lọt vào trận Chung kết tổng, chia cho số trận thi đấu thực tế
                             bool isFinalist = grandFinal != null && (playerTeamId == grandFinal.Team1Id || playerTeamId == grandFinal.Team2Id);
                             if (isFinalist && teamMatchesCount.TryGetValue(playerTeamId, out int actualMatches))
                             {
@@ -825,6 +467,12 @@ namespace EsportsTournamentManager.Services
             return null;
         }
 
+        /// <summary>
+        /// Tính toán và lấy tuyển thủ xuất sắc nhất trận đấu (MVP Match) dựa trên trung bình điểm phong độ các ván chơi.
+        /// </summary>
+        /// <param name="matchId">ID trận đấu</param>
+        /// <param name="avgScore">Điểm phong độ trung bình trong trận</param>
+        /// <returns>Tuyển thủ đạt danh hiệu MVP trận đấu</returns>
         public Player GetMatchMvp(int matchId, out double avgScore)
         {
             avgScore = 0;
@@ -856,6 +504,14 @@ namespace EsportsTournamentManager.Services
             return null;
         }
 
+        /// <summary>
+        /// Lưu/Cập nhật dữ liệu thống kê của các ván đấu (Maps) và chỉ số tuyển thủ (Player stats),
+        /// tự động tính điểm hiệu năng, đánh giá tuyển thủ MVP của từng ván (Winner MVP & Loser MVP)
+        /// và cập nhật kết quả tỉ số tổng thể cho trận đấu.
+        /// </summary>
+        /// <param name="matchId">ID trận đấu cần lưu</param>
+        /// <param name="inputMaps">Danh sách các ván đấu chi tiết được điền thông tin</param>
+        /// <param name="status">Trạng thái trận đấu</param>
         public void SaveMatchPerformance(int matchId, List<MatchMap> inputMaps, string status)
         {
             using (var db = new AppDbContext())
@@ -881,7 +537,7 @@ namespace EsportsTournamentManager.Services
                             Team2RoundScore = inputMap.Team2RoundScore
                         };
                         db.MatchMaps.Add(existingMap);
-                        db.SaveChanges(); // Get Map ID
+                        db.SaveChanges(); // Lưu để lấy Map ID
                     }
                     else
                     {
@@ -891,7 +547,7 @@ namespace EsportsTournamentManager.Services
                         db.Entry(existingMap).State = EntityState.Modified;
                     }
 
-                    // Save or update player stats for this map
+                    // Lưu hoặc cập nhật số liệu thống kê người chơi cho ván đấu
                     int? winnerMvpId = null;
                     int? loserMvpId = null;
                     double maxWinnerPts = -999999;
@@ -910,7 +566,7 @@ namespace EsportsTournamentManager.Services
                         losingTeamId = match.Team1Id;
                     }
 
-                    // Load all players' TeamIds in memory for quick lookup
+                    // Tải TeamId của tất cả tuyển thủ trong bộ nhớ để tra cứu nhanh
                     var playerTeamIds = db.Players
                         .Where(p => p.TeamId == match.Team1Id || p.TeamId == match.Team2Id)
                         .ToDictionary(p => p.PlayerId, p => p.TeamId);
@@ -944,7 +600,7 @@ namespace EsportsTournamentManager.Services
                             db.Entry(existingStat).State = EntityState.Modified;
                         }
 
-                        // Calculate PTS
+                        // Tính điểm Performance Points (PTS) cho tuyển thủ
                         double pts = existingStat.PerformancePoints;
                         
                         playerTeamIds.TryGetValue(inputStat.PlayerId, out int playerTeamId);
@@ -967,9 +623,9 @@ namespace EsportsTournamentManager.Services
                         }
                     }
 
-                    db.SaveChanges(); // Persist stats so we can find them and set IsMvpOfMap
+                    db.SaveChanges(); // Lưu để đảm bảo thống kê đã được ghi nhận trước khi gán cờ IsMvpOfMap
 
-                    // Set IsMvpOfMap to true for the Winner MVP and Loser MVP
+                    // Đánh dấu cờ IsMvpOfMap cho Winner MVP và Loser MVP trong ván này
                     var mapStats = db.PlayerStats.Where(ps => ps.MatchMapId == existingMap.MatchMapId).ToList();
                     foreach (var stat in mapStats)
                     {
@@ -984,7 +640,7 @@ namespace EsportsTournamentManager.Services
                 db.SaveChanges();
             }
 
-            // Calculate Match Scores from Map Scores
+            // Tính toán tổng điểm số trận đấu dựa trên kết quả các ván đấu (Maps)
             int calculatedTeam1Score = 0;
             int calculatedTeam2Score = 0;
 
@@ -1000,7 +656,7 @@ namespace EsportsTournamentManager.Services
                 }
             }
 
-            // Call existing UpdateMatchResult to handle winner advancement
+            // Gọi hàm cập nhật kết quả trận đấu để tiến hành phân nhánh đấu tiếp theo
             UpdateMatchResult(matchId, calculatedTeam1Score, calculatedTeam2Score, status, null);
         }
     }
