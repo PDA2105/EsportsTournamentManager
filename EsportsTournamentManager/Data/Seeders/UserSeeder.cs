@@ -16,8 +16,9 @@ namespace EsportsTournamentManager.Data.Seeders
                 context.Users.Remove(oldReferee);
             }
 
-            // Seed admin if not exists
-            if (!context.Users.Any(u => u.Username.ToLower() == "admin"))
+            // Gieo (Seed) tài khoản admin nếu chưa có, hoặc cập nhật nếu đã có để đồng bộ mật khẩu mới
+            var adminUser = context.Users.FirstOrDefault(u => u.Username.ToLower() == "admin");
+            if (adminUser == null)
             {
                 context.Users.Add(new User
                 {
@@ -27,9 +28,14 @@ namespace EsportsTournamentManager.Data.Seeders
                     Role = "Admin"
                 });
             }
+            else
+            {
+                adminUser.PasswordHash = PasswordHasher.HashPassword("admin123");
+            }
 
-            // Seed user if not exists
-            if (!context.Users.Any(u => u.Username.ToLower() == "user"))
+            // Gieo (Seed) tài khoản user thường nếu chưa có, hoặc cập nhật nếu đã có để đồng bộ mật khẩu mới
+            var defaultUser = context.Users.FirstOrDefault(u => u.Username.ToLower() == "user");
+            if (defaultUser == null)
             {
                 context.Users.Add(new User
                 {
@@ -38,6 +44,10 @@ namespace EsportsTournamentManager.Data.Seeders
                     FullName = "Default User",
                     Role = "User"
                 });
+            }
+            else
+            {
+                defaultUser.PasswordHash = PasswordHasher.HashPassword("user123");
             }
 
             context.SaveChanges();
