@@ -15,8 +15,6 @@ namespace EsportsTournamentManager.Models
 
         public string Position { get; set; }
 
-        public string AvatarPath { get; set; }
-
         public bool IsActive { get; set; } = true;
 
         public virtual Team Team { get; set; }

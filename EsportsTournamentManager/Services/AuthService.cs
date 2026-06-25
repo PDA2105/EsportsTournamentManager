@@ -5,10 +5,17 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Services
 {
+    /// <summary>
+    /// Lớp dịch vụ quản lý xác thực người dùng (Đăng nhập, Đăng xuất, Đăng ký và Khởi tạo tài khoản).
+    /// </summary>
     public class AuthService
     {
         private static readonly object _lock = new object();
         private static AuthService _instance;
+
+        /// <summary>
+        /// Thể hiện duy nhất (Singleton Instance) của lớp AuthService.
+        /// </summary>
         public static AuthService Instance
         {
             get
@@ -20,13 +27,22 @@ namespace EsportsTournamentManager.Services
             }
         }
 
+        /// <summary>
+        /// Thông tin người dùng hiện tại đang đăng nhập hệ thống.
+        /// </summary>
         public User CurrentUser { get; private set; }
 
+        /// <summary>
+        /// Constructor khởi tạo AuthService và tự động seed tài khoản mặc định.
+        /// </summary>
         public AuthService()
         {
             SeedInitialUsers();
         }
 
+        /// <summary>
+        /// Khởi tạo dữ liệu người dùng mặc định (Admin/User) khi ứng dụng chạy lần đầu.
+        /// </summary>
         public void SeedInitialUsers()
         {
             try
@@ -38,10 +54,16 @@ namespace EsportsTournamentManager.Services
             }
             catch
             {
-                // Suppress database connection errors on static initialization
+                // Bỏ qua lỗi kết nối database trong quá trình khởi tạo tĩnh ban đầu
             }
         }
 
+        /// <summary>
+        /// Đăng nhập tài khoản bằng tên người dùng và mật khẩu.
+        /// </summary>
+        /// <param name="username">Tên đăng nhập</param>
+        /// <param name="password">Mật khẩu chưa mã hóa</param>
+        /// <returns>True nếu đăng nhập thành công, ngược lại False</returns>
         public bool Login(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -59,11 +81,22 @@ namespace EsportsTournamentManager.Services
             return false;
         }
 
+        /// <summary>
+        /// Đăng xuất người dùng hiện tại ra khỏi hệ thống.
+        /// </summary>
         public void Logout()
         {
             CurrentUser = null;
         }
 
+        /// <summary>
+        /// Đăng ký tài khoản người dùng mới vào cơ sở dữ liệu.
+        /// </summary>
+        /// <param name="username">Tên đăng nhập</param>
+        /// <param name="password">Mật khẩu chưa mã hóa</param>
+        /// <param name="fullName">Họ và tên đầy đủ</param>
+        /// <param name="role">Vai trò (Admin/User)</param>
+        /// <returns>True nếu đăng ký thành công, False nếu tài khoản đã tồn tại</returns>
         public bool Register(string username, string password, string fullName, string role)
         {
             using (var db = new AppDbContext())
