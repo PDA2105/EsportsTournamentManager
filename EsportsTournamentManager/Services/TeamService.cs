@@ -6,15 +6,10 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Services
 {
-    /// <summary>
-    /// Lớp dịch vụ quản lý các thao tác CRUD và truy vấn thông tin Đội tuyển (Team).
-    /// </summary>
+    // Dịch vụ quản lý các thao tác CRUD và truy vấn thông tin Đội tuyển (Team)
     public class TeamService
     {
-        /// <summary>
-        /// Lấy danh sách tất cả các đội tuyển hiện có trong cơ sở dữ liệu.
-        /// </summary>
-        /// <returns>Danh sách tất cả đội tuyển</returns>
+        // Lấy danh sách tất cả các đội tuyển trong hệ thống
         public List<Team> GetAllTeams()
         {
             using (var db = new AppDbContext())
@@ -23,11 +18,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Lấy thông tin chi tiết của một đội tuyển theo ID.
-        /// </summary>
-        /// <param name="teamId">ID đội tuyển</param>
-        /// <returns>Đối tượng đội tuyển tương ứng hoặc null nếu không tìm thấy</returns>
+        // Lấy thông tin chi tiết đội tuyển theo ID
         public Team GetTeamById(int teamId)
         {
             using (var db = new AppDbContext())
@@ -36,10 +27,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Thêm mới một đội tuyển vào hệ thống.
-        /// </summary>
-        /// <param name="team">Đối tượng đội tuyển cần thêm</param>
+        // Thêm mới một đội tuyển vào hệ thống
         public void AddTeam(Team team)
         {
             using (var db = new AppDbContext())
@@ -49,10 +37,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Cập nhật thông tin chi tiết của một đội tuyển đã tồn tại.
-        /// </summary>
-        /// <param name="team">Đối tượng đội tuyển đã chỉnh sửa</param>
+        // Cập nhật thông tin chi tiết đội tuyển đã tồn tại
         public void UpdateTeam(Team team)
         {
             using (var db = new AppDbContext())
@@ -62,10 +47,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Xóa một đội tuyển ra khỏi hệ thống theo ID.
-        /// </summary>
-        /// <param name="teamId">ID đội tuyển cần xóa</param>
+        // Xóa đội tuyển khỏi hệ thống theo ID
         public void DeleteTeam(int teamId)
         {
             using (var db = new AppDbContext())

@@ -170,24 +170,8 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-            // Top Panel (Map name, map score, MVP map text)
+            // Top Panel (Map score, MVP map text)
             var topPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 10) };
-
-            topPanel.Children.Add(new TextBlock { Text = "Tên ván: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
-            var txtMapName = new TextBox
-            {
-                Text = map.SelectedMapName,
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B")),
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F9FAFB")),
-                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#334155")),
-                Padding = new Thickness(5),
-                Width = 120,
-                Height = 28,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 15, 0)
-            };
-            txtMapName.TextChanged += (s, e) => map.SelectedMapName = txtMapName.Text;
-            topPanel.Children.Add(txtMapName);
 
             // MVP Map TextBlock
             var mvpMapText = new TextBlock
@@ -199,19 +183,15 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             };
 
             // Team 1 score
-            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team1?.Acronym} Điểm: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
+            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team1?.Acronym}: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
             var txtT1Score = new TextBox
             {
+                Style = FindResource("DialogTextBox") as Style,
                 Text = map.Team1RoundScore.ToString(),
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B")),
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F9FAFB")),
-                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#334155")),
-                Padding = new Thickness(5),
                 Width = 40,
                 Height = 28,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 15, 0),
-                HorizontalContentAlignment = HorizontalAlignment.Center
+                Margin = new Thickness(0, 0, 15, 0)
             };
             txtT1Score.TextChanged += (s, e) => {
                 int score;
@@ -226,19 +206,15 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             topPanel.Children.Add(txtT1Score);
 
             // Team 2 score
-            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team2?.Acronym} Điểm: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
+            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team2?.Acronym}: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
             var txtT2Score = new TextBox
             {
+                Style = FindResource("DialogTextBox") as Style,
                 Text = map.Team2RoundScore.ToString(),
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B")),
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F9FAFB")),
-                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#334155")),
-                Padding = new Thickness(5),
                 Width = 40,
                 Height = 28,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 15, 0),
-                HorizontalContentAlignment = HorizontalAlignment.Center
+                Margin = new Thickness(0, 0, 15, 0)
             };
             txtT2Score.TextChanged += (s, e) => {
                 int score;

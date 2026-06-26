@@ -61,7 +61,7 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="12" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1">
+    <Border CornerRadius="5" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1">
         <Grid Margin="25">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/> <!-- Header -->

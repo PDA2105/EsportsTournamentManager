@@ -115,7 +115,7 @@
         <!-- PANEL A: TEAMS LIST SECTION (Full Width)       -->
         <!-- ============================================== -->
         <Grid x:Name="PanelTeams" Visibility="Visible">
-            <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+            <Border Background="#111827" CornerRadius="5" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header / Title -->
@@ -221,7 +221,7 @@
         <!-- PANEL B: PLAYERS LIST SECTION (Full Width)     -->
         <!-- ============================================== -->
         <Grid x:Name="PanelPlayers" Visibility="Collapsed">
-            <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+            <Border Background="#111827" CornerRadius="5" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header / Title -->

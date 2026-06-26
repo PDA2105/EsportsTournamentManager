@@ -7,17 +7,10 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Services
 {
-    /// <summary>
-    /// Lớp dịch vụ quản lý việc tạo nhánh đấu (bracket) và xử lý logic tiến/lùi (advance/rollback) các trận đấu.
-    /// </summary>
+    // Dịch vụ quản lý tạo nhánh đấu (bracket) và tiến/lùi (advance/rollback) trận đấu
     public class BracketService
     {
-        /// <summary>
-        /// Tạo nhánh đấu loại trực tiếp (Single Elimination) cho giải đấu.
-        /// Sinh ra các trận đấu từ vòng chung kết ngược về vòng đầu tiên và gán ngẫu nhiên các đội vào Vòng 1.
-        /// </summary>
-        /// <param name="db">Context kết nối cơ sở dữ liệu</param>
-        /// <param name="tournament">Đối tượng giải đấu cần tạo nhánh</param>
+        // Tạo nhánh đấu loại trực tiếp (Single Elimination) và xếp cặp ngẫu nhiên Vòng 1
         public void GenerateSingleEliminationBracket(AppDbContext db, Tournament tournament)
         {
             var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
@@ -77,12 +70,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Tạo lịch thi đấu theo thể thức vòng tròn tính điểm (Round Robin).
-        /// Sử dụng thuật toán xoay vòng (Circle Method) để bắt cặp đối đầu giữa các đội tuyển.
-        /// </summary>
-        /// <param name="db">Context kết nối cơ sở dữ liệu</param>
-        /// <param name="tournament">Đối tượng giải đấu cần tạo lịch</param>
+        // Tạo lịch thi đấu theo thể thức vòng tròn tính điểm (Round Robin) bằng thuật toán xoay vòng (Circle Method)
         public void GenerateRoundRobinBracket(AppDbContext db, Tournament tournament)
         {
             var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
@@ -137,12 +125,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Tạo nhánh đấu thắng thua (Double Elimination) cho giải đấu (chỉ hỗ trợ quy mô 4 hoặc 8 đội).
-        /// Xây dựng trước toàn bộ cấu trúc sơ đồ các trận đấu của nhánh Thắng (Winner), nhánh Thua (Loser) và Chung kết Tổng.
-        /// </summary>
-        /// <param name="db">Context kết nối cơ sở dữ liệu</param>
-        /// <param name="tournament">Đối tượng giải đấu cần tạo nhánh</param>
+        // Tạo nhánh đấu nhánh thắng nhánh thua (Double Elimination) cho 4 hoặc 8 đội
         public void GenerateDoubleEliminationBracket(AppDbContext db, Tournament tournament)
         {
             var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
@@ -257,12 +240,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Tìm trận đấu đích ở nhánh Thua dựa trên trận đấu hiện tại ở nhánh Thắng để sẵn sàng chuyển đội thua xuống.
-        /// </summary>
-        /// <param name="db">Context kết nối cơ sở dữ liệu</param>
-        /// <param name="currentMatch">Trận đấu hiện tại ở nhánh thắng</param>
-        /// <returns>Trận đấu nhánh thua tương ứng sẽ tiếp nhận đội thua cuộc</returns>
+        // Tìm trận đấu nhánh thua tương ứng để chuyển đội thua từ nhánh thắng xuống
         public Match FindLoserDestinationMatch(AppDbContext db, Match currentMatch)
         {
             int maxTeams = currentMatch.Tournament.MaxTeams;
@@ -317,12 +295,7 @@ namespace EsportsTournamentManager.Services
             return null;
         }
 
-        /// <summary>
-        /// Thiết lập ID đội tuyển thua cuộc vào vị trí Team 1 hoặc Team 2 của trận đấu đích tương ứng ở nhánh thua.
-        /// </summary>
-        /// <param name="targetMatch">Trận đấu nhánh thua cần điền đội</param>
-        /// <param name="sourceMatch">Trận đấu nhánh thắng nguồn vừa kết thúc</param>
-        /// <param name="loserId">ID đội tuyển thua cuộc</param>
+        // Điền ID đội tuyển thua cuộc vào trận đấu nhánh thua tương ứng
         public void SetLoserInMatch(Match targetMatch, Match sourceMatch, int loserId)
         {
             int maxTeams = sourceMatch.Tournament.MaxTeams;
@@ -360,13 +333,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Thu hồi (Rollback) dữ liệu và kết quả của trận đấu nhánh thua nếu trận đấu nhánh thắng trước đó có thay đổi kết quả.
-        /// Xóa bản đồ (maps) và đệ quy thu hồi các vòng sau nếu cần.
-        /// </summary>
-        /// <param name="db">Context kết nối cơ sở dữ liệu</param>
-        /// <param name="loserMatch">Trận đấu nhánh thua bị ảnh hưởng</param>
-        /// <param name="loserIdToRemove">ID đội tuyển nhánh thua cần rút lại</param>
+        // Thu hồi kết quả trận đấu nhánh thua nếu trận nhánh thắng tương ứng bị rollback
         public void RollbackLoserMatch(AppDbContext db, Match loserMatch, int loserIdToRemove)
         {
             bool affected = false;
@@ -401,12 +368,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Thu hồi (Rollback) đệ quy kết quả của các trận đấu kế tiếp ở vòng sau khi đội thắng ở vòng trước bị thay đổi.
-        /// </summary>
-        /// <param name="db">Context kết nối cơ sở dữ liệu</param>
-        /// <param name="currentMatch">Trận đấu nguồn vừa bị rollback</param>
-        /// <param name="winnerIdToRemove">ID đội tuyển thắng cuộc bị hủy tiến trình</param>
+        // Đệ quy thu hồi kết quả của các trận đấu kế tiếp ở vòng sau
         public void RollbackNextMatches(AppDbContext db, Match currentMatch, int winnerIdToRemove)
         {
             if (currentMatch.NextMatchId.HasValue)
@@ -448,12 +410,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Lấy số lượng trận đấu tối đa (vòng đấu tối đa) mà một đội tuyển có thể thi đấu trong giải đấu dựa theo thể thức.
-        /// Dùng cho việc tính toán phân bổ điểm số MVP của giải đấu.
-        /// </summary>
-        /// <param name="tournament">Đối tượng giải đấu cần tính toán</param>
-        /// <returns>Số trận đấu tối đa có thể tham gia</returns>
+        // Lấy số lượng trận đấu tối đa mà một đội có thể thi đấu theo thể thức
         public int GetMaxPossibleMatches(Tournament tournament)
         {
             if (tournament == null) return 1;
