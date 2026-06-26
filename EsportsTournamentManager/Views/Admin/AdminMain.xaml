@@ -6,6 +6,7 @@
              xmlns:dashboard="clr-namespace:EsportsTournamentManager.Views.Admin.Dashboard"
              xmlns:teams="clr-namespace:EsportsTournamentManager.Views.Admin.Teams"
              xmlns:tournaments="clr-namespace:EsportsTournamentManager.Views.Admin.Tournaments"
+             xmlns:prizepools="clr-namespace:EsportsTournamentManager.Views.Admin.PrizePools"
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="1100">
     <Grid>
@@ -59,6 +60,13 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🏆" FontSize="16" Margin="0,0,10,0"/>
                             <TextBlock Text="Giải đấu &amp; Lịch đấu" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnMenuPrizePools" Style="{StaticResource SidebarButton}" Click="MenuButton_Click" Tag="PrizePools">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💵" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Cơ cấu giải thưởng" FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -171,6 +179,7 @@
                 <dashboard:DashboardView x:Name="DashboardSection" Visibility="Visible"/>
                 <teams:TeamsView x:Name="TeamsSection" Visibility="Collapsed"/>
                 <tournaments:TournamentsView x:Name="TournamentsSection" Visibility="Collapsed"/>
+                <prizepools:PrizePoolsView x:Name="PrizePoolsSection" Visibility="Collapsed"/>
             </Grid>
         </Grid>
     </Grid>

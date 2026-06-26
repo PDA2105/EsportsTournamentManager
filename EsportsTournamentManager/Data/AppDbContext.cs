@@ -18,7 +18,6 @@ namespace EsportsTournamentManager.Data
         public DbSet<Player> Players { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<TournamentTeam> TournamentTeams { get; set; }
-        public DbSet<MapPool> MapPools { get; set; }
         public DbSet<PrizePool> PrizePools { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<MatchMap> MatchMaps { get; set; }
@@ -71,12 +70,7 @@ namespace EsportsTournamentManager.Data
                 .HasForeignKey(tt => tt.TeamId)
                 .WillCascadeOnDelete(true);
 
-            // 5. MapPool & PrizePool relationships
-            modelBuilder.Entity<MapPool>()
-                .HasRequired(mp => mp.Tournament)
-                .WithMany(t => t.MapPools)
-                .HasForeignKey(mp => mp.TournamentId)
-                .WillCascadeOnDelete(true);
+            // 5. PrizePool relationship
 
             modelBuilder.Entity<PrizePool>()
                 .HasRequired(pp => pp.Tournament)

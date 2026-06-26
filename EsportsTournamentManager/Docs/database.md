@@ -1,7 +1,7 @@
 ### Các mối quan hệ cốt lõi (Core Relationships):
 1. **Users - Tournaments:** Một `User` (Admin) tạo nhiều giải đấu.
 2. **Tournaments - Teams (M-N qua TournamentTeams):** Một giải đấu có nhiều đội tham gia, một đội có thể đăng ký đá nhiều giải khác nhau.
-3. **Tournaments - PrizePools / MapPools (1-N):** Một giải đấu cấu hình một danh mục giải thưởng cụ thể và một danh sách các bản đồ được phép cấm/chọn (Map Pool).
+3. **Tournaments - PrizePools (1-N):** Một giải đấu cấu hình một danh mục giải thưởng cụ thể.
 4. **Teams - Players (1-N):** Một đội tuyển (`Team`) sở hữu nhiều tuyển thủ (`Player`), nhưng tại một thời điểm một tuyển thủ chỉ thuộc một đội duy nhất.
 5. **Matches - MatchMaps (1-N):** Một trận đấu diễn ra theo thể thức (BO1, BO3, BO5). Một trận đấu (`Match`) sẽ gồm nhiều ván đấu đơn lẻ (`MatchMaps`).
 6. **MatchMaps - PlayerStats (1-N):** Trong mỗi ván đấu (`MatchMap`), hệ thống lưu lại chi tiết chỉ số KDA, MVP của từng tuyển thủ (`Player`) tham gia ván đó.
@@ -72,14 +72,7 @@
 | **SeedNumber** | INTEGER | Nullable | Số thứ tự hạt giống phục vụ thuật toán Smart Seeding |
 | **RegisteredAt** | DATETIME | Default CURRENT_TIMESTAMP | Ngày giờ đội tuyển đăng ký tham gia giải |
 
-### 2.6 Bảng `MapPools` (Danh mục Bản đồ thi đấu của Giải)
-* **Mục đích:** Quy định các map đấu nào được phép sử dụng trong một giải đấu (Đặc biệt quan trọng với Valorant, CS2).
 
-| Tên trường | Kiểu dữ liệu | Ràng buộc | Mô tả |
-| :--- | :--- | :--- | :--- |
-| **Id** | INTEGER | PK, Auto Increment | Khóa chính |
-| **TournamentId** | INTEGER | FK (Tournaments.Id), On Delete Cascade | Thuộc về giải đấu nào |
-| **MapName** | VARCHAR(50) | Not Null | Tên bản đồ (Ví dụ: Ascent, Bind, Dust II, Mirage) |
 
 ### 2.7 Bảng `PrizePools` (Cơ cấu Giải thưởng)
 * **Mục đích:** Quản lý tài chính, phân chia cơ cấu tiền thưởng và phần quà của giải đấu.

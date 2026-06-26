@@ -70,6 +70,10 @@
     <Compile Include="Migrations\202606260335107_RemoveAuditLog.Designer.cs">
       <DependentUpon>202606260335107_RemoveAuditLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606260340524_RemoveMapPool.cs" />
+    <Compile Include="Migrations\202606260340524_RemoveMapPool.Designer.cs">
+      <DependentUpon>202606260340524_RemoveMapPool.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="Services\PasswordHasher.cs" />
@@ -116,6 +120,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Admin\PrizePools\PrizePoolsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\User\UserMain.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -155,6 +163,9 @@
     <Compile Include="Views\Admin\Tournaments\TournamentsView.xaml.cs">
       <DependentUpon>TournamentsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Admin\PrizePools\PrizePoolsView.xaml.cs">
+      <DependentUpon>PrizePoolsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Admin\Tournaments\TournamentDialog.xaml.cs">
       <DependentUpon>TournamentDialog.xaml</DependentUpon>
     </Compile>
@@ -185,7 +196,6 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Team.cs" />
-    <Compile Include="Models\MapPool.cs" />
     <Compile Include="Models\Match.cs" />
     <Compile Include="Models\MatchMap.cs" />
     <Compile Include="Models\PlayerStat.cs" />
@@ -220,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606260335107_RemoveAuditLog.resx">
       <DependentUpon>202606260335107_RemoveAuditLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606260340524_RemoveMapPool.resx">
+      <DependentUpon>202606260340524_RemoveMapPool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

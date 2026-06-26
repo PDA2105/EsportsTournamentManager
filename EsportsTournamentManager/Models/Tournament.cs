@@ -26,7 +26,6 @@ namespace EsportsTournamentManager.Models
         public virtual User CreatedByUser { get; set; }
 
         public virtual ICollection<TournamentTeam> TournamentTeams { get; set; } = new List<TournamentTeam>();
-        public virtual ICollection<MapPool> MapPools { get; set; } = new List<MapPool>();
         public virtual ICollection<PrizePool> PrizePools { get; set; } = new List<PrizePool>();
         public virtual ICollection<Match> Matches { get; set; } = new List<Match>();
     }
