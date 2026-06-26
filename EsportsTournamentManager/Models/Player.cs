@@ -17,6 +17,12 @@ namespace EsportsTournamentManager.Models
 
         public bool IsActive { get; set; } = true;
 
+        public string Nationality { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+
+        public string ImagePath { get; set; }
+
         public virtual Team Team { get; set; }
         public virtual ICollection<PlayerStat> PlayerStats { get; set; } = new List<PlayerStat>();
     }

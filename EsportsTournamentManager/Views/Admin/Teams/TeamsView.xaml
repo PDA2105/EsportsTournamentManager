@@ -277,9 +277,11 @@
                     <DataGrid x:Name="GridPlayers" Grid.Row="2" Style="{StaticResource PremiumDataGrid}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="In-Game ID" Binding="{Binding InGameName}" Width="2.5*"/>
-                            <DataGridTextColumn Header="Họ Tên Thật" Binding="{Binding RealName}" Width="3.5*"/>
-                            <DataGridTextColumn Header="Vị Trí" Binding="{Binding Position}" Width="2*"/>
-                            <DataGridTemplateColumn Header="Trạng Thái" Width="2*">
+                            <DataGridTextColumn Header="Họ Tên Thật" Binding="{Binding RealName}" Width="3*"/>
+                            <DataGridTextColumn Header="Vị Trí" Binding="{Binding Position}" Width="1.5*"/>
+                            <DataGridTextColumn Header="Quốc Tịch" Binding="{Binding Nationality}" Width="2*"/>
+                            <DataGridTextColumn Header="Ngày Sinh" Binding="{Binding DateOfBirth, StringFormat=\{0:dd/MM/yyyy\}}" Width="2*"/>
+                            <DataGridTemplateColumn Header="Trạng Thái" Width="1.5*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border Background="{Binding IsActive, Converter={StaticResource BooleanToStatusBgConverter}}" CornerRadius="4" Padding="12,4" HorizontalAlignment="Left" VerticalAlignment="Center">

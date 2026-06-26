@@ -17,6 +17,7 @@ namespace EsportsTournamentManager.Data.Seeders
                     TeamName = "T1 Esports",
                     Acronym = "T1",
                     Coach = "Kim 'kkOma' Jeong-gyun",
+                    Region = "LCK",
                     CreatedDate = DateTime.Now,
                     Players = new List<Player>
                     {
@@ -39,6 +40,7 @@ namespace EsportsTournamentManager.Data.Seeders
                     TeamName = "Gen.G Esports",
                     Acronym = "GEN",
                     Coach = "Kim 'KIM' Jeong-soo",
+                    Region = "LCK",
                     CreatedDate = DateTime.Now,
                     Players = new List<Player>
                     {
@@ -61,6 +63,7 @@ namespace EsportsTournamentManager.Data.Seeders
                     TeamName = "Hanwha Life Esports",
                     Acronym = "HLE",
                     Coach = "Choi 'DanDy' In-kyu",
+                    Region = "LCK",
                     CreatedDate = DateTime.Now,
                     Players = new List<Player>
                     {
@@ -83,6 +86,7 @@ namespace EsportsTournamentManager.Data.Seeders
                     TeamName = "Dplus KIA",
                     Acronym = "DK",
                     Coach = "Lee 'Zefa' Jae-min",
+                    Region = "LCK",
                     CreatedDate = DateTime.Now,
                     Players = new List<Player>
                     {

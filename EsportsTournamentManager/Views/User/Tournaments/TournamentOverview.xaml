@@ -1,0 +1,213 @@
+<UserControl x:Class="EsportsTournamentManager.Views.User.Tournaments.TournamentOverview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="1100">
+    <UserControl.Resources>
+        <!-- Hyperlink Button Style -->
+        <Style x:Key="HyperlinkButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#6366F1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}" TextDecorations="Underline" Foreground="{TemplateBinding Foreground}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#818CF8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header (Back + Title) -->
+            <RowDefinition Height="*"/>    <!-- Content Area (Split Left Info & Right Matches) -->
+        </Grid.RowDefinitions>
+
+        <!-- Back & Title -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="← Quay lại Trang chủ" Style="{StaticResource HyperlinkButton}" Foreground="{StaticResource TextMuted}" FontSize="14" FontWeight="SemiBold" Click="BtnBackToHome_Click" Margin="0,0,20,0" VerticalAlignment="Center"/>
+            <TextBlock x:Name="TxtTournamentOverviewHeader" Grid.Column="1" Text="TỔNG QUAN GIẢI ĐẤU" Foreground="{StaticResource TextLight}" FontSize="18" FontWeight="Black" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Columns -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Info -->
+            <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,20,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="THÔNG TIN CHI TIẾT" Foreground="{StaticResource TextMuted}" FontSize="11" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                            <UniformGrid Columns="2">
+                                <StackPanel Margin="0,0,10,12">
+                                    <TextBlock Text="Bộ môn:" Foreground="{StaticResource TextMuted}" FontSize="11" Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="TxtInfoGameType" Text="LoL" Foreground="{StaticResource TextLight}" FontSize="15" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock Text="Thể thức:" Foreground="{StaticResource TextMuted}" FontSize="11" Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="TxtInfoFormat" Text="Loại trực tiếp" Foreground="{StaticResource TextLight}" FontSize="15" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,10,12">
+                                    <TextBlock Text="Số đội tuyển:" Foreground="{StaticResource TextMuted}" FontSize="11" Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="TxtInfoMaxTeams" Text="8 Đội tối đa" Foreground="{StaticResource TextLight}" FontSize="15" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock Text="Trạng thái:" Foreground="{StaticResource TextMuted}" FontSize="11" Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="TxtInfoStatus" Text="Chờ bắt đầu" Foreground="#38BDF8" FontSize="15" FontWeight="Bold"/>
+                                </StackPanel>
+                            </UniformGrid>
+
+                            <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,5,0,15"/>
+
+                            <!-- Dynamic statistics -->
+                            <TextBlock Text="THỐNG KÊ GIẢI ĐẤU" Foreground="{StaticResource TextMuted}" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <UniformGrid Columns="2" Margin="0,0,0,15">
+                                <StackPanel Margin="0,0,10,10">
+                                    <TextBlock Text="Hạ gục trung bình/ván:" Foreground="{StaticResource TextMuted}" FontSize="11"/>
+                                    <TextBlock x:Name="TxtOverviewAvgKills" Text="0.0" Foreground="{StaticResource TextLight}" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Chỉ số lính TB/ván:" Foreground="{StaticResource TextMuted}" FontSize="11"/>
+                                    <TextBlock x:Name="TxtOverviewAvgCS" Text="0.0" Foreground="{StaticResource TextLight}" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,10,10">
+                                    <TextBlock Text="Sát thương TB/ván:" Foreground="{StaticResource TextMuted}" FontSize="11"/>
+                                    <TextBlock x:Name="TxtOverviewAvgDamage" Text="0.0" Foreground="{StaticResource TextLight}" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Đội Winrate cao nhất:" Foreground="{StaticResource TextMuted}" FontSize="11"/>
+                                    <TextBlock x:Name="TxtOverviewTopTeam" Text="Chưa có" Foreground="#F59E0B" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </UniformGrid>
+
+                            <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Margin="0,5,0,15"/>
+
+                            <!-- Champion & MVP Section -->
+                            <UniformGrid Columns="2">
+                                <StackPanel Margin="0,0,10,0">
+                                    <TextBlock Text="ĐỘI VÔ ĐỊCH" Foreground="{StaticResource TextMuted}" FontSize="11" FontWeight="Bold" Margin="0,0,0,8"/>
+                                    <Border x:Name="PanelTournamentChampion" Background="#1E1B4B" BorderBrush="#F59E0B" BorderThickness="1" CornerRadius="6" Padding="10" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🏆" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                            <Button x:Name="TxtChampionName" Content="T1" Style="{StaticResource HyperlinkButton}" Foreground="#F59E0B" FontSize="13" FontWeight="Black" Click="TeamLink_Click"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <TextBlock x:Name="TxtChampionNotDecided" Text="Chưa xác định" Foreground="{StaticResource TextMuted}" FontSize="13" FontStyle="Italic"/>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <TextBlock Text="MVP GIẢI ĐẤU" Foreground="{StaticResource TextMuted}" FontSize="11" FontWeight="Bold" Margin="0,0,0,8"/>
+                                    <Border x:Name="PanelTournamentMvp" Background="#1E1B4B" BorderBrush="#4F46E5" BorderThickness="1" CornerRadius="6" Padding="10" Visibility="Collapsed">
+                                        <StackPanel>
+                                            <Button x:Name="TxtMvpName" Content="Faker" Style="{StaticResource HyperlinkButton}" Foreground="{StaticResource TextLight}" FontSize="13" FontWeight="Black" Click="PlayerLink_Click"/>
+                                            <TextBlock x:Name="TxtMvpScore" Text="Điểm TB: 24.5" Foreground="#10B981" FontSize="10" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <TextBlock x:Name="TxtMvpNotDecided" Text="Chưa xác định" Foreground="{StaticResource TextMuted}" FontSize="13" FontStyle="Italic"/>
+                                </StackPanel>
+                            </UniformGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Button x:Name="BtnViewBracket" Grid.Row="1" Content="Xem Nhánh Đấu &amp; Kết Quả →" Style="{StaticResource ActionButton}" Background="#6366F1" Foreground="#FFFFFF" Height="40" FontSize="13" FontWeight="Bold" Click="BtnViewBracket_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- Right Teams & Recent Matches -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.2*"/> <!-- Assigned Teams -->
+                    <RowDefinition Height="1.8*"/> <!-- Recent Matches -->
+                </Grid.RowDefinitions>
+
+                <!-- Teams -->
+                <Border Grid.Row="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="ĐỘI TUYỂN THAM GIA" Foreground="{StaticResource TextMuted}" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <ListView x:Name="ListShowTeams" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="{StaticResource TextLight}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4">
+                                        <Ellipse Width="6" Height="6" Fill="#6366F1" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <Button Content="{Binding TeamName}" Tag="{Binding}" Style="{StaticResource HyperlinkButton}" Foreground="{StaticResource TextLight}" FontSize="12.5" Click="TeamLink_Click"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Border>
+
+                <!-- Matches -->
+                <Border Grid.Row="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="LỊCH THI ĐẤU &amp; KẾT QUẢ" Foreground="{StaticResource TextMuted}" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="ListTournamentMatches">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,0,8" Cursor="Hand" MouseDown="MatchRow_MouseDown">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Team1.Acronym}" Foreground="{StaticResource TextLight}" FontSize="11" FontWeight="Bold" MaxWidth="80" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Team1Score}" Foreground="{StaticResource TextLight}" FontSize="12" FontWeight="Black"/>
+                                                    <TextBlock Text=":" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="3,0"/>
+                                                    <TextBlock Text="{Binding Team2Score}" Foreground="{StaticResource TextLight}" FontSize="12" FontWeight="Black"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="2" Text="{Binding Team2.Acronym}" Foreground="{StaticResource TextLight}" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right" MaxWidth="80" TextTrimming="CharacterEllipsis"/>
+                                                <Border Grid.Column="3" Background="#1E1B4B" CornerRadius="4" Padding="5,1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Status}" Foreground="{StaticResource AccentColor}" FontSize="9" FontWeight="Bold"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

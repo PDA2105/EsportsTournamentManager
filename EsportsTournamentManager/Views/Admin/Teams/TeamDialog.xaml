@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EsportsTournamentManager.Views.Admin.Teams"
         mc:Ignorable="d"
-        Title="Thông Tin Đội Tuyển" Height="450" Width="450"
+        Title="Thông Tin Đội Tuyển" Height="520" Width="450"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -63,6 +63,9 @@
 
                 <TextBlock Text="Tên Viết Tắt (Acronym) *" Foreground="#F9FAFB" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
                 <TextBox x:Name="TxtAcronym" Style="{StaticResource DialogTextBox}" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Khu Vực (Region) *" Foreground="#F9FAFB" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+                <TextBox x:Name="TxtRegion" Style="{StaticResource DialogTextBox}" Margin="0,0,0,15"/>
 
                 <TextBlock Text="Huấn Luyện Viên" Foreground="#F9FAFB" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
                 <TextBox x:Name="TxtCoach" Style="{StaticResource DialogTextBox}" Margin="0,0,0,15"/>

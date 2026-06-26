@@ -32,6 +32,10 @@ namespace EsportsTournamentManager.Views.Admin.Teams
                         break;
                     }
                 }
+
+                TxtNationality.Text = player.Nationality;
+                DpDateOfBirth.SelectedDate = player.DateOfBirth;
+                TxtImagePath.Text = player.ImagePath;
             }
             else
             {
@@ -52,6 +56,16 @@ namespace EsportsTournamentManager.Views.Admin.Teams
         {
             DialogResult = false;
             Close();
+        }
+
+        private void BrowseImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg;*.gif;*.bmp)|*.png;*.jpeg;*.jpg;*.gif;*.bmp|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                TxtImagePath.Text = openFileDialog.FileName;
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -76,6 +90,10 @@ namespace EsportsTournamentManager.Views.Admin.Teams
             {
                 Player.Position = null;
             }
+
+            Player.Nationality = string.IsNullOrWhiteSpace(TxtNationality.Text) ? null : TxtNationality.Text.Trim();
+            Player.DateOfBirth = DpDateOfBirth.SelectedDate;
+            Player.ImagePath = string.IsNullOrWhiteSpace(TxtImagePath.Text) ? null : TxtImagePath.Text.Trim();
 
             Player.IsActive = ChkIsActive.IsChecked ?? true;
 

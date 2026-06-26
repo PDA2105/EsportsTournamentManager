@@ -18,6 +18,7 @@ namespace EsportsTournamentManager.Services
                 return db.Tournaments
                     .Include(t => t.CreatedByUser)
                     .Include(t => t.TournamentTeams.Select(tt => tt.Team))
+                    .Include(t => t.Matches.Select(m => m.MatchMaps))
                     .ToList();
             }
         }
@@ -478,7 +479,11 @@ namespace EsportsTournamentManager.Services
                             MapNumber = inputMap.MapNumber,
                             SelectedMapName = inputMap.SelectedMapName ?? $"Ván {inputMap.MapNumber}",
                             Team1RoundScore = inputMap.Team1RoundScore,
-                            Team2RoundScore = inputMap.Team2RoundScore
+                            Team2RoundScore = inputMap.Team2RoundScore,
+                            Team1DragonsKilled = inputMap.Team1DragonsKilled,
+                            Team2DragonsKilled = inputMap.Team2DragonsKilled,
+                            Team1TowersDestroyed = inputMap.Team1TowersDestroyed,
+                            Team2TowersDestroyed = inputMap.Team2TowersDestroyed
                         };
                         db.MatchMaps.Add(existingMap);
                         db.SaveChanges(); // Lưu để lấy Map ID
@@ -488,6 +493,10 @@ namespace EsportsTournamentManager.Services
                         existingMap.SelectedMapName = inputMap.SelectedMapName ?? $"Ván {inputMap.MapNumber}";
                         existingMap.Team1RoundScore = inputMap.Team1RoundScore;
                         existingMap.Team2RoundScore = inputMap.Team2RoundScore;
+                        existingMap.Team1DragonsKilled = inputMap.Team1DragonsKilled;
+                        existingMap.Team2DragonsKilled = inputMap.Team2DragonsKilled;
+                        existingMap.Team1TowersDestroyed = inputMap.Team1TowersDestroyed;
+                        existingMap.Team2TowersDestroyed = inputMap.Team2TowersDestroyed;
                         db.Entry(existingMap).State = EntityState.Modified;
                     }
 
@@ -603,5 +612,327 @@ namespace EsportsTournamentManager.Services
             // Gọi hàm cập nhật kết quả trận đấu để tiến hành phân nhánh đấu tiếp theo
             UpdateMatchResult(matchId, calculatedTeam1Score, calculatedTeam2Score, status, null);
         }
+
+        // --- BỔ SUNG CÁC PHƯƠNG THỨC THỐNG KÊ CHO USER PORTAL ---
+
+        public DashboardSummary GetDashboardSummary()
+        {
+            using (var db = new AppDbContext())
+            {
+                return new DashboardSummary
+                {
+                    TotalTournament = db.Tournaments.Count(),
+                    TotalTeam = db.Teams.Count(),
+                    TotalPlayer = db.Players.Count(),
+                    ActiveMatch = db.Matches.Count(m => m.Status == "Live")
+                };
+            }
+        }
+
+        public List<Match> GetLiveMatches()
+        {
+            using (var db = new AppDbContext())
+            {
+                return db.Matches
+                    .Include(m => m.Team1)
+                    .Include(m => m.Team2)
+                    .Include(m => m.Tournament)
+                    .Where(m => m.Status == "Live")
+                    .ToList();
+            }
+        }
+
+        public List<TeamDashboardStats> GetTopTeams(int count)
+        {
+            using (var db = new AppDbContext())
+            {
+                var teams = db.Teams.ToList();
+                var completedMatches = db.Matches
+                    .Where(m => m.Status == "Completed" && m.WinnerTeamId.HasValue)
+                    .ToList();
+
+                var list = new List<TeamDashboardStats>();
+                foreach (var t in teams)
+                {
+                    int played = completedMatches.Count(m => m.Team1Id == t.TeamId || m.Team2Id == t.TeamId);
+                    int wins = completedMatches.Count(m => m.WinnerTeamId == t.TeamId);
+                    double rate = played > 0 ? (double)wins / played : 0.0;
+                    list.Add(new TeamDashboardStats
+                    {
+                        Team = t,
+                        Wins = wins,
+                        MatchesPlayed = played,
+                        WinRate = rate
+                    });
+                }
+
+                return list
+                    .OrderByDescending(x => x.WinRate)
+                    .ThenByDescending(x => x.Wins)
+                    .Take(count)
+                    .ToList();
+            }
+        }
+
+        public List<PlayerDashboardStats> GetTopPlayers(int count)
+        {
+            using (var db = new AppDbContext())
+            {
+                var allStats = db.PlayerStats
+                    .Include(ps => ps.Player.Team)
+                    .ToList();
+
+                if (!allStats.Any()) return new List<PlayerDashboardStats>();
+
+                return allStats
+                    .GroupBy(ps => ps.PlayerId)
+                    .Select(g => new PlayerDashboardStats
+                    {
+                        Player = g.First().Player,
+                        AveragePoints = g.Average(ps => ps.PerformancePoints),
+                        MatchesPlayed = g.Select(ps => ps.MatchMap.MatchId).Distinct().Count()
+                    })
+                    .OrderByDescending(x => x.AveragePoints)
+                    .Take(count)
+                    .ToList();
+            }
+        }
+
+        public TournamentStatsSummary GetTournamentOverviewStats(int tournamentId)
+        {
+            using (var db = new AppDbContext())
+            {
+                var stats = db.PlayerStats
+                    .Where(ps => ps.MatchMap.Match.TournamentId == tournamentId)
+                    .ToList();
+
+                double avgKills = stats.Any() ? stats.Average(ps => ps.Kills) * 5.0 : 0.0;
+                double avgDamage = stats.Any() ? stats.Average(ps => ps.DamageDealt) : 0.0;
+                double avgCS = stats.Any() ? stats.Average(ps => ps.CreepScore) : 0.0;
+
+                var tournamentTeams = db.TournamentTeams
+                    .Include(tt => tt.Team)
+                    .Where(tt => tt.TournamentId == tournamentId)
+                    .ToList();
+
+                var completedMatches = db.Matches
+                    .Where(m => m.TournamentId == tournamentId && m.Status == "Completed" && m.WinnerTeamId.HasValue)
+                    .ToList();
+
+                string topTeamName = "Chưa có";
+                double topTeamWinRate = 0.0;
+
+                foreach (var tt in tournamentTeams)
+                {
+                    int played = completedMatches.Count(m => m.Team1Id == tt.TeamId || m.Team2Id == tt.TeamId);
+                    int wins = completedMatches.Count(m => m.WinnerTeamId == tt.TeamId);
+                    double rate = played > 0 ? (double)wins / played : 0.0;
+                    if (rate > topTeamWinRate && played > 0)
+                    {
+                        topTeamWinRate = rate;
+                        topTeamName = tt.Team.TeamName;
+                    }
+                }
+
+                return new TournamentStatsSummary
+                {
+                    AvgKills = avgKills,
+                    AvgDamage = avgDamage,
+                    AvgCS = avgCS,
+                    TopTeamName = topTeamName,
+                    TopTeamWinRate = topTeamWinRate
+                };
+            }
+        }
+
+        public TeamDetailStatsSummary GetTeamDetailStats(int teamId)
+        {
+            using (var db = new AppDbContext())
+            {
+                var completedMatches = db.Matches
+                    .Include(m => m.Team1)
+                    .Include(m => m.Team2)
+                    .Include(m => m.Tournament)
+                    .Where(m => (m.Team1Id == teamId || m.Team2Id == teamId) && m.Status == "Completed")
+                    .ToList();
+
+                int wins = completedMatches.Count(m => m.WinnerTeamId == teamId);
+                int played = completedMatches.Count;
+                double winRate = played > 0 ? (double)wins / played : 0.0;
+
+                var stats = db.PlayerStats
+                    .Where(ps => ps.Player.TeamId == teamId)
+                    .ToList();
+
+                double avgKills = stats.Any() ? stats.Average(ps => ps.Kills) : 0.0;
+                double avgDamage = stats.Any() ? stats.Average(ps => ps.DamageDealt) : 0.0;
+                double avgCS = stats.Any() ? stats.Average(ps => ps.CreepScore) : 0.0;
+
+                var recentMatches = db.Matches
+                    .Include(m => m.Team1)
+                    .Include(m => m.Team2)
+                    .Include(m => m.Tournament)
+                    .Where(m => m.Team1Id == teamId || m.Team2Id == teamId)
+                    .OrderByDescending(m => m.ScheduledTime)
+                    .Take(5)
+                    .ToList();
+
+                return new TeamDetailStatsSummary
+                {
+                    WinRate = winRate,
+                    Wins = wins,
+                    MatchesPlayed = played,
+                    AvgKills = avgKills,
+                    AvgDamage = avgDamage,
+                    AvgCS = avgCS,
+                    RecentMatches = recentMatches
+                };
+            }
+        }
+
+        public PlayerDetailStatsSummary GetPlayerDetailStats(int playerId)
+        {
+            using (var db = new AppDbContext())
+            {
+                var player = db.Players
+                    .Include(p => p.Team)
+                    .FirstOrDefault(p => p.PlayerId == playerId);
+
+                if (player == null) return null;
+
+                var stats = db.PlayerStats
+                    .Include(ps => ps.MatchMap)
+                    .Where(ps => ps.PlayerId == playerId)
+                    .ToList();
+
+                double avgKills = stats.Any() ? stats.Average(ps => ps.Kills) : 0.0;
+                double avgDeaths = stats.Any() ? stats.Average(ps => ps.Deaths) : 0.0;
+                double avgAssists = stats.Any() ? stats.Average(ps => ps.Assists) : 0.0;
+                double avgDamage = stats.Any() ? stats.Average(ps => ps.DamageDealt) : 0.0;
+                double avgCS = stats.Any() ? stats.Average(ps => ps.CreepScore) : 0.0;
+                double avgPTS = stats.Any() ? stats.Average(ps => ps.PerformancePoints) : 0.0;
+                int played = stats.Select(ps => ps.MatchMap.MatchId).Distinct().Count();
+                int mvpCount = 0;
+                int playerTeamId = player.TeamId;
+                var winningMatches = db.Matches
+                    .Include(m => m.MatchMaps.Select(mm => mm.PlayerStats))
+                    .Where(m => m.Status == "Completed" && m.WinnerTeamId == playerTeamId)
+                    .ToList();
+
+                foreach (var match in winningMatches)
+                {
+                    var allMatchStats = match.MatchMaps
+                        .SelectMany(mm => mm.PlayerStats)
+                        .ToList();
+
+                    if (allMatchStats.Any())
+                    {
+                        var matchMvp = allMatchStats.GroupBy(ps => ps.PlayerId)
+                            .Select(g => new {
+                                PlayerId = g.Key,
+                                AvgPoints = g.Average(ps => ps.PerformancePoints)
+                            })
+                            .OrderByDescending(x => x.AvgPoints)
+                            .FirstOrDefault();
+
+                        if (matchMvp != null && matchMvp.PlayerId == playerId)
+                        {
+                            mvpCount++;
+                        }
+                    }
+                }
+
+                int teamId = player.TeamId;
+                var recentMatches = db.Matches
+                    .Include(m => m.Team1)
+                    .Include(m => m.Team2)
+                    .Include(m => m.Tournament)
+                    .Where(m => m.Team1Id == teamId || m.Team2Id == teamId)
+                    .OrderByDescending(m => m.ScheduledTime)
+                    .Take(5)
+                    .ToList();
+
+                return new PlayerDetailStatsSummary
+                {
+                    AvgKills = avgKills,
+                    AvgDeaths = avgDeaths,
+                    AvgAssists = avgAssists,
+                    AvgDamage = avgDamage,
+                    AvgCS = avgCS,
+                    AvgPTS = avgPTS,
+                    MatchesPlayed = played,
+                    MvpCount = mvpCount,
+                    Position = player.Position,
+                    RecentMatches = recentMatches
+                };
+            }
+        }
+    }
+
+    public class DashboardSummary
+    {
+        public int TotalTournament { get; set; }
+        public int TotalTeam { get; set; }
+        public int TotalPlayer { get; set; }
+        public int ActiveMatch { get; set; }
+    }
+
+    public class TeamDashboardStats
+    {
+        public Team Team { get; set; }
+        public int TeamId => Team?.TeamId ?? 0;
+        public string TeamName => Team?.TeamName;
+        public string LogoPath => Team?.LogoPath;
+        public int Wins { get; set; }
+        public int MatchesPlayed { get; set; }
+        public double WinRate { get; set; }
+        public string WinRateDisplay => $"{WinRate * 100:0.0}%";
+    }
+
+    public class PlayerDashboardStats
+    {
+        public Player Player { get; set; }
+        public int PlayerId => Player?.PlayerId ?? 0;
+        public string InGameName => Player?.InGameName;
+        public string TeamName => Player?.Team?.TeamName ?? "Tự do";
+        public double AveragePoints { get; set; }
+        public string PointsDisplay => $"{AveragePoints:0.0}";
+        public int MatchesPlayed { get; set; }
+    }
+
+    public class TournamentStatsSummary
+    {
+        public double AvgKills { get; set; }
+        public double AvgDamage { get; set; }
+        public double AvgCS { get; set; }
+        public string TopTeamName { get; set; }
+        public double TopTeamWinRate { get; set; }
+        public string TopTeamWinRateDisplay => $"{TopTeamWinRate * 100:0.0}%";
+    }
+
+    public class TeamDetailStatsSummary
+    {
+        public double WinRate { get; set; }
+        public string WinRateDisplay => $"{WinRate * 100:0.0}%";
+        public int Wins { get; set; }
+        public int MatchesPlayed { get; set; }
+        public double AvgKills { get; set; }
+        public double AvgDamage { get; set; }
+        public double AvgCS { get; set; }
+        public List<Match> RecentMatches { get; set; }
+    }
+
+    public class PlayerDetailStatsSummary
+    {
+        public double AvgKills { get; set; }
+        public double AvgDeaths { get; set; }
+        public double AvgAssists { get; set; }
+        public double AvgDamage { get; set; }
+        public double AvgCS { get; set; }
+        public double AvgPTS { get; set; }
+        public int MatchesPlayed { get; set; }
+        public int MvpCount { get; set; }
+        public string Position { get; set; }
+        public List<Match> RecentMatches { get; set; }
     }
 }

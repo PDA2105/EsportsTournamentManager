@@ -182,8 +182,8 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 Margin = new Thickness(20, 0, 0, 0)
             };
 
-            // Team 1 score
-            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team1?.Acronym}: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
+            // Team 1 score, dragons, towers
+            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team1?.Acronym} Điểm: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
             var txtT1Score = new TextBox
             {
                 Style = FindResource("DialogTextBox") as Style,
@@ -191,7 +191,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 Width = 40,
                 Height = 28,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 15, 0)
+                Margin = new Thickness(0, 0, 10, 0)
             };
             txtT1Score.TextChanged += (s, e) => {
                 int score;
@@ -205,8 +205,46 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             };
             topPanel.Children.Add(txtT1Score);
 
-            // Team 2 score
-            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team2?.Acronym}: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
+            topPanel.Children.Add(new TextBlock { Text = "🐲 Rồng: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F59E0B")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12, Margin = new Thickness(5, 0, 2, 0) });
+            var txtT1Dragons = new TextBox
+            {
+                Style = FindResource("DialogTextBox") as Style,
+                Text = map.Team1DragonsKilled.ToString(),
+                Width = 40,
+                Height = 28,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+            txtT1Dragons.TextChanged += (s, e) => {
+                int val;
+                if (int.TryParse(txtT1Dragons.Text, out val))
+                {
+                    map.Team1DragonsKilled = val;
+                }
+            };
+            topPanel.Children.Add(txtT1Dragons);
+
+            topPanel.Children.Add(new TextBlock { Text = "🗼 Trụ: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12, Margin = new Thickness(5, 0, 2, 0) });
+            var txtT1Towers = new TextBox
+            {
+                Style = FindResource("DialogTextBox") as Style,
+                Text = map.Team1TowersDestroyed.ToString(),
+                Width = 40,
+                Height = 28,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 25, 0) // Khoảng cách rộng để ngăn cách với Đội 2
+            };
+            txtT1Towers.TextChanged += (s, e) => {
+                int val;
+                if (int.TryParse(txtT1Towers.Text, out val))
+                {
+                    map.Team1TowersDestroyed = val;
+                }
+            };
+            topPanel.Children.Add(txtT1Towers);
+
+            // Team 2 score, dragons, towers
+            topPanel.Children.Add(new TextBlock { Text = $"{_match.Team2?.Acronym} Điểm: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12 });
             var txtT2Score = new TextBox
             {
                 Style = FindResource("DialogTextBox") as Style,
@@ -214,7 +252,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 Width = 40,
                 Height = 28,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 15, 0)
+                Margin = new Thickness(0, 0, 10, 0)
             };
             txtT2Score.TextChanged += (s, e) => {
                 int score;
@@ -227,6 +265,45 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
                 }
             };
             topPanel.Children.Add(txtT2Score);
+
+            topPanel.Children.Add(new TextBlock { Text = "🐲 Rồng: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F59E0B")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12, Margin = new Thickness(5, 0, 2, 0) });
+            var txtT2Dragons = new TextBox
+            {
+                Style = FindResource("DialogTextBox") as Style,
+                Text = map.Team2DragonsKilled.ToString(),
+                Width = 40,
+                Height = 28,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+            txtT2Dragons.TextChanged += (s, e) => {
+                int val;
+                if (int.TryParse(txtT2Dragons.Text, out val))
+                {
+                    map.Team2DragonsKilled = val;
+                }
+            };
+            topPanel.Children.Add(txtT2Dragons);
+
+            topPanel.Children.Add(new TextBlock { Text = "🗼 Trụ: ", Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981")), VerticalAlignment = VerticalAlignment.Center, FontSize = 12, Margin = new Thickness(5, 0, 2, 0) });
+            var txtT2Towers = new TextBox
+            {
+                Style = FindResource("DialogTextBox") as Style,
+                Text = map.Team2TowersDestroyed.ToString(),
+                Width = 40,
+                Height = 28,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 25, 0)
+            };
+            txtT2Towers.TextChanged += (s, e) => {
+                int val;
+                if (int.TryParse(txtT2Towers.Text, out val))
+                {
+                    map.Team2TowersDestroyed = val;
+                }
+            };
+            topPanel.Children.Add(txtT2Towers);
+
             topPanel.Children.Add(mvpMapText);
 
             // DataGrids Panel (Grid of 2 columns)

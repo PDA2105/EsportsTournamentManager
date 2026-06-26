@@ -74,6 +74,10 @@
     <Compile Include="Migrations\202606260340524_RemoveMapPool.Designer.cs">
       <DependentUpon>202606260340524_RemoveMapPool.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606262330000_AddDragonsAndTowers.cs" />
+    <Compile Include="Migrations\202606262330000_AddDragonsAndTowers.Designer.cs">
+      <DependentUpon>202606262330000_AddDragonsAndTowers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="Services\PasswordHasher.cs" />
@@ -128,6 +132,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\User\Dashboard\UserDashboardView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\User\Dashboard\UserMatchDetailDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\User\Players\UserPlayersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\User\Teams\UserTeamsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\User\Tournaments\UserTournamentsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\User\Tournaments\TournamentOverview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,6 +202,24 @@
     </Compile>
     <Compile Include="Views\User\UserMain.xaml.cs">
       <DependentUpon>UserMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\Dashboard\UserDashboardView.xaml.cs">
+      <DependentUpon>UserDashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\Dashboard\UserMatchDetailDialog.xaml.cs">
+      <DependentUpon>UserMatchDetailDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\Players\UserPlayersView.xaml.cs">
+      <DependentUpon>UserPlayersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\Teams\UserTeamsView.xaml.cs">
+      <DependentUpon>UserTeamsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\Tournaments\UserTournamentsView.xaml.cs">
+      <DependentUpon>UserTournamentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\User\Tournaments\TournamentOverview.xaml.cs">
+      <DependentUpon>TournamentOverview.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,8 @@ namespace EsportsTournamentManager.Models
 
         public string Coach { get; set; }
 
+        public string Region { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         public virtual ICollection<Player> Players { get; set; } = new List<Player>();

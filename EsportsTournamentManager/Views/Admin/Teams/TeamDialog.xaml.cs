@@ -20,6 +20,7 @@ namespace EsportsTournamentManager.Views.Admin.Teams
                 TxtTitle.Text = "Sửa Đội Tuyển";
                 TxtTeamName.Text = team.TeamName;
                 TxtAcronym.Text = team.Acronym;
+                TxtRegion.Text = team.Region;
                 TxtCoach.Text = team.Coach;
                 TxtLogoPath.Text = team.LogoPath;
             }
@@ -48,8 +49,9 @@ namespace EsportsTournamentManager.Views.Admin.Teams
         {
             string teamName = TxtTeamName.Text.Trim();
             string acronym = TxtAcronym.Text.Trim();
+            string region = TxtRegion.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(teamName) || string.IsNullOrWhiteSpace(acronym))
+            if (string.IsNullOrWhiteSpace(teamName) || string.IsNullOrWhiteSpace(acronym) || string.IsNullOrWhiteSpace(region))
             {
                 MessageBox.Show("Vui lòng điền đầy đủ các thông tin bắt buộc (*)", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -57,6 +59,7 @@ namespace EsportsTournamentManager.Views.Admin.Teams
 
             Team.TeamName = teamName;
             Team.Acronym = acronym;
+            Team.Region = region;
             Team.Coach = string.IsNullOrWhiteSpace(TxtCoach.Text) ? null : TxtCoach.Text.Trim();
             Team.LogoPath = string.IsNullOrWhiteSpace(TxtLogoPath.Text) ? null : TxtLogoPath.Text.Trim();
 
