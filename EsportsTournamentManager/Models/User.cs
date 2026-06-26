@@ -18,6 +18,5 @@ namespace EsportsTournamentManager.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public virtual ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
-        public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
     }
 }

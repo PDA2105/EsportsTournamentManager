@@ -10,6 +10,7 @@ namespace EsportsTournamentManager.Data
         public AppDbContext()
             : base("EsportsTournamentDb")
         {
+            Database.SetInitializer<AppDbContext>(null);
         }
 
         public DbSet<User> Users { get; set; }
@@ -22,7 +23,6 @@ namespace EsportsTournamentManager.Data
         public DbSet<Match> Matches { get; set; }
         public DbSet<MatchMap> MatchMaps { get; set; }
         public DbSet<PlayerStat> PlayerStats { get; set; }
-        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -160,12 +160,6 @@ namespace EsportsTournamentManager.Data
                 .HasForeignKey(ps => ps.PlayerId)
                 .WillCascadeOnDelete(true);
 
-            // 9. AuditLog relationship
-            modelBuilder.Entity<AuditLog>()
-                .HasRequired(al => al.User)
-                .WithMany(u => u.AuditLogs)
-                .HasForeignKey(al => al.UserId)
-                .WillCascadeOnDelete(true);
         }
     }
 }

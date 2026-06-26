@@ -46,6 +46,5 @@ namespace EsportsTournamentManager.Models
         public virtual Match NextMatch { get; set; }
 
         public virtual ICollection<MatchMap> MatchMaps { get; set; } = new List<MatchMap>();
-        public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
     }
 }
