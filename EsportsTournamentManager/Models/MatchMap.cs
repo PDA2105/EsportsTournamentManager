@@ -17,6 +17,14 @@ namespace EsportsTournamentManager.Models
 
         public int Team2RoundScore { get; set; } = 0;
 
+        public int Team1DragonsKilled { get; set; } = 0;
+
+        public int Team2DragonsKilled { get; set; } = 0;
+
+        public int Team1TowersDestroyed { get; set; } = 0;
+
+        public int Team2TowersDestroyed { get; set; } = 0;
+
         public int? DurationSeconds { get; set; }
 
         public int? MVPlayerId { get; set; }

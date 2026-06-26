@@ -291,6 +291,12 @@ namespace EsportsTournamentManager.Data.Seeders
                          ?? team2Players.FirstOrDefault(p => p.InGameName == mvpInGameName);
             }
 
+            var seedRng = new Random(match.MatchId + mapNumber);
+            int t1Dragons = team1RoundScore > team2RoundScore ? seedRng.Next(2, 5) : seedRng.Next(0, 3);
+            int t2Dragons = team2RoundScore > team1RoundScore ? seedRng.Next(2, 5) : seedRng.Next(0, 3);
+            int t1Towers = team1RoundScore > team2RoundScore ? seedRng.Next(7, 12) : seedRng.Next(1, 6);
+            int t2Towers = team2RoundScore > team1RoundScore ? seedRng.Next(7, 12) : seedRng.Next(1, 6);
+
             var map = new MatchMap
             {
                 MatchId = match.MatchId,
@@ -298,7 +304,11 @@ namespace EsportsTournamentManager.Data.Seeders
                 SelectedMapName = mapName,
                 Team1RoundScore = team1RoundScore,
                 Team2RoundScore = team2RoundScore,
-                DurationSeconds = 1800 + (new Random(match.MatchId + mapNumber).Next(0, 600)), // 30-40 mins
+                Team1DragonsKilled = t1Dragons,
+                Team2DragonsKilled = t2Dragons,
+                Team1TowersDestroyed = t1Towers,
+                Team2TowersDestroyed = t2Towers,
+                DurationSeconds = 1800 + seedRng.Next(0, 600), // 30-40 mins
                 MVPlayerId = mvpPlayer?.PlayerId
             };
 
