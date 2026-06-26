@@ -39,7 +39,7 @@ namespace EsportsTournamentManager.Data.Seeders
                 }
                 context.SaveChanges();
             }
-            SeedMapPoolsAndPrizePools(context, tour1.TournamentId, 200000000m); // 200M VND
+            SeedPrizePools(context, tour1.TournamentId, 200000000m); // 200M VND
 
             // 2. Seed Tournament 2: LCK Mùa Xuân 2026 (Active)
             var tour2 = context.Tournaments.FirstOrDefault(t => t.Name == "LCK Mùa Xuân 2026");
@@ -135,7 +135,7 @@ namespace EsportsTournamentManager.Data.Seeders
                     CreateMatchMap(context, m1, 3, "Summoner's Rift", 1, 0, "Gumayusi");
                 }
             }
-            SeedMapPoolsAndPrizePools(context, tour2.TournamentId, 500000000m); // 500M VND
+            SeedPrizePools(context, tour2.TournamentId, 500000000m); // 500M VND
 
             // 3. Seed Tournament 3: LCK Chung Kết Thế Giới 2025 (Completed)
             var tour3 = context.Tournaments.FirstOrDefault(t => t.Name == "LCK Chung Kết Thế Giới 2025");
@@ -259,20 +259,11 @@ namespace EsportsTournamentManager.Data.Seeders
                     CreateMatchMap(context, finalMatch, 5, "Summoner's Rift", 1, 0, "Gumayusi");
                 }
             }
-            SeedMapPoolsAndPrizePools(context, tour3.TournamentId, 1000000000m); // 1B VND
+            SeedPrizePools(context, tour3.TournamentId, 1000000000m); // 1B VND
         }
 
-        private static void SeedMapPoolsAndPrizePools(AppDbContext context, int tournamentId, decimal totalPrize)
+        private static void SeedPrizePools(AppDbContext context, int tournamentId, decimal totalPrize)
         {
-            if (!context.MapPools.Any(mp => mp.TournamentId == tournamentId))
-            {
-                var maps = new[] { "Summoner's Rift", "Howling Abyss", "The Crystal Scar", "Twisted Treeline" };
-                foreach (var m in maps)
-                {
-                    context.MapPools.Add(new MapPool { TournamentId = tournamentId, MapName = m });
-                }
-            }
-
             if (!context.PrizePools.Any(pp => pp.TournamentId == tournamentId))
             {
                 context.PrizePools.Add(new PrizePool { TournamentId = tournamentId, RankPlace = 1, PrizeAmount = totalPrize * 0.5m, OtherRewards = "Cúp vô địch + Huy chương Vàng" });
