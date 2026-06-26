@@ -5,17 +5,13 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Services
 {
-    /// <summary>
-    /// Lớp dịch vụ quản lý xác thực người dùng (Đăng nhập, Đăng xuất, Đăng ký và Khởi tạo tài khoản).
-    /// </summary>
+    // Dịch vụ quản lý xác thực người dùng (Đăng nhập, Đăng xuất, Đăng ký và Khởi tạo tài khoản)
     public class AuthService
     {
         private static readonly object _lock = new object();
         private static AuthService _instance;
 
-        /// <summary>
-        /// Thể hiện duy nhất (Singleton Instance) của lớp AuthService.
-        /// </summary>
+        // Singleton Instance của AuthService
         public static AuthService Instance
         {
             get
@@ -27,22 +23,16 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Thông tin người dùng hiện tại đang đăng nhập hệ thống.
-        /// </summary>
+        // Thông tin người dùng hiện tại đang đăng nhập
         public User CurrentUser { get; private set; }
 
-        /// <summary>
-        /// Constructor khởi tạo AuthService và tự động seed tài khoản mặc định.
-        /// </summary>
+        // Constructor khởi tạo AuthService và seed tài khoản mặc định
         public AuthService()
         {
             SeedInitialUsers();
         }
 
-        /// <summary>
-        /// Khởi tạo dữ liệu người dùng mặc định (Admin/User) khi ứng dụng chạy lần đầu.
-        /// </summary>
+        // Khởi tạo dữ liệu người dùng mặc định (Admin/User) khi chạy lần đầu
         public void SeedInitialUsers()
         {
             try
@@ -58,12 +48,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Đăng nhập tài khoản bằng tên người dùng và mật khẩu.
-        /// </summary>
-        /// <param name="username">Tên đăng nhập</param>
-        /// <param name="password">Mật khẩu chưa mã hóa</param>
-        /// <returns>True nếu đăng nhập thành công, ngược lại False</returns>
+        // Đăng nhập tài khoản bằng tên đăng nhập và mật khẩu
         public bool Login(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -81,22 +66,13 @@ namespace EsportsTournamentManager.Services
             return false;
         }
 
-        /// <summary>
-        /// Đăng xuất người dùng hiện tại ra khỏi hệ thống.
-        /// </summary>
+        // Đăng xuất người dùng hiện tại
         public void Logout()
         {
             CurrentUser = null;
         }
 
-        /// <summary>
-        /// Đăng ký tài khoản người dùng mới vào cơ sở dữ liệu.
-        /// </summary>
-        /// <param name="username">Tên đăng nhập</param>
-        /// <param name="password">Mật khẩu chưa mã hóa</param>
-        /// <param name="fullName">Họ và tên đầy đủ</param>
-        /// <param name="role">Vai trò (Admin/User)</param>
-        /// <returns>True nếu đăng ký thành công, False nếu tài khoản đã tồn tại</returns>
+        // Đăng ký tài khoản người dùng mới vào DB
         public bool Register(string username, string password, string fullName, string role)
         {
             using (var db = new AppDbContext())

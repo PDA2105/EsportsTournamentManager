@@ -111,7 +111,7 @@
         <!-- PANEL A: TOURNAMENTS LIST SECTION              -->
         <!-- ============================================== -->
         <Grid x:Name="PanelTournaments" Visibility="Visible">
-            <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+            <Border Background="#111827" CornerRadius="5" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header -->
@@ -257,7 +257,7 @@
         <!-- PANEL B: TOURNAMENT OVERVIEW                   -->
         <!-- ============================================== -->
         <Grid x:Name="PanelTournamentOverview" Visibility="Collapsed">
-            <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+            <Border Background="#111827" CornerRadius="5" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header (Back + Title) -->
@@ -417,7 +417,7 @@
         <!-- PANEL C: TOURNAMENT BRACKET & MATCHES          -->
         <!-- ============================================== -->
         <Grid x:Name="PanelTournamentBracket" Visibility="Collapsed">
-            <Border Background="#111827" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+            <Border Background="#111827" CornerRadius="5" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header (Back + Title) -->

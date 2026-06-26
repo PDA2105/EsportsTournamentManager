@@ -7,15 +7,10 @@ using EsportsTournamentManager.Models;
 
 namespace EsportsTournamentManager.Services
 {
-    /// <summary>
-    /// Lớp dịch vụ quản lý các nghiệp vụ liên quan đến giải đấu (Tournament), trận đấu (Match) và tính toán điểm phong độ (MVP).
-    /// </summary>
+    // Dịch vụ quản lý các nghiệp vụ liên quan đến giải đấu (Tournament), trận đấu (Match) và tính toán MVP
     public class TournamentService
     {
-        /// <summary>
-        /// Lấy danh sách tất cả các giải đấu trong hệ thống kèm theo thông tin người tạo và danh sách đội tuyển tham gia.
-        /// </summary>
-        /// <returns>Danh sách các giải đấu</returns>
+        // Lấy danh sách tất cả các giải đấu kèm người tạo và danh sách đội tham gia
         public List<Tournament> GetAllTournaments()
         {
             using (var db = new AppDbContext())
@@ -27,11 +22,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Lấy chi tiết thông tin một giải đấu theo ID bao gồm người tạo, các đội tuyển và danh sách trận đấu.
-        /// </summary>
-        /// <param name="tournamentId">ID của giải đấu</param>
-        /// <returns>Đối tượng giải đấu tương ứng hoặc null nếu không tìm thấy</returns>
+        // Lấy chi tiết thông tin một giải đấu theo ID
         public Tournament GetTournamentById(int tournamentId)
         {
             using (var db = new AppDbContext())
@@ -46,10 +37,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Thêm mới một giải đấu vào cơ sở dữ liệu.
-        /// </summary>
-        /// <param name="tournament">Đối tượng giải đấu cần thêm</param>
+        // Thêm mới một giải đấu vào cơ sở dữ liệu
         public void AddTournament(Tournament tournament)
         {
             using (var db = new AppDbContext())
@@ -59,10 +47,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Cập nhật thông tin chi tiết của một giải đấu đã tồn tại.
-        /// </summary>
-        /// <param name="tournament">Đối tượng giải đấu đã sửa đổi</param>
+        // Cập nhật thông tin chi tiết của một giải đấu đã tồn tại
         public void UpdateTournament(Tournament tournament)
         {
             using (var db = new AppDbContext())
@@ -72,10 +57,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Xóa giải đấu ra khỏi hệ thống theo ID giải đấu.
-        /// </summary>
-        /// <param name="tournamentId">ID giải đấu cần xóa</param>
+        // Xóa giải đấu ra khỏi hệ thống theo ID
         public void DeleteTournament(int tournamentId)
         {
             using (var db = new AppDbContext())
@@ -89,12 +71,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Lưu danh sách các đội tuyển được phân bổ vào giải đấu.
-        /// Xóa toàn bộ liên kết đội tuyển cũ và tạo liên kết mới trong cơ sở dữ liệu.
-        /// </summary>
-        /// <param name="tournamentId">ID giải đấu</param>
-        /// <param name="teamIds">Danh sách ID các đội tuyển tham gia</param>
+        // Lưu danh sách các đội tuyển được phân bổ vào giải đấu
         public void SaveTournamentTeams(int tournamentId, List<int> teamIds)
         {
             using (var db = new AppDbContext())
@@ -118,10 +95,7 @@ namespace EsportsTournamentManager.Services
 
         private readonly BracketService _bracketService = new BracketService();
 
-        /// <summary>
-        /// Bắt đầu giải đấu, xác minh số lượng đội tuyển và kích hoạt sinh nhánh đấu tự động theo thể thức.
-        /// </summary>
-        /// <param name="tournamentId">ID giải đấu cần bắt đầu</param>
+        // Bắt đầu giải đấu, xác minh số đội tuyển và sinh nhánh đấu tự động
         public void StartTournament(int tournamentId)
         {
             using (var db = new AppDbContext())
@@ -173,16 +147,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Cập nhật kết quả tỉ số của một trận đấu, xử lý tiến nhánh cho đội thắng cuộc
-        /// hoặc chuyển đội thua cuộc xuống nhánh thua nếu ở thể thức nhánh thắng thua (Double Elimination).
-        /// Đồng thời kiểm tra xem giải đấu đã hoàn thành toàn bộ hay chưa để cập nhật trạng thái giải đấu.
-        /// </summary>
-        /// <param name="matchId">ID trận đấu</param>
-        /// <param name="team1Score">Điểm số đội 1</param>
-        /// <param name="team2Score">Điểm số đội 2</param>
-        /// <param name="status">Trạng thái trận đấu (Scheduled/Live/Completed/Cancelled)</param>
-        /// <param name="mvpPlayerId">ID tuyển thủ MVP trận đấu (nếu có)</param>
+        // Cập nhật kết quả tỉ số trận đấu, xử lý tiến nhánh cho đội thắng và chuyển đội thua xuống nhánh thua
         public void UpdateMatchResult(int matchId, int team1Score, int team2Score, string status, int? mvpPlayerId = null)
         {
             using (var db = new AppDbContext())
@@ -301,11 +266,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Thu hồi (Rollback) kết quả trận đấu đã hoàn thành về trạng thái Scheduled.
-        /// Đồng thời xóa dữ liệu thi đấu chi tiết (maps/stats) của trận đó và đệ quy thu hồi kết quả các trận đấu sau bị ảnh hưởng.
-        /// </summary>
-        /// <param name="matchId">ID trận đấu cần thu hồi</param>
+        // Thu hồi (Rollback) kết quả trận đấu đã hoàn thành về trạng thái Scheduled
         public void RollbackMatchResult(int matchId)
         {
             using (var db = new AppDbContext())
@@ -367,12 +328,7 @@ namespace EsportsTournamentManager.Services
             }
         }
 
-        /// <summary>
-        /// Tính toán và tìm ra tuyển thủ xuất sắc nhất giải đấu (MVP Tournament) dựa trên điểm số phong độ trung bình.
-        /// </summary>
-        /// <param name="tournamentId">ID giải đấu</param>
-        /// <param name="avgScore">Điểm phong độ trung bình trả ra</param>
-        /// <returns>Đối tượng tuyển thủ đạt danh hiệu MVP giải đấu</returns>
+        // Tìm ra tuyển thủ xuất sắc nhất giải đấu (MVP Tournament)
         public Player GetTournamentMvp(int tournamentId, out double avgScore)
         {
             avgScore = 0;
@@ -467,12 +423,7 @@ namespace EsportsTournamentManager.Services
             return null;
         }
 
-        /// <summary>
-        /// Tính toán và lấy tuyển thủ xuất sắc nhất trận đấu (MVP Match) dựa trên trung bình điểm phong độ các ván chơi.
-        /// </summary>
-        /// <param name="matchId">ID trận đấu</param>
-        /// <param name="avgScore">Điểm phong độ trung bình trong trận</param>
-        /// <returns>Tuyển thủ đạt danh hiệu MVP trận đấu</returns>
+        // Lấy tuyển thủ xuất sắc nhất trận đấu (MVP Match)
         public Player GetMatchMvp(int matchId, out double avgScore)
         {
             avgScore = 0;
@@ -504,14 +455,7 @@ namespace EsportsTournamentManager.Services
             return null;
         }
 
-        /// <summary>
-        /// Lưu/Cập nhật dữ liệu thống kê của các ván đấu (Maps) và chỉ số tuyển thủ (Player stats),
-        /// tự động tính điểm hiệu năng, đánh giá tuyển thủ MVP của từng ván (Winner MVP & Loser MVP)
-        /// và cập nhật kết quả tỉ số tổng thể cho trận đấu.
-        /// </summary>
-        /// <param name="matchId">ID trận đấu cần lưu</param>
-        /// <param name="inputMaps">Danh sách các ván đấu chi tiết được điền thông tin</param>
-        /// <param name="status">Trạng thái trận đấu</param>
+        // Lưu/Cập nhật dữ liệu thống kê của các ván đấu (Maps) và chỉ số tuyển thủ (Player stats)
         public void SaveMatchPerformance(int matchId, List<MatchMap> inputMaps, string status)
         {
             using (var db = new AppDbContext())

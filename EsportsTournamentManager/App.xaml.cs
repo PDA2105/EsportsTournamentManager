@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -8,9 +8,7 @@ using System.Windows;
 
 namespace EsportsTournamentManager
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    // Interaction logic for App.xaml
     public partial class App : Application
     {
     }

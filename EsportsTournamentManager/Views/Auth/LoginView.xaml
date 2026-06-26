@@ -14,26 +14,13 @@
         <!-- Left Branding Panel -->
         <Border CornerRadius="15,0,0,15" Background="#4F46E5">
             <Grid>
-                <!-- Graphics background details -->
-                <Canvas Opacity="0.12">
-                    <Ellipse Fill="#FFFFFF" Width="250" Height="250" Canvas.Left="-50" Canvas.Top="-50"/>
-                    <Ellipse Fill="#FFFFFF" Width="300" Height="300" Canvas.Left="150" Canvas.Top="350"/>
-                    <Path Fill="#FFFFFF" Data="M 0,0 L 400,0 L 400,400 Z" Canvas.Left="50" Canvas.Top="100"/>
-                </Canvas>
-
                 <StackPanel VerticalAlignment="Center" Margin="30">
                     <Border Width="80" Height="80" Background="#FFFFFF" CornerRadius="22" HorizontalAlignment="Center" Margin="0,0,0,20">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="15" Color="#000000" Opacity="0.3"/>
-                        </Border.Effect>
-                        <Grid>
-                            <Path Fill="#4F46E5" Data="M20,15 L60,15 L55,40 C50,55 30,55 25,40 Z M28,55 L52,55 L40,65 Z" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Grid>
+                        <TextBlock Text="&#xE7FC;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#4F46E5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 
                     <TextBlock Text="ESPORTS" Foreground="#FFFFFF" FontSize="32" FontWeight="Black" TextAlignment="Center"/>
                     <TextBlock Text="TOURNAMENT MANAGER" Foreground="#E0E7FF" FontSize="13" FontWeight="SemiBold" TextAlignment="Center" Margin="0,5,0,25"/>
-                    <TextBlock Text="Hệ thống quản lý, sắp xếp nhánh đấu và điều hành giải đấu chuyên nghiệp." Foreground="#F3F4F6" FontSize="13" TextWrapping="Wrap" TextAlignment="Center" LineHeight="20" Opacity="0.9"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -106,9 +93,6 @@
                         </Button.Style>
                     </Button>
                 </StackPanel>
-
-                <!-- Bottom Notice -->
-                <TextBlock Text="Tài khoản mặc định: admin / admin123 | user / user123" Foreground="{StaticResource TextMuted}" FontSize="11" TextAlignment="Center" Grid.Row="2" Opacity="0.7"/>
             </Grid>
         </Border>
     </Grid>
