@@ -77,6 +77,11 @@ namespace EsportsTournamentManager.Views.Admin
                         SwitchSectionVisibility(TournamentsSection);
                         TxtHeaderTitle.Text = "Giải đấu & Lịch đấu";
                         break;
+                    case "PrizePools":
+                        SwitchSectionVisibility(PrizePoolsSection);
+                        TxtHeaderTitle.Text = "Cơ cấu giải thưởng";
+                        PrizePoolsSection.LoadTournaments();
+                        break;
                 }
             }
         }
@@ -89,6 +94,7 @@ namespace EsportsTournamentManager.Views.Admin
             BtnMenuDashboard.Style = normalStyle;
             BtnMenuTeams.Style = normalStyle;
             BtnMenuTournaments.Style = normalStyle;
+            BtnMenuPrizePools.Style = normalStyle;
 
             activeButton.Style = activeStyle;
         }
@@ -98,6 +104,7 @@ namespace EsportsTournamentManager.Views.Admin
             DashboardSection.Visibility = Visibility.Collapsed;
             TeamsSection.Visibility = Visibility.Collapsed;
             TournamentsSection.Visibility = Visibility.Collapsed;
+            PrizePoolsSection.Visibility = Visibility.Collapsed;
 
             activeSection.Visibility = Visibility.Visible;
         }

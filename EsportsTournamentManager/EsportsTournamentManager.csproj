@@ -120,6 +120,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Admin\PrizePools\PrizePoolsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\User\UserMain.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -158,6 +162,9 @@
     </Compile>
     <Compile Include="Views\Admin\Tournaments\TournamentsView.xaml.cs">
       <DependentUpon>TournamentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\PrizePools\PrizePoolsView.xaml.cs">
+      <DependentUpon>PrizePoolsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Admin\Tournaments\TournamentDialog.xaml.cs">
       <DependentUpon>TournamentDialog.xaml</DependentUpon>

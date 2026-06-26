@@ -1,0 +1,196 @@
+<UserControl x:Class="EsportsTournamentManager.Views.Admin.PrizePools.PrizePoolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="550" d:DesignWidth="900">
+
+    <UserControl.Resources>
+        <!-- Premium DataGrid Style -->
+        <Style x:Key="PremiumDataGrid" TargetType="DataGrid">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="RowBackground" Value="#0F172A"/>
+            <Setter Property="AlternatingRowBackground" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F9FAFB"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="RowHeight" Value="42"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#1E293B"/>
+                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="12,8"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#334155"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="12,0"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#312E81"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RowStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#312E81"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Border Background="#111827" CornerRadius="5" BorderBrush="#1E293B" BorderThickness="1" Padding="25">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Header -->
+                    <RowDefinition Height="Auto"/> <!-- Tournament Selector -->
+                    <RowDefinition Height="*"/>    <!-- Main Content Area -->
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="QUẢN LÝ CƠ CẤU GIẢI THƯỞNG" Foreground="#F9FAFB" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <!-- Selection Panel -->
+                <Grid Grid.Row="1" Margin="0,0,0,25">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Chọn giải đấu:" Foreground="#9CA3AF" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                    <ComboBox x:Name="CboTournaments" Grid.Column="1" Style="{StaticResource PremiumComboBox}" SelectionChanged="CboTournaments_SelectionChanged" DisplayMemberPath="Name" SelectedValuePath="TournamentId"/>
+                </Grid>
+
+                <!-- Details Panel -->
+                <Grid x:Name="PanelTournamentDetails" Grid.Row="2" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="280"/> <!-- Config form -->
+                        <ColumnDefinition Width="*"/>   <!-- DataGrid -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Form Panel -->
+                    <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,20,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="THÊM GIẢI THƯỞNG" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                            <!-- Form inputs -->
+                            <StackPanel x:Name="PanelAddPrize" Grid.Row="1">
+                                <TextBlock Text="Thứ hạng nhận giải" Foreground="#6B7280" FontSize="11" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="CboPrizeRank" Style="{StaticResource PremiumComboBox}" Margin="0,0,0,15">
+                                    <ComboBoxItem Content="Hạng 1 (Vô địch)" Tag="1" IsSelected="True"/>
+                                    <ComboBoxItem Content="Hạng 2 (Á quân)" Tag="2"/>
+                                    <ComboBoxItem Content="Hạng 3" Tag="3"/>
+                                    <ComboBoxItem Content="Hạng 4" Tag="4"/>
+                                    <ComboBoxItem Content="Hạng 5" Tag="5"/>
+                                    <ComboBoxItem Content="Hạng 6" Tag="6"/>
+                                    <ComboBoxItem Content="Hạng 7" Tag="7"/>
+                                    <ComboBoxItem Content="Hạng 8" Tag="8"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Số tiền thưởng (VNĐ)" Foreground="#6B7280" FontSize="11" Margin="0,0,0,5"/>
+                                <TextBox x:Name="TxtPrizeAmount" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                                <TextBlock Text="Phần thưởng khác / Hiện vật" Foreground="#6B7280" FontSize="11" Margin="0,0,0,5"/>
+                                <TextBox x:Name="TxtPrizeOther" Style="{StaticResource ModernTextBox}" Height="70" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,20" Padding="10,8"/>
+
+                                <Button x:Name="BtnAddPrize" Content="Thêm Giải Thưởng" Style="{StaticResource ActionButton}" Background="#10B981" Foreground="#FFFFFF" Click="BtnAddPrize_Click" Height="36" FontSize="13" FontWeight="Bold"/>
+                            </StackPanel>
+
+                            <!-- Read-only status info when tournament started/completed -->
+                            <TextBlock x:Name="TxtReadOnlyInfo" Grid.Row="1" Text="Không thể chỉnh sửa cơ cấu giải thưởng vì giải đấu đang diễn ra hoặc đã kết thúc." Foreground="#EF4444" FontSize="13" TextWrapping="Wrap" FontStyle="Italic" Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Right DataGrid -->
+                    <Border Grid.Column="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="8" Padding="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="DANH SÁCH GIẢI THƯỞNG" Foreground="#9CA3AF" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                            <DataGrid x:Name="GridPrizePool" Grid.Row="1" Style="{StaticResource PremiumDataGrid}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Hạng" Binding="{Binding RankPlaceDisplay}" Width="100" IsReadOnly="True" FontWeight="Bold"/>
+                                    <DataGridTextColumn Header="Tiền Thưởng (VNĐ)" Binding="{Binding DisplayAmount}" Width="1.5*" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Phần Thưởng Khác" Binding="{Binding OtherRewards}" Width="2.5*" IsReadOnly="True"/>
+
+                                    <DataGridTemplateColumn x:Name="ColDeletePrize" Header="Thao Tác" Width="Auto">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Xóa" Background="Transparent" Foreground="#EF4444" Cursor="Hand" Click="BtnDeletePrize_Click" FontWeight="Bold" Margin="5,0">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Foreground" Value="#F87171"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
