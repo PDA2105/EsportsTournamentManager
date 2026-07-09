@@ -11,6 +11,7 @@ namespace EsportsTournamentManager.Views.User.Dashboard
     public partial class UserDashboardView : UserControl
     {
         private readonly TournamentService _tournamentService = new TournamentService();
+        private readonly StatisticsService _statisticsService = new StatisticsService();
 
         public event EventHandler<int> MatchClicked;
         public event EventHandler<int> TeamClicked;
@@ -29,20 +30,20 @@ namespace EsportsTournamentManager.Views.User.Dashboard
             try
             {
                 // Quick stats
-                var summary = _tournamentService.GetDashboardSummary();
+                var summary = _statisticsService.GetDashboardSummary();
                 TxtTotalTournament.Text = summary.TotalTournament.ToString();
                 TxtTotalTeam.Text = summary.TotalTeam.ToString();
                 TxtTotalPlayer.Text = summary.TotalPlayer.ToString();
                 TxtActiveMatch.Text = summary.ActiveMatch.ToString();
 
                 // Live matches list
-                var liveMatches = _tournamentService.GetLiveMatches();
+                var liveMatches = _statisticsService.GetLiveMatches();
                 LiveMatchList.ItemsSource = liveMatches;
                 TxtNoLiveMatches.Visibility = liveMatches.Any() ? Visibility.Collapsed : Visibility.Visible;
 
                 // Top Teams & Top Players lists
-                GridTopTeams.ItemsSource = _tournamentService.GetTopTeams(5);
-                GridTopPlayers.ItemsSource = _tournamentService.GetTopPlayers(5);
+                GridTopTeams.ItemsSource = _statisticsService.GetTopTeams(5);
+                GridTopPlayers.ItemsSource = _statisticsService.GetTopPlayers(5);
 
                 // 5 Newest Tournaments list
                 var allTournaments = _tournamentService.GetAllTournaments();

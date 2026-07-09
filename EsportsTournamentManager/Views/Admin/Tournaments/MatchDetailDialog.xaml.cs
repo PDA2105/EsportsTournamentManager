@@ -16,7 +16,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
     public partial class MatchDetailDialog : Window
     {
         private readonly int _matchId;
-        private readonly TournamentService _tournamentService;
+        private readonly MatchService _matchService;
         private Match _match;
         private List<MatchMap> _maps;
 
@@ -24,7 +24,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
         {
             InitializeComponent();
             _matchId = matchId;
-            _tournamentService = new TournamentService();
+            _matchService = new MatchService();
             _maps = new List<MatchMap>();
 
             LoadMatchData();
@@ -552,7 +552,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
 
             try
             {
-                _tournamentService.SaveMatchPerformance(_matchId, playedMaps, status);
+                _matchService.SaveMatchPerformance(_matchId, playedMaps, status);
                 DialogResult = true;
                 Close();
             }
@@ -569,7 +569,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             {
                 try
                 {
-                    _tournamentService.RollbackMatchResult(_matchId);
+                    _matchService.RollbackMatchResult(_matchId);
                     DialogResult = true;
                     Close();
                 }

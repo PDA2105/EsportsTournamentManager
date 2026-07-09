@@ -15,6 +15,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
     {
         private readonly TournamentService _tournamentService;
         private readonly TeamService _teamService;
+        private readonly StatisticsService _statisticsService;
         private List<Tournament> _tournamentsList;
         private Tournament _selectedTournament;
         private List<TeamSelectionItem> _teamSelectionList;
@@ -24,6 +25,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
             InitializeComponent();
             _tournamentService = new TournamentService();
             _teamService = new TeamService();
+            _statisticsService = new StatisticsService();
             _teamSelectionList = new List<TeamSelectionItem>();
 
             LoadTournaments();
@@ -223,7 +225,7 @@ namespace EsportsTournamentManager.Views.Admin.Tournaments
  
                 // Load Tournament MVP
                 double avgMvpScore;
-                var mvpPlayer = _tournamentService.GetTournamentMvp(_selectedTournament.TournamentId, out avgMvpScore);
+                var mvpPlayer = _statisticsService.GetTournamentMvp(_selectedTournament.TournamentId, out avgMvpScore);
                 if (mvpPlayer != null)
                 {
                     TxtMvpName.Text = mvpPlayer.InGameName;

@@ -20,6 +20,7 @@ namespace EsportsTournamentManager.Views.User
         private readonly TournamentService _tournamentService = new TournamentService();
         private readonly TeamService _teamService = new TeamService();
         private readonly PlayerService _playerService = new PlayerService();
+        private readonly StatisticsService _statisticsService = new StatisticsService();
 
         private Tournament _currentTournament;
 
@@ -765,7 +766,7 @@ namespace EsportsTournamentManager.Views.User
                 TxtTeamNameTitle.Text = team.TeamName;
                 TxtTeamCoach.Text = $"HLV: {team.Coach ?? "Chưa rõ"}";
 
-                var stats = _tournamentService.GetTeamDetailStats(teamId);
+                var stats = _statisticsService.GetTeamDetailStats(teamId);
                 TxtTeamWinRate.Text = stats.WinRateDisplay;
                 TxtTeamAvgKills.Text = $"{stats.AvgKills:0.1}";
                 TxtTeamAvgDamage.Text = $"{stats.AvgDamage:N0}";
@@ -856,7 +857,7 @@ namespace EsportsTournamentManager.Views.User
                     TxtPlayerTeam.Visibility = Visibility.Collapsed;
                 }
 
-                var stats = _tournamentService.GetPlayerDetailStats(playerId);
+                var stats = _statisticsService.GetPlayerDetailStats(playerId);
                 var allPlayerStats = _playerService.GetAllPlayersStats();
                 var pStats = allPlayerStats.FirstOrDefault(p => p.PlayerId == playerId);
 
