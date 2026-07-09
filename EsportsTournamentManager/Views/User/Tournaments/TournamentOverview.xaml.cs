@@ -14,6 +14,7 @@ namespace EsportsTournamentManager.Views.User.Tournaments
     {
         private Tournament _tournament;
         private readonly TournamentService _tournamentService;
+        private readonly StatisticsService _statisticsService;
 
         public event EventHandler BackClicked;
         public event EventHandler<Tournament> ViewBracketClicked;
@@ -25,6 +26,7 @@ namespace EsportsTournamentManager.Views.User.Tournaments
         {
             InitializeComponent();
             _tournamentService = new TournamentService();
+            _statisticsService = new StatisticsService();
         }
 
         public void LoadTournament(int tournamentId)
@@ -60,7 +62,7 @@ namespace EsportsTournamentManager.Views.User.Tournaments
                 TxtInfoStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(statusColor));
 
                 // Load overview statistics
-                var overviewStats = _tournamentService.GetTournamentOverviewStats(tournamentId);
+                var overviewStats = _statisticsService.GetTournamentOverviewStats(tournamentId);
                 TxtOverviewAvgKills.Text = $"{overviewStats.AvgKills:0.0}";
                 TxtOverviewAvgCS.Text = $"{overviewStats.AvgCS:0.0}";
                 TxtOverviewAvgDamage.Text = $"{overviewStats.AvgDamage:0.0}";
@@ -83,7 +85,7 @@ namespace EsportsTournamentManager.Views.User.Tournaments
 
                 // Load MVP player
                 double avgMvp;
-                var mvp = _tournamentService.GetTournamentMvp(tournamentId, out avgMvp);
+                var mvp = _statisticsService.GetTournamentMvp(tournamentId, out avgMvp);
                 if (mvp != null)
                 {
                     TxtMvpName.Content = mvp.InGameName;
