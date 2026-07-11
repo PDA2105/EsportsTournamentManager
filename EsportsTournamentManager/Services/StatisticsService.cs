@@ -44,7 +44,15 @@ namespace EsportsTournamentManager.Services
                 }
 
                 // Xác định số lượng trận đấu nhiều nhất của một đội tuyển trong giải đấu
-                int maxMatchesInTournament = teamMatchesCount.Values.Count > 0 ? teamMatchesCount.Values.Max() : 1;
+                int maxMatchesInTournament;
+                if (teamMatchesCount.Values.Count > 0)
+                {
+                    maxMatchesInTournament = teamMatchesCount.Values.Max();
+                }
+                else
+                {
+                    maxMatchesInTournament = 1;
+                }
                 if (maxMatchesInTournament < 1) maxMatchesInTournament = 1;
 
                 // Tìm trận Chung kết tổng (Grand Final)
@@ -145,7 +153,15 @@ namespace EsportsTournamentManager.Services
                 {
                     int played = completedMatches.Count(m => m.Team1Id == t.TeamId || m.Team2Id == t.TeamId);
                     int wins = completedMatches.Count(m => m.WinnerTeamId == t.TeamId);
-                    double rate = played > 0 ? (double)wins / played : 0.0;
+                    double rate;
+                    if (played > 0)
+                    {
+                        rate = (double)wins / played;
+                    }
+                    else
+                    {
+                        rate = 0.0;
+                    }
                     list.Add(new TeamDashboardStats
                     {
                         Team = t,
@@ -195,9 +211,22 @@ namespace EsportsTournamentManager.Services
                     .Where(ps => ps.MatchMap.Match.TournamentId == tournamentId)
                     .ToList();
 
-                double avgKills = stats.Any() ? stats.Average(ps => ps.Kills) * 5.0 : 0.0;
-                double avgDamage = stats.Any() ? stats.Average(ps => ps.DamageDealt) : 0.0;
-                double avgCS = stats.Any() ? stats.Average(ps => ps.CreepScore) : 0.0;
+                double avgKills;
+                double avgDamage;
+                double avgCS;
+
+                if (stats.Any())
+                {
+                    avgKills = stats.Average(ps => ps.Kills) * 5.0;
+                    avgDamage = stats.Average(ps => ps.DamageDealt);
+                    avgCS = stats.Average(ps => ps.CreepScore);
+                }
+                else
+                {
+                    avgKills = 0.0;
+                    avgDamage = 0.0;
+                    avgCS = 0.0;
+                }
 
                 var tournamentTeams = db.TournamentTeams
                     .Include(tt => tt.Team)
@@ -215,7 +244,15 @@ namespace EsportsTournamentManager.Services
                 {
                     int played = completedMatches.Count(m => m.Team1Id == tt.TeamId || m.Team2Id == tt.TeamId);
                     int wins = completedMatches.Count(m => m.WinnerTeamId == tt.TeamId);
-                    double rate = played > 0 ? (double)wins / played : 0.0;
+                    double rate;
+                    if (played > 0)
+                    {
+                        rate = (double)wins / played;
+                    }
+                    else
+                    {
+                        rate = 0.0;
+                    }
                     if (rate > topTeamWinRate && played > 0)
                     {
                         topTeamWinRate = rate;
@@ -247,15 +284,36 @@ namespace EsportsTournamentManager.Services
 
                 int wins = completedMatches.Count(m => m.WinnerTeamId == teamId);
                 int played = completedMatches.Count;
-                double winRate = played > 0 ? (double)wins / played : 0.0;
+                double winRate;
+                if (played > 0)
+                {
+                    winRate = (double)wins / played;
+                }
+                else
+                {
+                    winRate = 0.0;
+                }
 
                 var stats = db.PlayerStats
                     .Where(ps => ps.Player.TeamId == teamId)
                     .ToList();
 
-                double avgKills = stats.Any() ? stats.Average(ps => ps.Kills) : 0.0;
-                double avgDamage = stats.Any() ? stats.Average(ps => ps.DamageDealt) : 0.0;
-                double avgCS = stats.Any() ? stats.Average(ps => ps.CreepScore) : 0.0;
+                double avgKills;
+                double avgDamage;
+                double avgCS;
+
+                if (stats.Any())
+                {
+                    avgKills = stats.Average(ps => ps.Kills);
+                    avgDamage = stats.Average(ps => ps.DamageDealt);
+                    avgCS = stats.Average(ps => ps.CreepScore);
+                }
+                else
+                {
+                    avgKills = 0.0;
+                    avgDamage = 0.0;
+                    avgCS = 0.0;
+                }
 
                 var recentMatches = db.Matches
                     .Include(m => m.Team1)
@@ -294,12 +352,31 @@ namespace EsportsTournamentManager.Services
                     .Where(ps => ps.PlayerId == playerId)
                     .ToList();
 
-                double avgKills = stats.Any() ? stats.Average(ps => ps.Kills) : 0.0;
-                double avgDeaths = stats.Any() ? stats.Average(ps => ps.Deaths) : 0.0;
-                double avgAssists = stats.Any() ? stats.Average(ps => ps.Assists) : 0.0;
-                double avgDamage = stats.Any() ? stats.Average(ps => ps.DamageDealt) : 0.0;
-                double avgCS = stats.Any() ? stats.Average(ps => ps.CreepScore) : 0.0;
-                double avgPTS = stats.Any() ? stats.Average(ps => ps.PerformancePoints) : 0.0;
+                double avgKills;
+                double avgDeaths;
+                double avgAssists;
+                double avgDamage;
+                double avgCS;
+                double avgPTS;
+
+                if (stats.Any())
+                {
+                    avgKills = stats.Average(ps => ps.Kills);
+                    avgDeaths = stats.Average(ps => ps.Deaths);
+                    avgAssists = stats.Average(ps => ps.Assists);
+                    avgDamage = stats.Average(ps => ps.DamageDealt);
+                    avgCS = stats.Average(ps => ps.CreepScore);
+                    avgPTS = stats.Average(ps => ps.PerformancePoints);
+                }
+                else
+                {
+                    avgKills = 0.0;
+                    avgDeaths = 0.0;
+                    avgAssists = 0.0;
+                    avgDamage = 0.0;
+                    avgCS = 0.0;
+                    avgPTS = 0.0;
+                }
                 int played = stats.Select(ps => ps.MatchMap.MatchId).Distinct().Count();
                 int mvpCount = 0;
                 int playerTeamId = player.TeamId;
