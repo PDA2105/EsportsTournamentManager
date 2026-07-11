@@ -76,7 +76,6 @@ namespace EsportsTournamentManager.Services
             var teams = tournament.TournamentTeams.Select(tt => tt.Team).ToList();
             var teamList = teams.ToList();
 
-            // Nếu số lượng đội lẻ, thêm một đội giả (null) đại diện cho lượt nghỉ (bye)
             bool hasBye = teamList.Count % 2 != 0;
             if (hasBye)
             {
