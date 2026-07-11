@@ -35,7 +35,15 @@ namespace EsportsTournamentManager.Services
                     if (team1Score == team2Score)
                         throw new Exception("Trận đấu không thể có tỉ số hòa khi ở trạng thái hoàn thành.");
 
-                    int winnerId = team1Score > team2Score ? match.Team1Id.Value : match.Team2Id.Value;
+                    int winnerId;
+                    if (team1Score > team2Score)
+                    {
+                        winnerId = match.Team1Id.Value;
+                    }
+                    else
+                    {
+                        winnerId = match.Team2Id.Value;
+                    }
                     match.WinnerTeamId = winnerId;
 
                     // Nếu là thể thức Loại trực tiếp (Single Elimination), đưa đội thắng lên vòng tiếp theo
@@ -62,7 +70,17 @@ namespace EsportsTournamentManager.Services
                         if (nextMatch != null)
                         {
                             // Nếu trận đấu kế tiếp là trận Chung kết tổng (Grand Final)
-                            if (nextMatch.RoundNumber == (match.Tournament.MaxTeams == 4 ? 3 : 4))
+                            int finalRoundNumber;
+                            if (match.Tournament.MaxTeams == 4)
+                            {
+                                finalRoundNumber = 3;
+                            }
+                            else
+                            {
+                                finalRoundNumber = 4;
+                            }
+
+                            if (nextMatch.RoundNumber == finalRoundNumber)
                             {
                                 if (match.BracketBranch == "Winner")
                                     nextMatch.Team1Id = winnerId;
@@ -85,7 +103,15 @@ namespace EsportsTournamentManager.Services
                             var loserMatch = _bracketService.FindLoserDestinationMatch(db, match);
                             if (loserMatch != null)
                             {
-                                int loserId = winnerId == match.Team1Id ? match.Team2Id.Value : match.Team1Id.Value;
+                                int loserId;
+                                if (winnerId == match.Team1Id)
+                                {
+                                    loserId = match.Team2Id.Value;
+                                }
+                                else
+                                {
+                                    loserId = match.Team1Id.Value;
+                                }
                                 _bracketService.SetLoserInMatch(loserMatch, match, loserId);
                                 db.Entry(loserMatch).State = EntityState.Modified;
                             }
@@ -182,7 +208,15 @@ namespace EsportsTournamentManager.Services
                         var loserMatch = _bracketService.FindLoserDestinationMatch(db, match);
                         if (loserMatch != null)
                         {
-                            int loserId = (match.Team1Id == prevWinnerId) ? match.Team2Id.Value : match.Team1Id.Value;
+                            int loserId;
+                            if (match.Team1Id == prevWinnerId)
+                            {
+                                loserId = match.Team2Id.Value;
+                            }
+                            else
+                            {
+                                loserId = match.Team1Id.Value;
+                            }
                             _bracketService.RollbackLoserMatch(db, loserMatch, loserId);
                         }
                     }

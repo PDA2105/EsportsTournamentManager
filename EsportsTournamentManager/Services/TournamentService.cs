@@ -77,11 +77,10 @@ namespace EsportsTournamentManager.Services
         {
             using (var db = new AppDbContext())
             {
-                // Xóa các ánh xạ giải đấu - đội tuyển hiện tại
+                // Xóa hết đội tuyển rồi insert lại
                 var existing = db.TournamentTeams.Where(tt => tt.TournamentId == tournamentId).ToList();
                 db.TournamentTeams.RemoveRange(existing);
 
-                // Thêm các ánh xạ giải đấu - đội tuyển mới
                 foreach (var teamId in teamIds)
                 {
                     db.TournamentTeams.Add(new TournamentTeam
